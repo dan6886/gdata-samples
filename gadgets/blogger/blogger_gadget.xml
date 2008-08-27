@@ -118,6 +118,9 @@
               categories: categories
           });
           
+          alert(form.content.value);
+          return;
+          
           // publish as draft?
           var isDraft = form.draft.checked;
           if (isDraft) {
