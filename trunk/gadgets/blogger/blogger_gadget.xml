@@ -36,8 +36,8 @@
         
         function initGadget() {
           tinyMCE.init({
-        		mode : "textareas",
-        		theme : "simple"
+            mode : "textareas",
+            theme : "simple"
         	});
         	
           google.setOnLoadCallback(
