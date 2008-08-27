@@ -24,7 +24,7 @@
       <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
       <script type="text/javascript" src="tiny_mce_src.js"></script>
       <script type="text/javascript">
-        var BLOGGER_NS = 'http://www.blogger.com/atom/ns#';    
+        var BLOGGER_NS = 'http://www.blogger.com/atom/ns#';
         var bloggerService = null;
         
         function loadGdata() {
@@ -38,15 +38,15 @@
           tinyMCE.init({
             mode : "textareas",
             theme : "simple"
-        	});
-        	
+          });
+
           google.setOnLoadCallback(
             function () {
               bloggerService = new google.gdata.blogger.BloggerService('google-BloggerGadget-v1.0');
               bloggerService.useOAuth('google');
               fetchData();
             }
-          ); 
+          );
         }
         
         function showOnly(id) {
