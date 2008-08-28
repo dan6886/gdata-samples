@@ -101,8 +101,8 @@
                     fetchData();
                   }
                 });
-                $('personalize').onclick = popup.createOpenerOnClick();
-                $('approvalLink').onclick = popup.createApprovedOnClick();
+                jQuery('#personalize').get(0).onclick = popup.createOpenerOnClick();
+                jQuery('#approvalLink').get(0).onclick = popup.createApprovedOnClick();
                 
                 showOnly('approval');
               } else if (response.feed) {
