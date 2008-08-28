@@ -162,7 +162,7 @@
            <h4 style="clear:both">Title</h4>
            <input type="text" id="title" name="title"/>
            <h4>Body</h4>
-           <textarea id="content" name="content"></textarea>
+           <textarea id="content" name="content" cols="100" rows="200"></textarea>
            <h4 style="float:left;">Labels (comma separated)</h4><img src="blogger.png" style="float:right"/>
            <input type="text" id="categories" name="categories"/>
            <p><input type="submit" id="submitButton" value="Save"/> <input type="checkbox" id="draft" name="draft" checked="checked"/> <label for="draft">Draft?</label></p>
@@ -170,7 +170,8 @@
         </div>
         
         <div id="loading">
-          <h3>Loading...</h3> <img src="ajax-loader.gif">
+          <h3>Loading...</h3>
+          <p><img src="ajax-loader.gif"></p>
         </div>
     
         <div id="approval" style="display: none">
