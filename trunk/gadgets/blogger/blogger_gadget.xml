@@ -155,7 +155,7 @@
       <body>      
         <div id="errors" style="display: none"></div>
        
-        <div id="main">
+        <div id="main" style="display:none">
          <form id="postForm" name="postForm" onsubmit="savePost(this); return false;">
            <div id="messages" style="display: none"></div>
            <div class="selectFeed">Publish to: <select id="postFeedUri" name="postFeedUri" disabled="disabled"><option>loading blog list...</option></select></div>
