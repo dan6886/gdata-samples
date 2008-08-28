@@ -46,8 +46,6 @@ input[type="text"] {
 }
 
 #content {
-  width:100%;
-  height:200px;
   border:1px solid #ccc;
 }
 
@@ -65,7 +63,7 @@ input[type="text"] {
   padding:5px;
   text-align: center;
   float:left;
-  width:50%;
+  width:35%;
 }
 
 #loading {
