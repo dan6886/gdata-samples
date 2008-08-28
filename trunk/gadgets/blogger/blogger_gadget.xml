@@ -23,6 +23,8 @@
       <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
       <script type="text/javascript" src="tinymce/tiny_mce.js"></script>
       
+      <script type="text/javascript" src="popup.js"></script>
+      
       <link href="blogger_gadget.css" type="text/css" rel="stylesheet"/>
       <script type="text/javascript">
         var BLOGGER_NS = 'http://www.blogger.com/atom/ns#';
@@ -58,9 +60,23 @@
         function fetchData() {
           jQuery('#errors').hide();
           
+          var popup = null;
+          
           var callback = function(response) {
             if (response.oauthApprovalUrl) {
-              jQuery('#personalize').get(0).href = response.oauthApprovalUrl;
+              //jQuery('#personalize').get(0).href = response.oauthApprovalUrl;
+               popup = shindig.oauth.popup({
+                destination: response.oauthApprovalUrl,
+                windowOptions: null,
+                onOpen: function() { showOnly('waiting'); },
+                onClose: function() { 
+                    showOnly('loading');
+                    fetchData(); 
+                }
+              });
+              jQuery('#personalize').get(0).onclick = popup.createOpenerOnClick();
+              jQuery('#approvaldone').get(0).onclick = popup.createApprovedOnClick();
+              
               showOnly('approval');
             } else if (response.feed) {
               showResults(response);
@@ -176,11 +192,11 @@
         </div>
     
         <div id="approval" style="display: none">
-          <a id="personalize" onclick="javascript:showOnly('waiting'); return true" target="approve">Sign in to Blogger</a>
+          <a href="#" id="personalize">Sign in to Blogger</a>
         </div>
     
         <div id="waiting" style="display: none">
-          <a onclick="javascript:showOnly('loading');fetchData();">I've approved access</a>
+          <a href="#" id="approvaldone">I've approved access</a>
         </div>
       </body>
     </html>
