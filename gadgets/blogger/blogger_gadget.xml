@@ -110,6 +110,7 @@
                 showOnly('main');
               } else {
                 jQuery('#errors').html('Something went wrong').fadeIn();
+                showOnly('errors');
               }
             };
             
