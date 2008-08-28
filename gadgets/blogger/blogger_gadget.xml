@@ -28,9 +28,7 @@
         var bloggerService = null;
         
         function loadGdata() {
-          google.load('gdata', '1.x');
-          //google.load('jquery', '1');
-  
+          google.load('gdata', '1.x');  
           gadgets.util.registerOnLoadHandler(initGadget);
         }
         
@@ -52,7 +50,7 @@
         function showOnly(id) {
           var sections = ['main', 'approval', 'waiting'];
           for (var i = 0, section; section = sections[i]; ++i) {
-            jQuery('#' + section).get(0).style.display = section === id ? 'block' : 'none';
+            document.getElementById(id).style.display = section === id ? 'block' : 'none';
           }
         }
         
