@@ -68,6 +68,10 @@ textarea {
   width:50%
 }
 
+#loading {
+  text-align:center;
+}
+
 #approval, #waiting {
   margin-top: 10px;
   color: #000;
