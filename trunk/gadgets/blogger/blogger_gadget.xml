@@ -186,7 +186,7 @@
            <input type="text" id="title" name="title"/>
            <h4>Body</h4>
            <textarea id="content" name="content" style="width:100%;height:200px;"></textarea>
-           <h4 style="float:left;">Labels <small>(comma separated)</small></h4><img src="blogger.png" style="float:right"/>
+           <h4 style="float:left;">Labels (comma separated)</h4><img src="blogger.png" style="float:right"/>
            <input type="text" id="categories" name="categories"/>
            <p><input type="submit" id="submitButton" value="Save"/> <input type="checkbox" id="draft" name="draft" checked="checked"/> <label for="draft">Draft?</label></p>
           </form>
