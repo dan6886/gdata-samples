@@ -120,8 +120,6 @@
               },
               categories: categories
           });
-
-          alert(form.content.value);
           
           // publish as draft?
           var isDraft = form.draft.checked;
