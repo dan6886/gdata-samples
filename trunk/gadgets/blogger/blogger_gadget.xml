@@ -38,7 +38,7 @@
           tinyMCE.init({
             mode : 'textareas',
             theme : 'simple',
-            theme_simple_toolbar_location : 'top'
+            theme_advanced_toolbar_location : 'top'
           });
 
           google.setOnLoadCallback(
