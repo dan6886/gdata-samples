@@ -1,6 +1,6 @@
 * {
   font-family: "Myriad Pro", Verdana, Arial;
-  font-size: 12px;
+  font-size: small;
 }
 
 a, a:visited {
@@ -92,5 +92,5 @@ div.selectFeed {
 
 #categories {
   width:50%;
-  float:left;
+  clear:both;
 }
