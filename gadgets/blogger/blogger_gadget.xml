@@ -116,7 +116,7 @@
         function savePost(form) { 
           jQuery('#messages').fadeOut();
           $('submitButton').setAttribute('disabled', 'disabled');
-          $('submitButton').value = 'Publishing...'s;
+          $('submitButton').value = 'Publishing...';
         
           var input = form.categories.value;
           var categories = jQuery.trim(input) != '' ? input.split(',') : [];   
