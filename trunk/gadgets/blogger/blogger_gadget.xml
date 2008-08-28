@@ -118,7 +118,7 @@
               categories: categories
           });
           
-          alert(jQuery('#tinymce').val());
+          alert(form.content.value);
           
           // publish as draft?
           var isDraft = form.draft.checked;
