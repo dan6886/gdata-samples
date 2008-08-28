@@ -105,6 +105,9 @@
             var label = jQuery.trim(value);
             categories[i] = {scheme: BLOGGER_NS, term: label};
           });
+          
+          // update content textarea with rich text editors innerHTML
+          tinyMCE.triggerSave();
 
           var newEntry = new google.gdata.blogger.BlogPostEntry({
               title: {
@@ -117,9 +120,7 @@
               },
               categories: categories
           });
-          
-          tinyMCE.triggerSave();
-          
+
           alert(form.content.value);
           
           // publish as draft?
