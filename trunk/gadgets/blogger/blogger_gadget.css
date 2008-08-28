@@ -51,7 +51,7 @@ input[type="text"] {
 #errors {
   color: red;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 25px;
   text-align: center;
 }
 
@@ -67,11 +67,11 @@ input[type="text"] {
 
 #loading {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 #approval, #waiting {
-  margin-top: 20px;
+  margin-top: 25px;
   color: #000;
   text-align: center;
   display:none;
