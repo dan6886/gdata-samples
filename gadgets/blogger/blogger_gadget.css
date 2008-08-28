@@ -65,11 +65,12 @@ textarea {
   padding:5px;
   text-align: center;
   float:left;
-  width:50%
+  width:50%;
 }
 
 #loading {
-  text-align:center;
+  text-align: center;
+  margin-top: 10px;
 }
 
 #approval, #waiting {
