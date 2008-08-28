@@ -68,7 +68,7 @@
             if (response.oauthApprovalUrl) {
               var popup = shindig.oauth.popup({
                   destination: response.oauthApprovalUrl,
-                  windowOptions: 'height=400,width=300',
+                  windowOptions: 'height=600,width=800',
                   onOpen: function() {
                     showOnly('waiting');
                   },
