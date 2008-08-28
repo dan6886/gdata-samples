@@ -48,7 +48,7 @@
         }
         
         function showOnly(id) {
-          var sections = ['main', 'approval', 'waiting'];
+          var sections = ['main', 'approval', 'waiting', 'loading'];
           for (var i = 0, section; section = sections[i]; ++i) {
             document.getElementById(section).style.display = section === id ? 'block' : 'none';
           }
@@ -169,7 +169,7 @@
           </form>
         </div>
         
-        <div id="loading" style="display: none">
+        <div id="loading">
           <h3>Loading...</h3> <img src="ajax-loader.gif">
         </div>
     
