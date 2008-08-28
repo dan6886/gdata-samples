@@ -55,7 +55,7 @@
         }
         
         function showOnly(id) {
-          var sections = ['main', 'approval', 'waiting', 'loading'];
+          var sections = ['main', 'approval', 'waiting', 'loading', 'errors'];
           for (var i = 0, section; section = sections[i]; ++i) {
             $(section).style.display = section === id ? 'block' : 'none';
           }
@@ -85,6 +85,7 @@
               showResults(response);
               showOnly('main');
             } else {
+              showOnly('errors');
               $('errors').innerHTML = 'Something went wrong';
               jQuery('#errors').fadeIn();
             }
