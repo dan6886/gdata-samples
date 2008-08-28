@@ -37,8 +37,7 @@
         function initGadget() {
           tinyMCE.init({
             mode : 'textareas',
-            theme : 'simple',
-            theme_simple_toolbar_location : 'top'
+            theme : 'simple'
           });
 
           google.setOnLoadCallback(
@@ -118,6 +117,8 @@
               },
               categories: categories
           });
+          
+          tinyMCE.triggerSave();
           
           alert(form.content.value);
           
