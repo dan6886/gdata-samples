@@ -18,11 +18,12 @@
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
     <html>
       <head>
-      <base href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/"/>
-      <link href="blogger_gadget.css" type="text/css" rel="stylesheet"/> 
+      <base href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/"/> 
       <script src="http://monsur.nyc.corp.google.com:3223/jsapi"></script>
       <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
       <script type="text/javascript" src="tinymce/tiny_mce.js"></script>
+      
+      <link href="blogger_gadget.css" type="text/css" rel="stylesheet"/>
       <script type="text/javascript">
         var BLOGGER_NS = 'http://www.blogger.com/atom/ns#';
         var bloggerService = null;
