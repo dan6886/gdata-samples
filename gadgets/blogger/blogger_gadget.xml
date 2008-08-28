@@ -50,45 +50,47 @@
           );
         }
         
+        function $(id) {
+          return document.getElementById(id);
+        }
+        
         function showOnly(id) {
           var sections = ['main', 'approval', 'waiting', 'loading'];
           for (var i = 0, section; section = sections[i]; ++i) {
-            document.getElementById(section).style.display = section === id ? 'block' : 'none';
+            $(section).style.display = section === id ? 'block' : 'none';
           }
         }
         
         function fetchData() {
           jQuery('#errors').hide();
           
-          var popup = null;
-          
           var callback = function(response) {
             if (response.oauthApprovalUrl) {
-              //jQuery('#personalize').get(0).href = response.oauthApprovalUrl;
-               popup = shindig.oauth.popup({
-                destination: response.oauthApprovalUrl,
-                windowOptions: null,
-                onOpen: function() { showOnly('waiting'); },
-                onClose: function() { 
+              var popup = shindig.oauth.popup({
+                  destination: response.oauthApprovalUrl,
+                  windowOptions: 'height=400,width=300',
+                  onOpen: function() {
+                    showOnly('waiting');
+                  },
+                  onClose: function() {
                     showOnly('loading');
-                    fetchData(); 
-                }
+                    fetchData();
+                  }
               });
-              jQuery('#personalize').get(0).onclick = popup.createOpenerOnClick();
-              jQuery('#approvaldone').get(0).onclick = popup.createApprovedOnClick();
+              $('personalize').onclick = popup.createOpenerOnClick();
+              $('approvaldone').onclick = popup.createApprovedOnClick();
               
               showOnly('approval');
             } else if (response.feed) {
               showResults(response);
               showOnly('main');
             } else {
-              jQuery('#errors').html('Something went wrong');
+              $('errors').innerHTML = 'Something went wrong';
               jQuery('#errors').fadeIn();
             }
           };
           
-          var feedUri = 'http://www.blogger.com/feeds/default/blogs';
-          bloggerService.getBlogFeed(feedUri, callback, callback);
+          bloggerService.getBlogFeed('http://www.blogger.com/feeds/default/blogs', callback, callback);
         }
         
         function showResults(feedRoot) {                          
@@ -96,7 +98,7 @@
           
           // Has the user created any blogs?
           if(!blogs.length) {
-            jQuery('#main').html('First <a href="http://www.blogger.com" target="newblog">create a blog</a>.');
+            $('main').innerHTML = 'First <a href="http://www.blogger.com" target="newblog">create a blog</a>.';
             return;
           }
             
@@ -106,14 +108,16 @@
             var postsFeedUri = blog.getEntryPostLink().getHref();           
             html.push('<option value="' + postsFeedUri + '">' + title + '</option>');
           }
-          
-          jQuery('#postFeedUri').html(html.join('')).removeAttr('disabled'); 
+           
+          $('postFeedUri').innerHTML = html.join('');
+          $('postFeedUri').removeAttribute('disabled');
         }
         
         function savePost(form) { 
           jQuery('#messages').fadeOut();
-          jQuery('#submitButton').val('Publishing...').attr('disabled', 'disabled');
-          
+          $('submitButton').setAttribute('disabled', 'disabled');
+          $('submitButton').value = 'Publishing...'s;
+        
           var input = form.categories.value;
           var categories = jQuery.trim(input) != '' ? input.split(',') : [];   
           jQuery.each(categories, function(i, value) {
@@ -153,7 +157,8 @@
             }
 
             jQuery('#messages').html('Post published! ' + str).fadeIn();
-            jQuery('#submitButton').val('Save').removeAttr('disabled');
+            $('submitButton').removeAttribute('disabled');
+            $('submitButton').value = 'Save';
           };
           
           bloggerService.insertEntry(form.postFeedUri.value, newEntry, handleInsert, handleError);
