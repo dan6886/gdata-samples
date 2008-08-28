@@ -31,7 +31,7 @@ h1 h2, h3, h4 {
   margin-bottom:0;
 }
 
-input, textarea {
+input, .mceEditor {
   background:transparent url(grey-grad.gif) repeat-x scroll 0 -30px;
 }
 
