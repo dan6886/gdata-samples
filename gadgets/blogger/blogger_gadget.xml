@@ -37,7 +37,7 @@
         function initGadget() {
           tinyMCE.init({
             mode : 'textareas',
-            theme : 'simple',
+            theme : 'advanced',
             theme_advanced_toolbar_location : 'top'
           });
 
