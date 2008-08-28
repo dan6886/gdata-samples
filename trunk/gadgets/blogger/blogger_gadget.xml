@@ -180,7 +180,7 @@
         </div>
     
         <div id="waiting" style="display: none">
-          <a onclick="javascript:fetchData()">I've approved access</a>
+          <a onclick="javascript:showOnly('loading');fetchData();">I've approved access</a>
         </div>
       </body>
     </html>
