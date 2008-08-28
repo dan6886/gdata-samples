@@ -168,6 +168,10 @@
            <p><input type="submit" id="submitButton" value="Save"/> <input type="checkbox" id="draft" name="draft" checked="checked"/> <label for="draft">Draft?</label></p>
           </form>
         </div>
+        
+        <div id="loading" style="display: none">
+          <h3>Loading...</h3> <img src="ajax-loader.gif">
+        </div>
     
         <div id="approval" style="display: none">
           <a id="personalize" onclick="javascript:showOnly('waiting'); return true" target="approve">Sign in to Blogger</a>
