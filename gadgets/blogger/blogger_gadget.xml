@@ -19,7 +19,7 @@
     <html>
       <head>
         <base href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/"/> 
-        <script src="http://gdata2.corp.google.com:3222/jsapi"></script>
+        <script src="http://gdata2.corp.google.com/jsapi"></script>
         <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
         <script type="text/javascript" src="tinymce/tiny_mce.js"></script>
         <script type="text/javascript" src="popup.js"></script>
