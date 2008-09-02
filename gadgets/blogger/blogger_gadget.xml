@@ -66,10 +66,10 @@
             
             google.load('gdata', '1.x');
             google.setOnLoadCallback(function () {
-                blogger = new google.gdata.blogger.BloggerService('google-BloggerGadget-v1.0');
-                blogger.useOAuth('google');
+              blogger = new google.gdata.blogger.BloggerService('google-BloggerGadget-v1.0');
+              blogger.useOAuth('google');
+              gadgets.util.registerOnLoadHandler(fetchData);
             });
-            gadgets.util.registerOnLoadHandler(fetchData);
           }
           
           function showOnly(id) {
