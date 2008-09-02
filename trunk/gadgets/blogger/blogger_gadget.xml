@@ -80,6 +80,7 @@
           }
           
           function fetchData() {
+          alert(5)
             jQuery('#errors').hide();
             
             var callback = function(response) {
