@@ -58,20 +58,24 @@
         <script type="text/javascript">
           var blogger = null;
           
-          function initGadget() {
+          function loadGdata() {
+            google.load('gdata', '1.x');
+            gadgets.util.registerOnLoadHandler(initGadget);
+          }
           
-          alert(5)
+          function initGadget() {
             tinyMCE.init({
               mode : 'textareas',
               theme : 'simple'
             });
-            
-            google.load('gdata', '1.x');
-            google.setOnLoadCallback(function () {
-              blogger = new google.gdata.blogger.BloggerService('google-BloggerGadget-v1.0');
-              blogger.useOAuth('google');
-              gadgets.util.registerOnLoadHandler(fetchData);
-            });
+  
+            google.setOnLoadCallback(
+              function () {
+                blogger = new google.gdata.blogger.BloggerService('google-BloggerGadget-v1.0');
+                blogger.useOAuth('google');
+                fetchData();
+              }
+            );
           }
           
           function showOnly(id) {
@@ -184,7 +188,7 @@
             blogger.insertEntry(form.postFeedUri.value, newEntry, handleInsert, handleError);
           }
           
-          initGadget();
+          loadGdata();
         </script>
       </body>
     </html>
