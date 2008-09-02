@@ -59,10 +59,7 @@
           var blogger = null;
           
           function initGadget() {
-            tinyMCE.init({
-              mode : 'textareas',
-              theme : 'simple'
-            });
+            
             
             google.load('gdata', '1.x');
             google.setOnLoadCallback(function () {
@@ -80,7 +77,6 @@
           }
           
           function fetchData() {
-          alert(5)
             jQuery('#errors').hide();
             
             var callback = function(response) {
