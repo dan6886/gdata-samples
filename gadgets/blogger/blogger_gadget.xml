@@ -59,7 +59,12 @@
           var blogger = null;
           
           function initGadget() {
-            
+          
+          alert(5)
+            tinyMCE.init({
+              mode : 'textareas',
+              theme : 'simple'
+            });
             
             google.load('gdata', '1.x');
             google.setOnLoadCallback(function () {
