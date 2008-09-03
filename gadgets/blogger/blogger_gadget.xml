@@ -18,7 +18,7 @@
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
     <html>
       <head> 
-        <script src="http://gdata2.corp.google.com:3222/jsapi"></script>
+        <script src="http://www.google.com/jsapi"></script>
         <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
         <script type="text/javascript" src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/tinymce/tiny_mce.js"></script>
         <script type="text/javascript" src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/popup.js"></script>
