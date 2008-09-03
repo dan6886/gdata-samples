@@ -17,13 +17,12 @@
   
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
     <html>
-      <head>
-        <base href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/"/> 
+      <head> 
         <script src="http://gdata2.corp.google.com:3222/jsapi"></script>
         <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
-        <script type="text/javascript" src="tinymce/tiny_mce.js"></script>
-        <script type="text/javascript" src="popup.js"></script>
-        <link href="blogger_gadget.css" type="text/css" rel="stylesheet"/>
+        <script type="text/javascript" src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/tinymce/tiny_mce.js"></script>
+        <script type="text/javascript" src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/popup.js"></script>
+        <link href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/blogger_gadget.css" type="text/css" rel="stylesheet"/>
       </head>
       <body>      
         <div id="errors" style="display: none"></div>
