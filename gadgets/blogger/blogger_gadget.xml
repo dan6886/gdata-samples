@@ -3,7 +3,6 @@
  <ModulePrefs title="Blogger Gadget"
               author="Eric Bidelman api.eric@google.com"
               height="385">
-  <Preload href="http://www.blogger.com" authz="oauth" />
   <Require feature="opensocial-0.8" /> 
   <OAuth>
     <Service name="google">
