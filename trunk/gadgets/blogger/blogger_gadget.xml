@@ -63,7 +63,7 @@
               theme : 'simple'
             });
             
-            google.load('gdata', '1.x');
+            google.load('gdata', '1.x', {packages: ['blogger']});
             google.setOnLoadCallback(function () {
               blogger = new google.gdata.blogger.BloggerService('google-BloggerGadget-v1.0');
               blogger.useOAuth('google');
