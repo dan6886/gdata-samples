@@ -20,7 +20,7 @@
       <head> 
         <script src="http://www.google.com/jsapi"></script>
         <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
-        <script type="text/javascript" src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/tinymce/tiny_mce.js"></script>
+        <!--<script type="text/javascript" src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/tinymce/tiny_mce.js"></script>-->
         <script type="text/javascript" src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/popup.js"></script>
         <link href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/blogger/blogger_gadget.css" type="text/css" rel="stylesheet"/>
       </head>
@@ -58,10 +58,10 @@
           var blogger = null;
           
           function initGadget() {
-            tinyMCE.init({
+            /*tinyMCE.init({
               mode : 'textareas',
               theme : 'simple'
-            });
+            });*/
             
             google.load('gdata', '1.x', {packages: ['blogger']});
             google.setOnLoadCallback(function () {
@@ -144,7 +144,7 @@
             });
             
             // update 'content' textarea with rich text editors innerHTML
-            tinyMCE.triggerSave();
+            //tinyMCE.triggerSave();
   
             var newEntry = new google.gdata.blogger.BlogPostEntry({
                 title: {
