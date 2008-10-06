@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactsUpdater", "ContactsUpdater\ContactsUpdater.csproj", "{5C9A12E4-A3BC-4CFC-924E-E61A04BE655D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C9A12E4-A3BC-4CFC-924E-E61A04BE655D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C9A12E4-A3BC-4CFC-924E-E61A04BE655D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C9A12E4-A3BC-4CFC-924E-E61A04BE655D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C9A12E4-A3BC-4CFC-924E-E61A04BE655D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
