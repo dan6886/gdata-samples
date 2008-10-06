@@ -1,0 +1,15 @@
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\bin\Debug\WpfApplication1.exe
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\bin\Debug\WpfApplication1.pdb
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\Window1.baml
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\Window1.g.cs
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\App.g.cs
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\WpfApplication1_MarkupCompile.cache
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\WpfApplication1.g.resources
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\WpfApplication1.Properties.Resources.resources
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\WpfApplication1.csproj.GenerateResource.Cache
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\WpfApplication1.exe
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\obj\Debug\WpfApplication1.pdb
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\bin\Debug\Google.GData.Client.dll
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\bin\Debug\Google.GData.Contacts.dll
+C:\Documents and Settings\ericbidelman\Local Settings\Application Data\Temporary Projects\WpfApplication1\bin\Debug\Google.GData.Extensions.dll

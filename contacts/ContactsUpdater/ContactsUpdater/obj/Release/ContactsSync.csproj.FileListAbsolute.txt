@@ -1,0 +1,12 @@
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\bin\Release\ContactsSync.exe
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\bin\Release\ContactsSync.pdb
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\Window1.baml
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\Window1.g.cs
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\App.g.cs
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\ContactsSync_MarkupCompile.cache
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\ContactsSync.g.resources
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\WpfApplication1.Properties.Resources.resources
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\ContactsSync.csproj.GenerateResource.Cache
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\ContactsSync.exe
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsSync\ContactsSync\obj\Release\ContactsSync.pdb

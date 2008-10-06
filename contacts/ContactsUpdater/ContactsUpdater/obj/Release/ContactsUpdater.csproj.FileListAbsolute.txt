@@ -1,0 +1,12 @@
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\Window1.baml
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\Window1.g.cs
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\App.g.cs
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\WpfApplication1.Properties.Resources.resources
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\ContactsUpdater.csproj.GenerateResource.Cache
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\bin\Release\ContactsUpdater.exe
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\bin\Release\ContactsUpdater.pdb
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\ContactsUpdater_MarkupCompile.cache
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\ContactsUpdater.g.resources
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\ContactsUpdater.exe
+C:\Documents and Settings\ericbidelman\My Documents\Visual Studio 2008\Projects\ContactsUpdater\ContactsUpdater\obj\Release\ContactsUpdater.pdb
