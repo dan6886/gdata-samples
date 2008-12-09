@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Job Finder"
+               author="Eric Bidelman" author_email="e.bidelman@google.com"
+               height="425" scrolling="true">
+    <Require feature="opensocial-0.8" />
+    <Require feature="setprefs"/>
+  </ModulePrefs>
+  <UserPref name="job_title" display_name="Job title" datatype="string" required="true"/>
+  <UserPref name="location" display_name="Zip code" datatype="string" required="true"/>
+  <UserPref name="withinLoc" display_name="within" datatype="string" default_value="10mi" required="false"/>
+  <UserPref name="salary_min" display_name="Min salary" default_value="75000" datatype="string" required="true"/>
+  <Content type="html">
+  <![CDATA[
+      <link href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/base/jobFinder/jobFinder.css" type="text/css" rel="stylesheet"/>
+      <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+
+      <div id="header">
+        <h1 style="float:left;">Job Finder</h1>
+        <img src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/base/jobFinder/poweredby_gbase.png">
+      </div>
+
+      <div id="errors" style="display: none"></div>
+
+      <div id="loading" style="display: none">
+        <h3>Loading...</h3>
+        <p><img src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/base/jobFinder/ajax-loader.gif"></p>
+      </div>
+
+      <div id="main">
+        <div id="data"></div>
+      </div>
+
+      <script type="text/javascript">
+        var prefs = new _IG_Prefs();
+        var gBase = null;
+
+        function initGadget() {
+          google.load('gdata', '1.x');
+          google.load('jquery', '1');
+          google.setOnLoadCallback(function () {
+              gBase = new google.gdata.gbase.GoogleBaseService('Goog-BaseJobFinderGadget-v1');
+              getSnippetsFeed(null);
+          });
+        }
+
+        function handleSnippetsFeed(result) {
+          var entries = result.feed.entry;
+
+          jQuery('#loading').hide();
+
+          if (!entries.length) {
+            jQuery('#errors').html('<p>No results matching your query</p>').show();
+            return;
+          }
+
+          var re = /alt=json-in-script&/;
+          var prevLink = result.feed.getLink('previous');
+          if (prevLink) {
+            prevLink = encodeURIComponent(prevLink.getHref().replace(re, ''));
+            jQuery('#data').append('<a href="javascript:getSnippetsFeed(\'' +
+                prevLink + '\')">&lt; Previous</a>&nbsp; &nbsp;');
+          }
+
+          var nextLink = result.feed.getLink('next');
+          if (nextLink) {
+            nextLink = encodeURIComponent(nextLink.getHref().replace(re, ''));
+            jQuery('#data').append('<a href="javascript:getSnippetsFeed(\'' +
+                nextLink + '\')">Next &gt;</a>');
+          }
+
+          var html = [];
+          for (var i = 0, item; item = entries[i]; ++i) {
+            var title = item.getTitle().getText();
+            var description = item.getContent().getText();
+            var href = item.getLink('alternate').getHref();
+            var salary = item.getAttribute('salary').getValue();
+            html.push('<dt><a href="' + href + '" target="_blank">' + title +
+                '</a> &nbsp; <b>$' + salary + '</b></dt>');
+            html.push('<dd>' + description + '</dd>');
+          }
+          jQuery('#data').append('<dl>' + html.join('') + '</dl>');
+        }
+
+        function getSnippetsFeed(uri) {
+          jQuery('#loading').show();
+          jQuery('#data').html('');
+
+          var query = uri;
+          if (query === null) {
+            var feedUri = 'http://www.google.com/base/feeds/snippets';
+            query = new google.gdata.gbase.SnippetsQuery(feedUri);
+            query.setFullTextQuery(prefs.getString('job_title'));
+
+            var locStr = '[location:@"' + prefs.getString('location') + '"+' +
+                prefs.getString('withinLoc') + ']';
+            var salStr = '[salary>=' + prefs.getString('salary_min') + ']';
+
+            query.setBq('[item type:jobs]' + locStr + salStr);
+          }
+
+          var handleError = function(e) {
+            jQuery('#errors').html(e.cause ? e.cause.statusText : e.message).show();
+          };
+
+          gBase.getSnippetsFeed(query, handleSnippetsFeed, handleError);
+        }
+
+        _IG_RegisterOnloadHandler(initGadget);
+      </script>
+  ]]>
+  </Content>
+</Module>
