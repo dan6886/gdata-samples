@@ -16,8 +16,7 @@
       <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 
       <div id="header">
-        <h1 style="float:left;">Job Finder</h1>
-        <img src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/base/jobFinder/poweredby_gbase.png">
+        <h1 style="float:left;">Jobs from Google Base</h1>
       </div>
 
       <div id="errors" style="display: none"></div>
