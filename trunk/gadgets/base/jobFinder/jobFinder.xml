@@ -19,9 +19,9 @@
         <h1 style="float:left;">Jobs from Google Base</h1>
       </div>
 
-      <div id="errors" style="display: none"></div>
+      <div id="errors" style="display:none"></div>
 
-      <div id="loading" style="display: none">
+      <div id="loading" style="display:none">
         <h3>Loading...</h3>
         <p><img src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/base/jobFinder/ajax-loader.gif"></p>
       </div>

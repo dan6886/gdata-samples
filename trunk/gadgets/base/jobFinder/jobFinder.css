@@ -33,11 +33,13 @@ dd {
   font-weight: bold;
   margin-top: 10px;
   text-align: center;
+  clear:both;
 }
 
 #loading {
   text-align: center;
   margin-top: 25px;
+  clear:both;
 }
 
 #messages {
@@ -52,6 +54,7 @@ dd {
 
 #main {
   margin-top:5px;
+  clear:both;
 }
 
 #header {
