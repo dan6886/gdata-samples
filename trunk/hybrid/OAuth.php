@@ -132,8 +132,7 @@ class OAuthSignatureMethod_RSA_SHA1 extends OAuthSignatureMethod {/*{{{*/
  
     // hacked in 
     if ($privKey == '') {  
-      //$fp = fopen("C://InstantRails/www/php/OAuth/googlecodesamples_rsakey.pem", "r");  
-      $fp = fopen("C:\InstantRails\www\myrsakey.pem", "r");  
+      $fp = fopen("YOUR_PEM_FILE", "r");  
       $privKey = fread($fp, 8192);
       fclose($fp); 
     }                              
@@ -190,7 +189,7 @@ class OAuthRequest {/*{{{*/
    */
   public static function from_request($http_method=NULL, $http_url=NULL, $parameters=NULL) {/*{{{*/
     $scheme = (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != "on") ? 'http' : 'https';
-    @$http_url or $http_url = $scheme . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    @$http_url or $http_url = $scheme . '://' . $_SERVER['HTTP_HOST'] . $_SERVERSERVER['REQUEST_URI'];
     @$http_method or $http_method = $_SERVER['REQUEST_METHOD'];
     
     $request_headers = OAuthRequest::get_headers();
