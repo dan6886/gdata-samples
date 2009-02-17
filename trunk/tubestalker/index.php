@@ -107,8 +107,8 @@ function fetchUsername() {
   else {
     $yt = getYtService();
     $userProfileEntry = $yt->getUserProfile('default');
-    $username = $userProfileEntry->getUsername();
-    $_SESSION['ytUsername'] = $username->text;
+    $username = $userProfileEntry->getUsername()->text;
+    $_SESSION['ytUsername'] = $username;
   }
   return $username;
 }
