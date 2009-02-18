@@ -41,18 +41,23 @@ function fetchVideoMetadata($videoId) {
   
   $expiration_time = $GLOBALS['tubestalker_config']['metadata_expiry_time'];
   
-  $yt = getYtService();
-  $videoEntry = $yt->getVideoEntry($videoId);
+  try {
+    $yt = getYtService();
+    $videoEntry = $yt->getVideoEntry($videoId);
   
-  $video = Array();
-  $video['id'] = $videoEntry->getVideoId();
-  $video['title'] = $videoEntry->getVideoTitle();
-  $video['view_count'] = $videoEntry->getVideoViewCount();
-  $video['rating'] = $videoEntry->getVideoRatingInfo();
-  $thumbnails = $videoEntry->getVideoThumbnails();
-  $video['thumbnail'] = $thumbnails[0]['url'];
-  $video['player'] = $videoEntry->getFlashPlayerUrl();
-  $video['uploader'] = $videoEntry->author[0]->name->text;
+    $video = Array();
+    $video['id'] = $videoEntry->getVideoId();
+    $video['title'] = $videoEntry->getVideoTitle();
+    $video['view_count'] = $videoEntry->getVideoViewCount();
+    $video['rating'] = $videoEntry->getVideoRatingInfo();
+    $thumbnails = $videoEntry->getVideoThumbnails();
+    $video['thumbnail'] = $thumbnails[0]['url'];
+    $video['player'] = $videoEntry->getFlashPlayerUrl();
+    $video['uploader'] = $videoEntry->author[0]->name->text;
+  }
+  catch(Zend_Gdata_App_HttpException $e){
+    $video = 'NOT_AVAILABLE';
+  }
   
   $memcache->set("video-$videoId", $video, MEMCACHE_COMPRESSED, $expiration_time);
   
@@ -105,10 +110,15 @@ function fetchUsername() {
     $username =  $_SESSION['ytUsername'];
   }
   else {
-    $yt = getYtService();
-    $userProfileEntry = $yt->getUserProfile('default');
-    $username = $userProfileEntry->getUsername()->text;
-    $_SESSION['ytUsername'] = $username;
+    try {
+      $yt = getYtService();
+      $userProfileEntry = $yt->getUserProfile('default');
+      $username = $userProfileEntry->getUsername()->text;
+      $_SESSION['ytUsername'] = $username;
+    }
+    catch(Zend_Gdata_App_HttpException $e){
+      $username = 'UNKNOWN';
+    }
   }
   return $username;
 }
@@ -195,18 +205,30 @@ function returnUserFeed($username = null) {
   if(!$username) {
     $username = fetchUsername();
   }
-  $yt = getYtService();
-  $activityFeed = $yt->getActivityForUser($username);
-  echo renderActivityFeed($activityFeed, "useractivity-$username");
+  
+  try {
+    $yt = getYtService();
+    $activityFeed = $yt->getActivityForUser($username);
+    echo renderActivityFeed($activityFeed, "useractivity-$username");
+  }
+  catch(Zend_Gdata_App_HttpException $e){
+    echo json_encode('NOT_AVAILABLE');
+  }
 }
 
 // Return a friend activity feed in JSON encoding to the AJAX frontend
 function returnFriendFeed() {
   requireLogin();
   $username = fetchUsername();
-  $yt = getYtService();
-  $friendActivityFeed = $yt->getFriendActivityForCurrentUser();
-  echo renderActivityFeed($friendActivityFeed, "friendactivity-$username");
+  
+  try {
+    $yt = getYtService();
+    $friendActivityFeed = $yt->getFriendActivityForCurrentUser();
+    echo renderActivityFeed($friendActivityFeed, "friendactivity-$username");
+  }
+  catch(Zend_Gdata_App_HttpException $e){
+    echo json_encode('NOT_AVAILABLE');
+  }
 }
 
 // Return the current user's YouTube username to the frontend in JSON encoding
