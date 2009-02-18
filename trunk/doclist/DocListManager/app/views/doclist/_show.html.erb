@@ -1,0 +1,71 @@
+<table style="width:100%;" cellpadding="5" cellspacing="10">
+<tr>
+  <td colspan="2"><h3><%= image_tag("icon_#{@document.type}.gif") %> <%= @document.title %></h3></td>
+</tr>
+<tr>
+  <td style="vertical-align:top;">
+    <% if @preview_img.nil? -%>
+      <%= image_tag('no_preview.png', :class => 'thumb', :title => 'No Preview', :alt => 'No Preview')%>
+    <% else -%>
+      <img src="data:image/png;base64,<%= @preview_img %>" class="thumb" title="Document Preview" alt="Document Preview">
+    <% end -%>
+  </td>
+  <td style="width:100%;vertical-align:top;">
+    <span style="float:right;">
+      <%= link_to_remote('Refresh',
+                         :url => {:action=> 'show'},
+                         :with => "'url=#{@document.links['self']}'",
+                         :update => 'doc_preview',
+                         :loading=> "setLoadingMsg('doc_preview', 'loading document info...')")
+      %>
+    </span>
+    <strong>Last updated</strong>: &nbsp; <%= @document.last_updated.strftime('%Y-%m-%d %H:%M:%S') %><br>
+    <strong><%= @document.type == ApplicationController::SPREADSHEET_DOC_TYPE ? 'key' : 'docID' %></strong>: &nbsp; <%= @document.doc_id %><br>
+    <div style="margin-top:5px;clear:both;"><strong>Who has access</strong>?</div>
+    <ul id="permission_list">
+      <% @document.permissions.sort.each do |role, peeps| -%>
+        <li id="<%= role -%>" style="float:left;width:170px;margin-right:5px;">
+          <strong><%= "#{role}s" -%></strong>
+          <ul>
+            <% @document.permissions[role].each do |person| -%>
+              <li><%= truncate(person, :length => 25) %></li>
+            <% end -%>
+          </ul>
+        </li>
+      <% end -%>
+    </ul>
+    <%= image_tag('contact_icon.png') -%>
+    <%= link_to_remote("Add collaborators from 'My Contacts'",
+                       :url => {:controller=> 'contacts', :action=> 'my_contacts'},
+                       :with => "'acl_feedlink=#{@document.links['acl_feedlink']}'",
+                       :update => 'contacts',
+                       :loading=> "setLoadingMsg('contacts', 'loading contacts...')")
+    %> 
+    <div id="contact_list">
+      <div id="contacts"></div>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;">
+    <div style="float:left;">
+      <%= link_to('View in Google Docs',
+                  @document.links['alternate'],
+                  :target => '_new')
+      %> &nbsp;
+      <%= link_to(image_tag('popout.png', :border => 0),
+                  @document.links['alternate'],
+                  :target => '_new')
+      %>
+    </div>
+    <div style="float:right;">
+      <% if @document.links['export'] -%>
+      <% form_tag :action => 'download' do -%>
+        <%= select_export_formats(@document.type, @document.links['export']) %> <%= submit_tag 'download' %>
+      <% end -%>
+      <% end -%>
+    </div>
+  </td>
+  <td align="right"> </td>
+</tr>
+</table>

@@ -1,0 +1,139 @@
+
+
+Processing DoclistController#documents (for 127.0.0.1 at 2009-02-03 17:51:57) [GET]
+Rendering template within layouts/standard
+Rendering doclist/documents
+Completed in 907ms (View: 16 | 200 OK [http://localhost/]
+
+
+Processing DoclistController#show (for 127.0.0.1 at 2009-02-03 17:52:06) [POST]
+  Parameters: {"self_id"=>"http://docs.google.com/feeds/documents/private/full/document%3Adfrkj84g_132f6bhh2cm", "authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1266ms (View: 0 | 200 OK [http://localhost/doclist/show?self_id=http%3A%2F%2Fdocs.google.com%2Ffeeds%2Fdocuments%2Fprivate%2Ffull%2Fdocument%253Adfrkj84g_132f6bhh2cm]
+
+
+Processing DoclistController#show (for 127.0.0.1 at 2009-02-03 17:52:08) [POST]
+  Parameters: {"self_id"=>"http://docs.google.com/feeds/documents/private/full/document%3Achcrg422_545gxfjgdfp", "authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 2345ms (View: 16 | 200 OK [http://localhost/doclist/show?self_id=http%3A%2F%2Fdocs.google.com%2Ffeeds%2Fdocuments%2Fprivate%2Ffull%2Fdocument%253Achcrg422_545gxfjgdfp]
+
+
+Processing DoclistController#spreadsheets (for 127.0.0.1 at 2009-02-03 17:52:15) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1187ms (View: 15 | 200 OK [http://localhost/doclist/spreadsheets]
+
+
+Processing DoclistController#documents (for 127.0.0.1 at 2009-02-03 17:52:17) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1219ms (View: 16 | 200 OK [http://localhost/]
+
+
+Processing DoclistController#spreadsheets (for 127.0.0.1 at 2009-02-03 17:52:20) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1281ms (View: 0 | 200 OK [http://localhost/doclist/spreadsheets]
+
+
+Processing DoclistController#presentations (for 127.0.0.1 at 2009-02-03 17:52:22) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 828ms (View: 0 | 200 OK [http://localhost/doclist/presentations]
+
+
+Processing DoclistController#show (for 127.0.0.1 at 2009-02-03 17:52:33) [POST]
+  Parameters: {"self_id"=>"http://docs.google.com/feeds/documents/private/full/presentation%3Adfrkj84g_42cczzpkdf", "authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 735ms (View: 0 | 200 OK [http://localhost/doclist/show?self_id=http%3A%2F%2Fdocs.google.com%2Ffeeds%2Fdocuments%2Fprivate%2Ffull%2Fpresentation%253Adfrkj84g_42cczzpkdf]
+
+
+Processing DoclistController#spreadsheets (for 127.0.0.1 at 2009-02-03 17:53:02) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1360ms (View: 32 | 200 OK [http://localhost/doclist/spreadsheets]
+
+
+Processing DoclistController#show (for 127.0.0.1 at 2009-02-03 17:53:04) [POST]
+  Parameters: {"self_id"=>"http://docs.google.com/feeds/documents/private/full/spreadsheet%3ApS6psUO88qEnUtxsyPY-7Kw", "authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1219ms (View: 0 | 200 OK [http://localhost/doclist/show?self_id=http%3A%2F%2Fdocs.google.com%2Ffeeds%2Fdocuments%2Fprivate%2Ffull%2Fspreadsheet%253ApS6psUO88qEnUtxsyPY-7Kw]
+
+
+Processing DoclistController#show (for 127.0.0.1 at 2009-02-03 17:53:12) [POST]
+  Parameters: {"self_id"=>"http://docs.google.com/feeds/documents/private/full/spreadsheet%3ApS6psUO88qElrJYCCmgtDFg", "authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1047ms (View: 15 | 200 OK [http://localhost/doclist/show?self_id=http%3A%2F%2Fdocs.google.com%2Ffeeds%2Fdocuments%2Fprivate%2Ffull%2Fspreadsheet%253ApS6psUO88qElrJYCCmgtDFg]
+
+
+Processing DoclistController#folders (for 127.0.0.1 at 2009-02-03 17:53:14) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 907ms (View: 0 | 200 OK [http://localhost/doclist/folders]
+
+
+Processing DoclistController#show (for 127.0.0.1 at 2009-02-03 17:53:22) [POST]
+  Parameters: {"self_id"=>"http://docs.google.com/feeds/documents/private/full/folder%3A44e11301-4c79-4380-b362-bbf345dec83f", "authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+
+
+NoMethodError (undefined method `+' for nil:NilClass):
+    /app/controllers/doclist_controller.rb:71:in `show'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/base.rb:1253:in `send'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/base.rb:1253:in `perform_action_without_filters'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/filters.rb:617:in `call_filters'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/filters.rb:610:in `perform_action_without_benchmark'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/1.8/benchmark.rb:293:in `measure'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/rescue.rb:136:in `perform_action'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/base.rb:524:in `send'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/base.rb:524:in `process_without_filters'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/filters.rb:606:in `process_without_session_management_support'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/session_management.rb:134:in `process'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/base.rb:392:in `process'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/dispatcher.rb:183:in `handle_request'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/dispatcher.rb:110:in `dispatch_unlocked'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/dispatcher.rb:123:in `dispatch'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/dispatcher.rb:122:in `synchronize'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/dispatcher.rb:122:in `dispatch'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/dispatcher.rb:132:in `dispatch_cgi'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/dispatcher.rb:39:in `dispatch'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/bin/../lib/mongrel/rails.rb:76:in `process'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/bin/../lib/mongrel/rails.rb:74:in `synchronize'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/bin/../lib/mongrel/rails.rb:74:in `process'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:159:in `process_client'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:158:in `each'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:158:in `process_client'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:285:in `run'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:285:in `initialize'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:285:in `new'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:285:in `run'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:268:in `initialize'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:268:in `new'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel.rb:268:in `run'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel/configurator.rb:282:in `run'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel/configurator.rb:281:in `each'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel/configurator.rb:281:in `run'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/bin/mongrel_rails:128:in `run'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/lib/mongrel/command.rb:212:in `run'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/mongrel-1.1.5-x86-mswin32-60/bin/mongrel_rails:281
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/activesupport-2.2.2/lib/active_support/dependencies.rb:142:in `load_without_new_constant_marking'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/activesupport-2.2.2/lib/active_support/dependencies.rb:142:in `load'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/activesupport-2.2.2/lib/active_support/dependencies.rb:521:in `new_constants_in'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/activesupport-2.2.2/lib/active_support/dependencies.rb:142:in `load'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/rails-2.2.2/lib/commands/servers/mongrel.rb:64
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/activesupport-2.2.2/lib/active_support/dependencies.rb:153:in `require'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/activesupport-2.2.2/lib/active_support/dependencies.rb:521:in `new_constants_in'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/activesupport-2.2.2/lib/active_support/dependencies.rb:153:in `require'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/rails-2.2.2/lib/commands/server.rb:49
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+    C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+    script/server:3
+
+Rendering C:/PROGRA~1/BITNAM~1/ruby/lib/ruby/gems/1.8/gems/actionpack-2.2.2/lib/action_controller/templates/rescues/layout.erb (internal_server_error)
+
+
+Processing DoclistController#spreadsheets (for 127.0.0.1 at 2009-02-03 17:53:23) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1250ms (View: 16 | 200 OK [http://localhost/doclist/spreadsheets]
+
+
+Processing DoclistController#documents (for 127.0.0.1 at 2009-02-03 17:53:27) [POST]
+  Parameters: {"authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 891ms (View: 0 | 200 OK [http://localhost/]
+
+
+Processing DoclistController#show (for 127.0.0.1 at 2009-02-03 17:53:29) [POST]
+  Parameters: {"self_id"=>"http://docs.google.com/feeds/documents/private/full/document%3Adfrkj84g_15csbg26hq", "authenticity_token"=>"2650e7f025c967a1d4763adbb6791da5b6d0c5d6"}
+Completed in 1891ms (View: 0 | 200 OK [http://localhost/doclist/show?self_id=http%3A%2F%2Fdocs.google.com%2Ffeeds%2Fdocuments%2Fprivate%2Ffull%2Fdocument%253Adfrkj84g_15csbg26hq]

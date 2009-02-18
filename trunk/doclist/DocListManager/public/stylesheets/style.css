@@ -1,0 +1,180 @@
+* {
+  margin:0;
+  padding:0;
+}
+
+body {
+  margin:1em;
+  font:12pt 'Myriad Pro', 'Tw Cen MT', Arial, Verdana;
+  color:#666666;
+}
+
+table, td {
+  font:inherit;
+}
+
+input[type='text'], select {
+ font:11pt 'Myriad Pro', 'Tw Cen MT', Arial, Verdana;
+ height:25px;
+}
+
+dt {
+  font-weight:bold;
+}
+dd {
+  margin-left:1em;
+}
+
+a {
+ color: #4E7DC2;
+ text-decoration: none;
+}
+
+a:hover {
+  color: #880000;
+  text-decoration: underline;
+}
+
+li {
+	list-style:none;
+}
+
+.selected {
+  background-color:#FFFF99;
+}
+.loading {
+  color:#ccc;
+  font:10pt verdana, sans-serif;
+  text-align:center;
+  margin:3em;
+}
+.loading img {
+  vertical-align:middle;
+}
+.hidden {
+  display:none;
+}
+
+/* Google Colors ------------------------------------------------------------ */
+.google :first-child,
+.google :first-child + span + span + span {
+  color:#1f47b2; /*blue*/
+}
+.google :first-child + span,
+.google :first-child + span + span + span + span + span {
+  color:#c61800; /*red*/
+}
+.google :first-child + span + span {
+  color:#bc9200; /*yellow*/
+}
+.google :first-child + span + span + span + span {
+  color:#18a221;
+}
+/* -------------------------------------------------------------------------- */
+
+/* Documents listing  ------------------------------------------------------- */
+.list {
+  overflow:auto;
+  font:10pt verdana, sans-serif;
+}
+.list li {
+  padding:7px 0 7px 0;
+  cursor:pointer;
+}
+.list li:hover {
+  background-color:#eee;
+}
+.list input[type='checkbox'] {
+  vertical-align:middle;
+}
+.list label {
+  cursor:pointer;
+}
+.list img {
+  vertical-align:middle;
+}
+/* -------------------------------------------------------------------------- */
+
+#header {
+ padding-bottom:15px;
+ color:#000;
+}
+
+#navbar {
+ margin:10px 0 10px 0;
+ padding:10px 10px 10px 0;
+ background-color:#000;
+ color:#fff;
+}
+#navbar img {
+ vertical-align:middle;
+ margin-right:5px;
+ border:0;
+}
+#navbar a {
+ padding:10px 7px 10px 7px;
+ color:#fff;
+ text-decoration:none;
+}
+#navbar a:hover,
+#navbar a.current {
+  background-color:#515E6F;
+}
+
+#documents_data {
+  float:left;
+  width:385px;
+  
+}
+#documents_data .header_bar {
+  padding:5px;
+  background-color:#eee;
+  border:1px solid #ccc;
+}
+#documents_data .list {
+  height:475px;
+  overflow:auto;
+}
+
+#contacts {
+  clear:both;
+}
+
+#doc_preview {
+  margin-left:410px;
+  padding:0.75em 1em 1em 1em;
+  width:auto;
+  height:500px;
+  border:1px solid #ccc;
+  font-size:11pt;
+}
+
+#doc_preview h3 {
+  padding-bottom:3px;
+  border-bottom:2px solid #666;
+}
+
+#doc_preview img.thumb {
+  border:1px solid #ccc;
+  width:320px;
+  height:414px;
+}
+
+#doc_preview #contacts_data {
+  margin:2px 0 5px 0;
+  padding:5px;
+  height:175px;
+  overflow:auto;
+  border:1px solid #000;
+}
+
+#doc_preview #permission_list {
+  font-size:10pt;
+  min-height:50px;
+  max-height:100px;
+  overflow:auto;
+}
+
+#doc_preview #permission_list strong {
+  color:#000066;
+}
