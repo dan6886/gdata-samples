@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Google Docs List Manager</title>
+<%= stylesheet_link_tag "style" %>
+<%= javascript_include_tag :defaults %>
+<% javascript_tag do -%>
+function setDocsListLoadingMsg(id, msg) {
+  $(id).getElementsByClassName('list')[0].update('<div class="loading"><img src="/images/ajax-loader.gif"> ' + msg + '</div>');
+}
+function setLoadingMsg(id, msg) {
+  $(id).update('<div class="loading"><img src="/images/ajax-loader.gif"> ' + msg + '</div>');
+}
+
+document.observe('dom:loaded', function() {
+  if ($('documents_data')) {
+    $('documents_data').observe('click', function(event) {
+      var el = event.element();
+      if (el.tagName == 'LI') {
+        el.up().childElements().each(function(item) {
+          item.removeClassName('selected');
+        });
+        el.toggleClassName('selected');
+      }
+    });
+  }
+  
+  if ($('doc_preview')) {
+    $('doc_preview').observe('click', function(event) {
+      var el = event.element();
+      if (el.tagName == 'LI' && el.up('#contacts')) {
+        el.toggleClassName('selected');
+        checkbox = el.childElements("input[type='checkbox']")[0];
+        checkbox.checked = checkbox.checked ? false : true;
+      } else if (el.tagName == 'INPUT' && el.type == 'checkbox') {
+        el.up().toggleClassName('selected');
+      }
+    });
+  }
+});
+<% end -%>
+</head>
+<body>
+
+<% if flash[:notice] -%>
+  <p class="notice"><%= flash[:notice] %></p>
+<% end -%>
+
+<div id="container">
+	<div id="header">
+    <% if !session[:token].nil? -%><div style="float:right;"><%= link_to('Logout', :action=> 'logout') %></div><% end -%>
+    
+		<h2>DocList Manager</h2>
+		<small>powered by
+		<% api_link_txt = '<span class="google"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></span> Data Documents List API' -%>
+    <%= link_to api_link_txt, 'http://code.google.com/apis/documents/', :target => '_new' -%></small>
+      
+    <div id="navbar">
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::DOCUMENT_DOC_TYPE}.gif") + ' Word Documents',
+        :url => {:action=> "#{ApplicationController::DOCUMENT_DOC_TYPE}s"},
+        :update => 'documents_data',
+        :loading=> "setDocsListLoadingMsg('documents_data', 'loading word documents...')")
+      %>
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::SPREADSHEET_DOC_TYPE}.gif") + 'Spreadsheets',
+        :url => {:action=> "#{ApplicationController::SPREADSHEET_DOC_TYPE}s"},
+        :update => 'documents_data',
+        :loading=> "setDocsListLoadingMsg('documents_data', 'loading spreadsheets...')")
+      %>
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::PRESO_DOC_TYPE}.gif") + 'Presentations',
+        :url => {:action=> "#{ApplicationController::PRESO_DOC_TYPE}s"},
+        :update => 'documents_data',
+        :loading=> "setDocsListLoadingMsg('documents_data', 'loading presentations...')")
+      %>
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::PDF_DOC_TYPE}.gif", :border => '0') + 'PDFs',
+        :url => {:action=> "#{ApplicationController::PDF_DOC_TYPE}s"},
+        :update => 'documents_data',
+        :loading=> "setDocsListLoadingMsg('documents_data', 'loading pdfs...')")
+      %>
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::FOLDER_DOC_TYPE}.gif", :border => '0') + 'Folders',
+        :url => {:action=> "#{ApplicationController::FOLDER_DOC_TYPE}s"},
+        :update => 'documents_data',
+        :loading=> "setDocsListLoadingMsg('documents_data', 'loading folders...')")
+      %>
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::STARRED_LABEL}.png", :border => '0') + 'Starred',
+        :url => {:action=> ApplicationController::STARRED_LABEL},
+        :update => 'documents_data',
+        :loading=> "setDocsListLoadingMsg('documents_data', 'loading starred docs...')")
+      %>
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::TRASHED_LABEL}.png", :border => '0') + 'Trashed',
+        :url => {:action=> ApplicationController::TRASHED_LABEL},
+        :update => 'documents_data',
+        :loading=> "setDocsListLoadingMsg('documents_data', 'loading trashed docs...')")
+      %>
+    </div>
+	</div>
+
+	<div id="content">
+    <% if session[:token].nil? -%>
+      <%= 'AuthSub session token: ' + session[:token] if session[:token] %>
+      <%= link_to('Authorize this website', @authsub_link) %>
+    <% else -%>
+	    <%= yield -%>
+	    <div id="doc_preview">Select a document to view</div>
+    <% end -%>
+  </div>
+</div>
+
+</body>
+</html>

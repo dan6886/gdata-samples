@@ -1,0 +1,27 @@
+<div id="documents_data">
+  <div class="header_bar">
+    <h4><%= @doc_type.capitalize -%>s you own:</h4>
+    <small><%= pluralize(@documents.length, @doc_type) -%></small>
+  </div>
+  <div class="list">
+    <ul>
+  		<% @documents.sort.each do |doc| -%>
+        <% if doc.type == ApplicationController::FOLDER_DOC_TYPE
+             ajax_call = remote_function(:url => {:action=> 'all'},
+                                         :with => "'url=#{doc.links['content_src']}'",
+                                         :update => 'documents_data',
+                                         :loading=> "setDocsListLoadingMsg('documents_data', 'loading folder contents...')")
+           else
+             ajax_call = remote_function(:url => {:action => 'show'},
+                                         :with => "'url=#{doc.links['self']}'",
+                                         :update => 'doc_preview',
+                                         :loading=> "setLoadingMsg('doc_preview', 'loading document info...')")
+           end
+        -%>
+  		  <li onclick="if (!this.hasClassName('selected')) { <%= ajax_call -%> }">
+          <%= image_tag("icon_#{doc.type}.gif") -%> <%= doc.title -%>
+        </li>
+  		<% end -%>
+    </ul>
+  </div>
+</div>
