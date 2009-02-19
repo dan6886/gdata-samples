@@ -1,0 +1,54 @@
+  body {
+    background-color: #eee;
+    font-family: Helvetica, Sans, Arial;
+    font-size: small;
+  }
+
+
+  #all {
+    width: 800px;
+    height: 80%;
+    background-color: white;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  #stream {
+    height: 500px;
+    background-color: #eee;
+  }
+
+  #activity_stream {
+    height: 500px;
+    background-color: #eee;
+    display: none;
+  }
+
+  #log {
+    height: 700px;
+    background-color: #ddd;
+    font-family: courier, monospace;
+  }
+
+  #video_thumbnail {
+      display: inline;
+      float: left;
+      padding-right: 10px;
+  }
+  
+  #activity_entry {
+      display: block;
+  }
+  
+  #hidden_video {
+      width: 500px;
+      height: 400px;
+      background: #fff;
+      visibility: hidden;
+      position:absolute;
+      text-align: center;
+      padding: 10px;
+      left:200px;
+      top:50px
+  }
