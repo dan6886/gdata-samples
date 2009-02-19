@@ -1,28 +1,49 @@
   body {
-    background-color: #eee;
+    background-color: #aaa;
     font-family: Helvetica, Sans, Arial;
-    font-size: small;
+    font-size: medium;
+    color: #1F1F1F;
+    line-height: 150%;
   }
-
 
   #all {
     width: 800px;
     height: 80%;
-    background-color: white;
     margin: auto;
     margin-top: 10px;
     margin-bottom: 10px;
   }
 
+  #top {
+      background-color: #fff;
+      height: 50px;
+      padding: 10px;
+  }
+  
+  #title {
+      display: inline;
+      padding: 20px;
+      font-size: 150%;
+      width: 33%;
+  }
+  
+  #loginlogout {
+      display: inline;
+      background-color: blue;
+      width: 33%;
+  }
+  
+  #status {
+      display: inline;
+      background-color: red;
+      width: 33%;
+  }
+  
+  
+  
   #stream {
     height: 500px;
-    background-color: #eee;
-  }
-
-  #activity_stream {
-    height: 500px;
-    background-color: #eee;
-    display: none;
+    background-color: #fff;
   }
 
   #log {
@@ -37,8 +58,14 @@
       padding-right: 10px;
   }
   
-  #activity_entry {
-      display: block;
+  #activity_stream {
+      background-color: #fff;
+  }
+  
+  .activity_entry {
+      padding: 10px;
+      margin-top: 2px;
+      margin-bottom: 2px;
   }
   
   #hidden_video {
@@ -52,11 +79,123 @@
       left:200px;
       top:50px
   }
+  
+  ul.feed_output {
+  }
+  
+  li.feed_item {
+      list-style: none;
+      border-bottom: 1px solid #ddd;
+  }
+  
+  .video_thumbnail {
+      /* div */
+      border: none;
+  }
+
+  span.video_metadata {
+      font-size: small;
+      color: #7F7F7F;
+  }
+
+  span.activity_timestamp {
+      padding: 2px;
+      color: #222;
+      background-color: #eee;
+      font-size: small;
+  }
+  
+  a.username_link {
+      padding: 2px;
+      text-decoration: none;
+      background-color: #F2FF7F;
+      color: #1F1F1F;
+      
+  }
+
+  a.username_link:hover {
+      /* do something interesting */
+      background-color: #A2DF0D;
+      color: #000;
+  }
+  
+  
+  span.video_title, a {
+      font-size: 105%;
+      color: #000;
+      text-decoration: none;
+      padding: 2px;
+  }
+
+  span.video_title:hover {
+      font-size: 105%;
+      padding: 2px;
+      color: #000;
+      text-decoration: none;
+      background-color: #eee;
+      border-bottom: 1px solid #000;
+  }
+  
+  span.video_id {
+      color: #7F7F7F;
+      font-size: x-small;
+  }
+  
+
+  span.metadata_not_found {
+      color: #7F7F7F;
+      font-size: x-small;
+      background-color: #BFBFBF;
+      padding: 2px;
+  }
+  
+
+  img {
+      border: none;
+
+  }
+  
+  /* divs for activity "icons" */
+  .icon {
+      display: inline;
+      padding: 2px;
+      margin-right: 5px;
+      font-size: small;
+  }
+  
+  .video_rated {
+      background-color: #FFAFAF;
+  }
+  
+  .video_shared {
+      background-color: #AFFFFF;
+  }
+  
+  .video_favorited{
+      background-color: #D7AFFF;
+  }
+
+  .video_commented {
+      background-color: yellow;
+  }
+
+  .video_uploaded {
+      background-color: #EE2D30;
+  }
+       
+  .friend_added {
+      background-color: #F5FFAF;
+  }
+
+  .user_subscription_added {
+      background-color: #B9FFAF;
+  }
 
   #play_video {
-    visplay: none;
+    display: none;
   }
 
   #videobox {
     display: none;
   }
+
