@@ -14,8 +14,15 @@ ytActivityApp.USER_LOGIN_DIV = 'loginlogout';
 ytActivityApp.CSS_FEED_LI_CLASSNAME = 'feed_item';
 ytActivityApp.CSS_ENTRY_DIV_CLASSNAME = 'activity_entry';
 ytActivityApp.CSS_ENTRY_THUMB_DIV_CLASSNAME = 'video_thumbnail';
+// for rating and view count
 ytActivityApp.CSS_ENTRY_METADATA_SPAN_CLASSNAME = 'video_metadata';
 ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME = 'hidden_video';
+ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME = 'activity_timestamp'
+ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME = 'username_link'
+ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME = 'video_title'
+ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME = 'video_id'
+ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found'
+
 
 // to be fixed with thickbox
 ytActivityApp.PLAY_VIDEO_ANCHOR = 'play_video';
@@ -28,6 +35,14 @@ ytActivityApp.METADATA_VIEW_COUNT_NOT_FOUND = 'view count not found';
 ytActivityApp.METADATA_THUMBNAIL_URL_NOT_FOUND = 'thumbnail url not found';
 ytActivityApp.METADATA_PLAYER_URL_NOT_FOUND = 'player url not found';
 ytActivityApp.METADATA_RATING_NOT_FOUND = 'rating not found';
+ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND = 'no timestamp found';
+ytActivityApp.VIDEO_METADATA_NOT_AVAILABLE_MESSAGE =
+  'Video metadata not available &mdash; video could be deleted or ' +
+  'a duplicate upload';
+ytActivityApp.YOUTUBE_VIDEO_URL = 'http://www.youtube.com/watch?v=';
+
+
+ytActivityApp.CURRENT_USERNAME = null;
 
 $(document).ready(function(){
    // play video if clicked
@@ -51,6 +66,7 @@ ytActivityApp.getActivityFeed = function(username) {
 
     // check whether we are looking for data from a specific user
     if (username) {
+      ytActivityApp.CURRENT_USERNAME = username;
       $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
         ytActivityApp.processJSON);
     } else {
@@ -71,22 +87,24 @@ ytActivityApp.processJSON = function(data) {
       // TODO add effect perhaps?
       // parse JSON
       console.log("----------processing json");
-      var HTML_output = ['<ul class="feed_output">'];
+      console.log(data);
+      $('#' + ytActivityApp.FEED_RESULTS_DIV).html('<ul class="feed_output">');
       
       // if no activity found then what???
       if (data.length < 1) {
-        alert('no data found for user, do something else ');
+        // TODO output to a div
+        alert('no data found for user ' + ytActivityApp.CURRENT_USERNAME + ', do something else ');
             $.getJSON(ytActivityApp.URI, { q: "userfeed" }, ytActivityApp.processJSON);
 
       }
-      
-      var english_string = null;
-      
+
       for (var i = 0; i < data.length; i++) {
         var entry = data[i];
         var HTML_string = [];
+        var updated = entry.updated ||
+          ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND;
         var activity_type = entry.activity_type;
-        var english_string;
+        var english_string = null;
         var is_video_activity = false;
         switch(activity_type) {
           case 'video_rated':
@@ -118,14 +136,24 @@ ytActivityApp.processJSON = function(data) {
         }
 
           
-        HTML_string.push('<li class="' + ytActivityApp.CSS_FEED_LI_CLASSNAME + '">');
-        HTML_string.push('<div class="' + ytActivityApp.CSS_ENTRY_DIV_CLASSNAME + '">');
-        HTML_string.push('<a href="#">' + entry.author + '</a> ');
+        HTML_string.push('<li class="' +
+          ytActivityApp.CSS_FEED_LI_CLASSNAME + '">');
+        HTML_string.push('<div class="' +
+          ytActivityApp.CSS_ENTRY_DIV_CLASSNAME + '">');
+        
+          ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found'
+        
+        
+        HTML_string.push('<span class="' +
+          ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME + '"> on ' +
+          updated + '</span>');
+        HTML_string.push(' <a class="' +
+          ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME + '" href="#">' +
+          entry.author + '</a> ');
         HTML_string.push(english_string)
         // activity type
         if (is_video_activity) {
-          if (entry.video_info) {
-            if (entry.video_info != 'NOT_AVAILABLE') {
+          if ((entry.video_info) && (entry.video_info != 'NOT_AVAILABLE')) {
               
               var uploader = entry.video_info.uploader || ytActivityApp.METADATA_UPLOADER_NOT_FOUND;
               var title = entry.video_info.title || ytActivityApp.METADATA_TITLE_NOT_FOUND;
@@ -139,11 +167,15 @@ ytActivityApp.processJSON = function(data) {
               if (activity_type != 'video_uploaded') {
                 if (uploader != ytActivityApp.METADATA_UPLOADER_NOT_FOUND) {
                   HTML_string.push(
-                    ' uploaded by ' + 
-                    '<a href="#" onclick="ytActivityApp.getActivityFeed(\'' + uploader + '\')">' + uploader + '</a><br />');
+                    ' uploaded by <a class="' +
+                    ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME +
+                    '" href="#" onclick="ytActivityApp.getActivityFeed(\'' +
+                    uploader + '\')">' + uploader + '</a><br />');
                 } else {
                   HTML_string.push(' uploaded by ' + uploader + '<br />');
                 }
+              } else {
+                HTML_string.push('<br />');
               }
 //            <a href="http://www.youtube.com/watch?v=uhi5x7V3WXE" rel="vidbox" title="caption">our video</a>
              // HTML_string.push('<a href="' + player_url + '" rel="vidbox" title="caption">our video</a>');
@@ -161,9 +193,15 @@ ytActivityApp.processJSON = function(data) {
                 HTML_string.push('</div>');
               }
               
-              HTML_string.push('<a id="' + ytActivityApp.PLAY_VIDEO_ANCHOR + '" href="#"><strong>' + title + '</strong></a> ');
-              HTML_string.push('(video id: ' + id + ')<br />');
-              HTML_string.push('<span class="' + ytActivityApp.CSS_ENTRY_METADATA_SPAN_CLASSNAME + '">');
+              HTML_string.push('<a id="' +
+                ytActivityApp.PLAY_VIDEO_ANCHOR + '" href="#"><span class="' +
+                ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME + '">' +
+                title + '</strong></a> ');
+              HTML_string.push('<span class="' +
+                ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME +
+                '">(video id: ' + id + ')</span><br />');
+              HTML_string.push('<span class="' +
+                ytActivityApp.CSS_ENTRY_METADATA_SPAN_CLASSNAME + '">');
               HTML_string.push('View count: ' + view_count + '<br />');
               if (rating != ytActivityApp.METADATA_RATING_NOT_FOUND) {
                 HTML_string.push('Average rating: ' + entry.video_info.rating.average +
@@ -171,39 +209,34 @@ ytActivityApp.processJSON = function(data) {
               }
               HTML_string.push('</span>');
             } else {
-              // a video activity but we couldnt get metadata from the API
-// TODO combine these
-
-              HTML_string.push(' -- video metadata not available');
-            }
-          } else {
-            // no metadata found for some strange reason
-            HTML_string.push(' - video metadata not available');
+            // no metadata found
+            HTML_string.push('<br /><span class="' +
+              ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME +
+              '">' + ytActivityApp.VIDEO_METADATA_NOT_AVAILABLE_MESSAGE +
+              '</span>');
           }
         } else {
-          // will not need to include video meta data
-          // user activity
-            // either friend_added or user_subscription_added
+            // user activity
             if (activity_type == 'friend_added') {
-                HTML_string.push(' - friend added');
-                // TODO stringify the username
-              HTML_string.push(
-                '<a href="#" onclick="ytActivityApp.getActivityFeed(\'' + entry.username + '\')">' + 
-                entry.username + '</a> as a friend');
+              HTML_string.push(' <a href="#" class="' +
+                ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME +
+                '" onclick="ytActivityApp.getActivityFeed(\'' +
+                entry.username + '\')">' + entry.username +
+                '</a> as a friend');
             } else {
               HTML_string.push(
-                '<a href="#" onclick="ytActivityApp.getActivityFeed(\'' + entry.username + '\')">' + 
-                + entry.username + '\'s</a> videos');
+                '<a href="#" class="' +
+                ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME +
+                '" onclick="ytActivityApp.getActivityFeed(\'' +
+                entry.username + '\')">' + entry.username + '\'s</a> videos');
             }
         }
-      
         HTML_string.push('</div><br clear="all"></li>');
-        HTML_output.push(HTML_string.join(''));
-      
-        console.log(HTML_output);
+        $('#' + ytActivityApp.FEED_RESULTS_DIV).append(HTML_string.join('')).show("slow")
+//        HTML_output.push(HTML_string.join(''));
+//        console.log(HTML_output);
       }
 
-      HTML_output.push('</ul>');
-      $('#' + ytActivityApp.FEED_RESULTS_DIV).html(HTML_output.join('')).css("background", "#eee").show("slow")
+        $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').css("background", "#eee").show("slow")
 }
 
