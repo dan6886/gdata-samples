@@ -188,12 +188,11 @@ function renderPage() {
   var loggedIn = $loggedIn;
   var actionUrl = '$actionUrl';
   </script>
-  <script type="text/javascript" src="lib/jquery-ui-personalized-1.6rc6.min.js"></script>
-  <script type="text/javascript" src="lib/jquery-1.3.1.min.js"></script>
-  <script type="text/javascript" src="frontend.js"></script>
+  <script type="text/javascript" src="js/ext/jquery-1.3.1.min.js"></script>
+  <script type="text/javascript" src="js/ext/jquery-ui-personalized-1.6rc6.min.js"></script>
+  <script type="text/javascript" src="js/frontend.js"></script>
 
-  <link rel="styleSheet" href="style.css" type="text/css" media=screen>
-  <link type="text/css" rel="stylesheet" href="http://ui.jquery.com/testing/themes/base/ui.all.css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
   
   <title>TubeStalker!</title>
   </head>
