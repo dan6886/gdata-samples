@@ -219,7 +219,7 @@ function renderPage() {
       <div id="log">
       </div>
     </div>
-  <a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox">test</a>
+  <a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
   <div id="videobox"></div>
 </body>
 </html>
