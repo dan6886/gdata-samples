@@ -56,7 +56,7 @@ document.observe('dom:loaded', function() {
     <%= link_to api_link_txt, 'http://code.google.com/apis/documents/', :target => '_new' -%></small>
       
     <div id="navbar">
-      <%= link_to_remote(image_tag("icon_#{ApplicationController::DOCUMENT_DOC_TYPE}.gif") + ' Word Documents',
+      <%= link_to_remote(image_tag("icon_#{ApplicationController::DOCUMENT_DOC_TYPE}.gif") + 'Documents',
         :url => {:action=> "#{ApplicationController::DOCUMENT_DOC_TYPE}s"},
         :update => 'documents_data',
         :loading=> "setDocsListLoadingMsg('documents_data', 'loading word documents...')")
