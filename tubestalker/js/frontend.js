@@ -68,11 +68,12 @@ ytActivityApp.getActivityFeed = function(username) {
   }
 }
 
-ytActivityApp.displayMovie = function(swfUrl) {
+ytActivityApp.displayMovie = function(swfUrl, videoName) {
   return function() {
     $("#videobox").html('<div id="ytapiplayer"></div>');
     var params = { allowScriptAccess: "always" };
     swfobject.embedSWF(swfUrl, "ytapiplayer", "425", "356", "8", null, null, params);
+    $("#play_video").attr('title', videoName);
     $("#play_video").click();
   }
 }
@@ -223,8 +224,8 @@ ytActivityApp.processJSON = function(data) {
         HTML_string.push('</div><br clear="all"></li>');
         $('#' + ytActivityApp.FEED_RESULTS_DIV).append(HTML_string.join('')).show("slow");
         if(added_video) {
-          $("#play_video_number_" + video_number).click(ytActivityApp.displayMovie(player_url));
-          $("#t_play_video_number_" + video_number).click(ytActivityApp.displayMovie(player_url));
+          $("#play_video_number_" + video_number).click(ytActivityApp.displayMovie(player_url, title));
+          $("#t_play_video_number_" + video_number).click(ytActivityApp.displayMovie(player_url, title));
           video_number = video_number + 1;
         }
 
