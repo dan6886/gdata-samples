@@ -1,5 +1,5 @@
 <?php
-
+// TODO add copyright thing
 require_once 'config.inc.php';
 require_once 'Zend/Loader.php';
 Zend_Loader::loadClass('Zend_Gdata_YouTube');
@@ -47,6 +47,7 @@ function fetchVideoMetadata($videoId) {
   
     $video = Array();
     $video['id'] = $videoEntry->getVideoId();
+    $video['updated'] = $videoEntry->getUpdated()->text;
     $video['title'] = $videoEntry->getVideoTitle();
     $video['view_count'] = $videoEntry->getVideoViewCount();
     $video['rating'] = $videoEntry->getVideoRatingInfo();
@@ -183,15 +184,40 @@ function renderPage() {
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
   <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
-  <title>TubeStalker!</title>
-  </head>
-  <body>
   <script type="text/javascript">
   var loggedIn = $loggedIn;
   var actionUrl = '$actionUrl';
   </script>
-  <p>Hello World!</p>
-  <p><a href="$actionUrl">$loggedIn</a></p>
+  <script type="text/javascript" src="lib/jquery-ui-personalized-1.6rc6.min.js"></script>
+  <script type="text/javascript" src="lib/jquery-1.3.1.min.js"></script>
+  <script type="text/javascript" src="frontend.js"></script>
+
+  <link rel="styleSheet" href="style.css" type="text/css" media=screen>
+  <link type="text/css" rel="stylesheet" href="http://ui.jquery.com/testing/themes/base/ui.all.css" />
+  
+  <title>TubeStalker!</title>
+  </head>
+<body>
+
+<div id="all"><br />
+  <div id="top">USERNAME HERE? |
+    <div id="loginlogout">
+    <p><a href="$actionUrl">login </a></p></div>
+    | LOADING ...
+  </div><br clear="all" />
+
+  <div id="activity_stream">activity stream here</div>
+
+  <br clear="all" />
+  <div id="log">LOG HERE
+    <ul id="log_ul">
+      <li>item 1</li>
+      <li>item 2</li>
+    </ul>
+  </div>
+</div>
+
+
   </body>
   </html>
 END_OF_HTML;
