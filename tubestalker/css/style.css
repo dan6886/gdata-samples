@@ -52,3 +52,11 @@
       left:200px;
       top:50px
   }
+
+  #play_video {
+    visplay: none;
+  }
+
+  #videobox {
+    display: none;
+  }

@@ -198,7 +198,7 @@ function renderPage() {
   <script type="text/javascript" src="js/ext/thickbox-compressed.js"></script>
   <script type="text/javascript" src="js/frontend.js"></script>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
   
   <title>TubeStalker!</title>
@@ -210,17 +210,13 @@ function renderPage() {
     <div id="loginlogout">
     <p><a href="$actionUrl">login </a></p></div>
     | LOADING ...
-  </div><br clear="all" />
+  </div><br/>
 
   <div id="activity_stream">activity stream here</div>
 
-  <br clear="all" />
-  <div id="log">LOG HERE
-    <ul id="log_ul">
-      <li>item 1</li>
-      <li>item 2</li>
-    </ul>
-  </div>
+  <br/>
+  <a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox">test</a>
+  <div id="videobox"></div>
 </div>
 
 
