@@ -75,7 +75,12 @@ ytActivityApp.displayMovie = function(swfUrl, videoName) {
     swfobject.embedSWF(swfUrl, "ytapiplayer", "425", "356", "8", null, null, params);
     $("#play_video").attr('title', videoName);
     $("#play_video").click();
+    $("#TB_window").bind('unload', ytActivityApp.clearVideoBox);
   }
+}
+
+ytActivityApp.clearVideoBox = function() {
+  $("#videobox").html('');
 }
 
 
@@ -176,6 +181,7 @@ ytActivityApp.processJSON = function(data) {
                 HTML_string.push('<div id="' + ytActivityApp.CSS_ENTRY_THUMB_DIV_CLASSNAME + '">');
                 //ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME
                 if(player_url) {
+                  player_url = player_url + '&autoplay=1';
                   added_video = true;
                 }
                     
