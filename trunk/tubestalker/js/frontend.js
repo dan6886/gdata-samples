@@ -16,16 +16,12 @@ ytActivityApp.CSS_ENTRY_DIV_CLASSNAME = 'activity_entry';
 ytActivityApp.CSS_ENTRY_THUMB_DIV_CLASSNAME = 'video_thumbnail';
 // for rating and view count
 ytActivityApp.CSS_ENTRY_METADATA_SPAN_CLASSNAME = 'video_metadata';
-ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME = 'hidden_video';
+ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME = 'videobox';
 ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME = 'activity_timestamp'
 ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME = 'username_link'
 ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME = 'video_title'
 ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME = 'video_id'
 ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found'
-
-
-// to be fixed with thickbox
-ytActivityApp.PLAY_VIDEO_ANCHOR = 'play_video';
 
 // metadata
 ytActivityApp.METADATA_TITLE_NOT_FOUND = 'title not found';
@@ -33,7 +29,6 @@ ytActivityApp.METADATA_UPLOADER_NOT_FOUND = 'uploader not found';
 ytActivityApp.METADATA_ID_NOT_FOUND = 'id not found';
 ytActivityApp.METADATA_VIEW_COUNT_NOT_FOUND = 'view count not found';
 ytActivityApp.METADATA_THUMBNAIL_URL_NOT_FOUND = 'thumbnail url not found';
-ytActivityApp.METADATA_PLAYER_URL_NOT_FOUND = 'player url not found';
 ytActivityApp.METADATA_RATING_NOT_FOUND = 'rating not found';
 ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND = 'no timestamp found';
 ytActivityApp.VIDEO_METADATA_NOT_AVAILABLE_MESSAGE =
@@ -45,18 +40,11 @@ ytActivityApp.YOUTUBE_VIDEO_URL = 'http://www.youtube.com/watch?v=';
 ytActivityApp.CURRENT_USERNAME = null;
 
 $(document).ready(function(){
-   // play video if clicked
-   $("#play_video").click(function(event){
-     alert("Thanks for visiting!");
-   });
    ytActivityApp.getActivityFeed();
 });
 
 ytActivityApp.getActivityFeed = function(username) {
   if (loggedIn == true) {
-    // test function ... remove this later
-    $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
-      function(data) { $('#log').html(data) });
 
     $.get(ytActivityApp.URI, { q: "whoami" },
       function(data){
@@ -82,6 +70,15 @@ ytActivityApp.getActivityFeed = function(username) {
   }
 }
 
+ytActivityApp.displayMovie = function(swfUrl) {
+  return function() {
+    $("#videobox").html('<div id="ytapiplayer"></div>');
+    var params = { allowScriptAccess: "always" };
+    swfobject.embedSWF(swfUrl, "ytapiplayer", "425", "356", "8", null, null, params);
+    $("#play_video").click();
+  }
+}
+
 
 ytActivityApp.processJSON = function(data) {
       // TODO add effect perhaps?
@@ -97,7 +94,7 @@ ytActivityApp.processJSON = function(data) {
             $.getJSON(ytActivityApp.URI, { q: "userfeed" }, ytActivityApp.processJSON);
 
       }
-
+      var video_number = 0;
       for (var i = 0; i < data.length; i++) {
         var entry = data[i];
         var HTML_string = [];
@@ -106,6 +103,7 @@ ytActivityApp.processJSON = function(data) {
         var activity_type = entry.activity_type;
         var english_string = null;
         var is_video_activity = false;
+        var added_video = false;
         switch(activity_type) {
           case 'video_rated':
             english_string = ' has rated a video';
@@ -160,7 +158,7 @@ ytActivityApp.processJSON = function(data) {
               var id = entry.video_info.id || ytActivityApp.METADATA_ID_NOT_FOUND;
               var view_count = entry.video_info.view_count || ytActivityApp.METADATA_VIEW_COUNT_NOT_FOUND;
               var thumbnail_url = entry.video_info.thumbnail || ytActivityApp.METADATA_THUMBNAIL_URL_NOT_FOUND;
-              var player_url = entry.video_info.player || ytActivityApp.METADATA_PLAYER_URL_NOT_FOUND;
+              var player_url = entry.video_info.player;
               var rating = entry.video_info.rating ||  ytActivityApp.METADATA_RATING_NOT_FOUND;
               
               // build html string
@@ -177,24 +175,18 @@ ytActivityApp.processJSON = function(data) {
               } else {
                 HTML_string.push('<br />');
               }
-//            <a href="http://www.youtube.com/watch?v=uhi5x7V3WXE" rel="vidbox" title="caption">our video</a>
-             // HTML_string.push('<a href="' + player_url + '" rel="vidbox" title="caption">our video</a>');
               if (thumbnail_url != ytActivityApp.METADATA_THUMBNAIL_URL_NOT_FOUND) {
                 HTML_string.push('<div id="' + ytActivityApp.CSS_ENTRY_THUMB_DIV_CLASSNAME + '">');
-                console.log(player_url);
-                HTML_string.push('<div id="' + ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME + 
-                  '"><object width="425" height="350">',
-                  '<param name="movie" value="' + player_url + '"></param>',
-                  '<embed src="' + player_url + '" type="MEDIA_CONTENT_TYPE" width="425" height="350">',
-                  '</embed></object></div>');
-
+                //ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME
+                if(player_url) {
+                  added_video = true;
+                }
                     
-                HTML_string.push('<a id="#play_video" href="#"><img src="' + thumbnail_url + '" /></a><br />');
+                HTML_string.push('<a id="play_video_number_' + video_number + '" href="#"><img src="' + thumbnail_url + '" /></a><br />');
                 HTML_string.push('</div>');
               }
               
-              HTML_string.push('<a id="' +
-                ytActivityApp.PLAY_VIDEO_ANCHOR + '" href="#"><span class="' +
+              HTML_string.push('<a id="t_play_video_number_' + video_number + '" href="#"><span class="' +
                 ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME + '">' +
                 title + '</strong></a> ');
               HTML_string.push('<span class="' +
@@ -232,11 +224,15 @@ ytActivityApp.processJSON = function(data) {
             }
         }
         HTML_string.push('</div><br clear="all"></li>');
-        $('#' + ytActivityApp.FEED_RESULTS_DIV).append(HTML_string.join('')).show("slow")
-//        HTML_output.push(HTML_string.join(''));
-//        console.log(HTML_output);
+        $('#' + ytActivityApp.FEED_RESULTS_DIV).append(HTML_string.join('')).show("slow");
+        if(added_video) {
+          $("#play_video_number_" + video_number).click(ytActivityApp.displayMovie(player_url));
+          $("#t_play_video_number_" + video_number).click(ytActivityApp.displayMovie(player_url));
+          video_number = video_number + 1;
+        }
+
       }
 
-        $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').css("background", "#eee").show("slow")
+        $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').css("background", "#eee").show("slow");
 }
 
