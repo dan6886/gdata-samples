@@ -47,7 +47,6 @@ function fetchVideoMetadata($videoId) {
   
     $video = Array();
     $video['id'] = $videoEntry->getVideoId();
-    $video['updated'] = $videoEntry->getUpdated()->text;
     $video['title'] = $videoEntry->getVideoTitle();
     $video['view_count'] = $videoEntry->getVideoViewCount();
     $video['rating'] = $videoEntry->getVideoRatingInfo();
@@ -80,6 +79,7 @@ function renderActivityFeed($feed, $feedId) {
       $cEntry = Array();
       $cEntry['author'] = $entry->getAuthorName();
       $cEntry['activity_type'] = $entry->getActivityType();
+      $cEntry['updated'] = $entry->getUpdated()->text;
       switch($cEntry['activity_type']) {
         case 'video_rated':
           $cEntry['rating'] = $entry->getRatingValue();
