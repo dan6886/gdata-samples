@@ -32,8 +32,8 @@ ytActivityApp.METADATA_THUMBNAIL_URL_NOT_FOUND = 'thumbnail url not found';
 ytActivityApp.METADATA_RATING_NOT_FOUND = 'rating not found';
 ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND = 'no timestamp found';
 ytActivityApp.VIDEO_METADATA_NOT_AVAILABLE_MESSAGE =
-  'Video metadata not available &mdash; video could be deleted or ' +
-  'a duplicate upload';
+  'Video metadata not available &mdash; video could have been deleted, just ' +
+  'uploaded or a duplicate upload.';
 ytActivityApp.YOUTUBE_VIDEO_URL = 'http://www.youtube.com/watch?v=';
 
 
@@ -48,8 +48,7 @@ ytActivityApp.getActivityFeed = function(username) {
 
     $.get(ytActivityApp.URI, { q: "whoami" },
       function(data){
-        $('#' + ytActivityApp.USER_LOGIN_DIV).html(data).
-        css("background", "#eee");
+        $('#' + ytActivityApp.USER_LOGIN_DIV).html(data)
       });
 
     // check whether we are looking for data from a specific user
@@ -65,8 +64,7 @@ ytActivityApp.getActivityFeed = function(username) {
   } else {
     // not logged in
     var html = $('#' + ytActivityApp.USER_LOGIN_DIV).html()
-    $('#' + ytActivityApp.USER_LOGIN_DIV).html('Not logged in: ' + html).
-      css("background", "red");
+    $('#' + ytActivityApp.USER_LOGIN_DIV).html('Not logged in: ' + html)
   }
 }
 
@@ -138,14 +136,12 @@ ytActivityApp.processJSON = function(data) {
           ytActivityApp.CSS_FEED_LI_CLASSNAME + '">');
         HTML_string.push('<div class="' +
           ytActivityApp.CSS_ENTRY_DIV_CLASSNAME + '">');
-        
-          ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found'
-        
-        
         HTML_string.push('<span class="' +
-          ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME + '"> on ' +
-          updated + '</span>');
-        HTML_string.push(' <a class="' +
+          ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME + '">' +
+          updated + '</span><br />');
+        HTML_string.push('<div class="icon ' + activity_type + '">+</div>');
+          
+        HTML_string.push('<a class="' +
           ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME + '" href="#">' +
           entry.author + '</a> ');
         HTML_string.push(english_string)
@@ -182,7 +178,8 @@ ytActivityApp.processJSON = function(data) {
                   added_video = true;
                 }
                     
-                HTML_string.push('<a id="play_video_number_' + video_number + '" href="#"><img src="' + thumbnail_url + '" /></a><br />');
+                HTML_string.push('<a id="play_video_number_' + video_number +
+                '" href="#"><img src="' + thumbnail_url + '" width="130" height="97" /></a><br />');
                 HTML_string.push('</div>');
               }
               
@@ -233,6 +230,6 @@ ytActivityApp.processJSON = function(data) {
 
       }
 
-        $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').css("background", "#eee").show("slow");
+        $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').show("slow")
 }
 

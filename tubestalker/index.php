@@ -180,10 +180,10 @@ function renderPage() {
   }
   
   echo <<<END_OF_HTML
-  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-  <head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
   <script type="text/javascript">
   var loggedIn = $loggedIn;
   var actionUrl = '$actionUrl';
@@ -202,26 +202,27 @@ function renderPage() {
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
   
   <title>TubeStalker!</title>
-  </head>
+</head>
 <body>
-
-<div id="all"><br />
-  <div id="top">USERNAME HERE? |
-    <div id="loginlogout">
-    <p><a href="$actionUrl">login </a></p></div>
-    | LOADING ...
-  </div><br/>
-
-  <div id="activity_stream">activity stream here</div>
-
-  <br/>
+    <div id="all"><br />
+      <div id="top">
+        <div id="title">TUBESTALKER</div>
+        <div id="loginlogout">
+            <p><a href="$actionUrl">login </a></p>
+        </div>
+        <div id="status">no status</div>
+      </div>
+      <br clear="all" />
+      <div id="activity_stream"></div>
+      <br clear="all" />
+      
+      <div id="log">
+      </div>
+    </div>
   <a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox">test</a>
   <div id="videobox"></div>
-</div>
-
-
-  </body>
-  </html>
+</body>
+</html>
 END_OF_HTML;
 }
 
