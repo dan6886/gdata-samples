@@ -25,7 +25,7 @@ ytActivityApp.CSS_ENTRY_MY_USERNAME_LINK_CLASSNAME = 'my_username_link'
 ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME = 'video_title'
 ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME = 'video_id'
 ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found'
-
+ytActivityApp.CSS_USER_ACTIVITY_NOT_FOUND_CLASSNAME = 'user_activity_not_found'
 // metadata
 ytActivityApp.METADATA_TITLE_NOT_FOUND = 'title not found';
 ytActivityApp.METADATA_UPLOADER_NOT_FOUND = 'uploader not found';
@@ -42,9 +42,8 @@ ytActivityApp.YOUTUBE_VIDEO_URL = 'http://www.youtube.com/watch?v=';
 ytActivityApp.LOADING_IMAGE_HTML = '<small>Fetching data ... </small><br />' + 
   '<img src="css/ext/loadingAnimation.gif" width="208" height="13"/>';
 
-
-
 ytActivityApp.CURRENT_USERNAME = null;
+
 
 $(document).ready(function(){
   $('#status').html(ytActivityApp.LOADING_IMAGE_HTML);
@@ -66,7 +65,7 @@ ytActivityApp.getActivityFeed = function(username) {
     // check whether we are looking for data from a specific user
     if (username) {
       ytActivityApp.CURRENT_USERNAME = username;
-      alert('current username set to ' + ytActivityApp.CURRENT_USERNAME);
+      ytActivityApp.LAST_USERNAME = ytActivityApp.CURRENT_USERNAME;
       $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
         ytActivityApp.processJSON);
     } else {
@@ -102,14 +101,21 @@ ytActivityApp.processJSON = function(data) {
       // parse JSON
       console.log("----------processing json");
       console.log(data);
-      $('#' + ytActivityApp.FEED_RESULTS_DIV).html('<ul class="feed_output">');
-      
-      // if no activity found then what???
       if (data.length < 1) {
-        $('#status').html('no activity found for this user').show();
-        alert(ytActivityApp.CURRENT_USERNAME);
+        $('#' + ytActivityApp.FEED_RESULTS_DIV).html(
+          '<span class="' +
+          ytActivityApp.CSS_USER_ACTIVITY_NOT_FOUND_CLASSNAME +
+          '">No activity found for this user.</span><br />' + 
+          '<a class="username_link" ' + 
+          'onclick="ytActivityApp.getActivityFeed()">' + 
+          'Click to reload your own activity.</a>');
+        $('#status').hide();
         return;
       }
+
+
+      $('#' + ytActivityApp.FEED_RESULTS_DIV).html('<ul class="feed_output">');
+      var no_videos_found_for_user = false;
 
       var video_number = 0;
       for (var i = 0; i < data.length; i++) {
@@ -271,6 +277,7 @@ ytActivityApp.processJSON = function(data) {
 
       $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').show("slow")
       $('#status').hide();
+
 
 }
 

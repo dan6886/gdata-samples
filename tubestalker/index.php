@@ -208,7 +208,9 @@ function renderPage() {
       <span class="title">YouTube Activity Stream Viewer | </span>
       <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
       <div id="top">
-        <div id="status"></div>
+        <div id="status">
+            <div id="user_status"></div>
+        </div>
       </div>
       <br clear="all" />
       <div id="activity_stream"></div>
