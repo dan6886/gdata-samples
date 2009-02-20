@@ -9,21 +9,55 @@
   #all {
     width: 800px;
     height: 80%;
-    margin: auto;
-    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -15px;
     margin-bottom: 10px;
   }
 
   #top {
+      background-color: #fff;
+      font-size: small;
+      padding: 20px 10px 5px 10px;
+      vertical-align: middle; 
+
   }
   
-  #title {
-      color: #7F7F7F;
+  .thin_line {
+      border: none;
+      border-bottom: 1px solid #ddd;
+  }
+  
+      
+  
+  #feed_type_select {
+      display: inline;
+  }
+  
+  .title {
+      display: inline;
+      color: #000;
+      font-weight: bold;
+      font-size: 150%;
+      padding-left: 3px;
+  }
+  
+  #friend_user_select {
+      padding: 7px 5px 5px 5px;
+      background-color: #E4E4E4;
+      color: #0033D3;
+      border: 1px solid #999;
+  }
+  
+  input {
+      margin-left: 10px;
+      margin-top: 2px;
   }
   
   #loginlogout {
       display: inline;
-      width: 500px;
+      float: right;
+      margin-top: -25px;
   }
   
   #status {
@@ -37,7 +71,7 @@
       background-color: #fff;
       padding: 10px;
       display: none;
-      margin: 10px;
+      margin: 5px;
       width: 200px;
       height: 200px;
   }

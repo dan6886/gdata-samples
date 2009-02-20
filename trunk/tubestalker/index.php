@@ -18,28 +18,10 @@ function getYtService() {
   return $yt;
 }
 
-// Returns a Memcache object to interact with the memcached servers
-function getMemcache() {
-  $memcache = new Memcache;
-  $server = $GLOBALS['tubestalker_config']['memcache_server'];
-  $port = $GLOBALS['tubestalker_config']['memcache_port'];
-  $memcache->connect($server, $port) or die ("Could not connect to memcached");
-  return $memcache;
-}
 
 // Fetches information about a video based upon its YouTube ID and stores
 // this data in memcache.
 function fetchVideoMetadata($videoId) {
-  
-  $memcache = getMemcache();
-  
-  $video = $memcache->get("video-$videoId");
-  
-  if($video) {
-    return $video;
-  }
-  
-  $expiration_time = $GLOBALS['tubestalker_config']['metadata_expiry_time'];
   
   try {
     $yt = getYtService();
@@ -59,8 +41,6 @@ function fetchVideoMetadata($videoId) {
     $video = 'NOT_AVAILABLE';
   }
   
-  $memcache->set("video-$videoId", $video, MEMCACHE_COMPRESSED, $expiration_time);
-  
   return $video;
   
 }
@@ -69,10 +49,7 @@ function fetchVideoMetadata($videoId) {
 // representation that is stored in memcache based upon the value of $feedId
 function renderActivityFeed($feed, $feedId) {
   
-  $memcache = getMemcache();
-  
-  $compactFeed = $memcache->get($feedId);
-  
+  $compactFeed = null;
   if(!$compactFeed) {
     $compactFeed = Array();
     foreach($feed as $entry) {
@@ -98,7 +75,6 @@ function renderActivityFeed($feed, $feedId) {
     }
     $compactFeed = json_encode($compactFeed);
     $expiration_time = $GLOBALS['tubestalker_config']['feed_expiry_time'];
-    $memcache->set($feedId, $compactFeed, MEMCACHE_COMPRESSED, $expiration_time);
   }
   
   return $compactFeed;
@@ -198,16 +174,24 @@ function renderPage() {
   <script type="text/javascript" src="js/ext/thickbox-compressed.js"></script>
   <script type="text/javascript" src="js/ext/date_magic.js"></script>
   <script type="text/javascript" src="js/frontend.js"></script>
-  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
+
   
-  <title>YouTube Activity Stream Viewer</title>
+  <title>Activity Viewer for YouTube</title>
 </head>
 <body>
     <div id="all"><br />
-      <span class="title">YouTube Activity Stream Viewer | </span>
-      <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
       <div id="top">
+      <div class="title">Activity Viewer for YouTube</div>
+      <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
+<!--      <hr class="thin_line"> -->
+      <br /><div id="friend_user_select">Select feed type:  <form id="feed_type_select" onClick="ytActivityApp.switchFeedURI()">
+          <input id="activity_feed" type="radio" name="feed_select" value="activity" checked> Your activity
+          <input id="friend_feed" type="radio" name="feed_select" value="friend"> Your friend activity
+      </form>
+      </div>
+
         <div id="status">
             <div id="user_status"></div>
         </div>
