@@ -32,6 +32,17 @@
       padding: 10px;
   }
 
+  #user_status {
+      display: block;
+      background-color: #fff;
+      padding: 10px;
+      display: none;
+      margin: 10px;
+      width: 200px;
+      height: 200px;
+  }
+
+
   #video_thumbnail {
       display: inline;
       float: left;
@@ -41,6 +52,7 @@
   #activity_stream {
       background-color: #fff;
       margin-top: -25px;
+      padding: 10px;
   }
   
   .activity_entry {
@@ -140,7 +152,11 @@
       padding: 2px;
   }
   
-
+  span.user_activity_not_found {
+      color: #000;
+      background-color: #BFBFBF;
+      padding: 2px;
+  }
   img {
       border: none;
 
