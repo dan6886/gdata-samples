@@ -9,6 +9,7 @@ ytActivityApp.LOGOUT_URI = 'index.php?action=logout';
 
 // divs
 ytActivityApp.FEED_RESULTS_DIV = 'activity_stream';
+ytActivityApp.FEED_RESULTS_FRIEND_DIV = 'friend_activity_stream';
 ytActivityApp.LOGGING_DIV = 'log';
 ytActivityApp.USER_LOGIN_DIV = 'loginlogout';
 
@@ -43,17 +44,53 @@ ytActivityApp.LOADING_IMAGE_HTML = '<small>Fetching data ... </small><br />' +
   '<img src="css/ext/loadingAnimation.gif" width="208" height="13"/>';
 
 ytActivityApp.CURRENT_USERNAME = null;
+ytActivityApp.USER_ACTIVITY_FEED = 0;
+ytActivityApp.FRIEND_ACTIVITY_FEED = 1;
+ytActivityApp.FEED_REQUESTED = ytActivityApp.USER_ACTIVITY_FEED;
+ytActivityApp.FORM_RADIO_SELECTION_ID = 'feed_type_select';
 
 
 $(document).ready(function(){
   $('#status').html(ytActivityApp.LOADING_IMAGE_HTML);
-  ytActivityApp.getActivityFeed();
+  if (ytActivityApp.FEED_REQUESTED == ytActivityApp.USER_ACTIVITY_FEED) {
+    ytActivityApp.getActivityFeed();
+  } else {
+    ytActivityApp.getFriendActivityFeed();
+  }
 });
 
-ytActivityApp.getActivityFeed = function(username) {
+ytActivityApp.switchFeedURI = function() {
+  var form = document.getElementById(ytActivityApp.FORM_RADIO_SELECTION_ID);
+  var button_value = null;
+  for(i = 0; i < form.length; i++) {
+    input = form[i];
+    if (input.checked) {
+      button_value = input.value;
+    }
+  }
+  if (button_value == 'activity') {
+    ytActivityApp.FEED_REQUESTED = ytActivityApp.USER_ACTIVITY_FEED;
+    ytActivityApp.getActivityFeed();
+  } else {
+    ytActivityApp.FEED_REQUESTED = ytActivityApp.FRIEND_ACTIVITY_FEED;
+    ytActivityApp.getFriendActivityFeed();
+  }
+}
+// reset to activity
+ytActivityApp.resetFormSelection = function() {
+  var form = document.getElementById(ytActivityApp.FORM_RADIO_SELECTION_ID);
+  form[0].checked = true;form[1].checked = false;
+  
+}
+
+
+
+
+ytActivityApp.getActivityFeed = function(username, friendfeed) {
   if (loggedIn == true) {
     // TODO optimize this
     $('#status').show();
+    ytActivityApp.resetFormSelection();
     $.get(ytActivityApp.URI, { q: "whoami" },
       function(data){
         var my_username = data.substring(1, data.length-1);
@@ -62,18 +99,34 @@ ytActivityApp.getActivityFeed = function(username) {
           my_username + ' &mdash; <a class="logout_link" href="' +
           ytActivityApp.LOGOUT_URI + '" >log out</a>')
       });
-    // check whether we are looking for data from a specific user
-    if (username) {
-      ytActivityApp.CURRENT_USERNAME = username;
-      ytActivityApp.LAST_USERNAME = ytActivityApp.CURRENT_USERNAME;
-      $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
-        ytActivityApp.processJSON);
-    } else {
-      // get data for the default user
-      $.getJSON(ytActivityApp.URI, { q: "userfeed" },
-        ytActivityApp.processJSON);
+    // userfeed or friendfeed
+    if (friendfeed) {
+        $.getJSON(ytActivityApp.URI, { q: "friendfeed" },
+          ytActivityApp.processJSON);
+    } else {  
+      // check whether we are looking for data from a specific user
+      if (username) {
+        $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
+          ytActivityApp.processJSON);
+      } else {
+        // get data for the default user
+        $.getJSON(ytActivityApp.URI, { q: "userfeed" },
+          ytActivityApp.processJSON);
+      }
     }
   } else {
+    // not logged in
+    var html = $('#' + ytActivityApp.USER_LOGIN_DIV).html()
+    $('#' + ytActivityApp.USER_LOGIN_DIV).html('Not logged in: ' + html)
+  }
+}
+
+ytActivityApp.getFriendActivityFeed = function() {
+  if (loggedIn == true) {
+    // TODO optimize this
+    $('#status').show();
+    $.getJSON(ytActivityApp.URI, { q: "friendfeed" },ytActivityApp.processJSON);
+      } else {
     // not logged in
     var html = $('#' + ytActivityApp.USER_LOGIN_DIV).html()
     $('#' + ytActivityApp.USER_LOGIN_DIV).html('Not logged in: ' + html)
@@ -99,7 +152,7 @@ ytActivityApp.clearVideoBox = function() {
 ytActivityApp.processJSON = function(data) {
       // TODO add effect perhaps?
       // parse JSON
-      console.log("----------processing json");
+      console.log("------...----processing json");
       console.log(data);
       if (data.length < 1) {
         $('#' + ytActivityApp.FEED_RESULTS_DIV).html(
@@ -169,11 +222,20 @@ ytActivityApp.processJSON = function(data) {
         HTML_string.push('<span class="' +
           ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME + '">' +
           updated + '</span><br />');
-        HTML_string.push('<div class="icon ' + activity_type + '">+</div>');
-          
-        HTML_string.push('<span class="' +
-          ytActivityApp.CSS_ENTRY_MY_USERNAME_LINK_CLASSNAME + '">' +
-          entry.author + '</span> ');
+        HTML_string.push('<div class="icon ' + activity_type + '"> &ndash; </div>');
+        
+        if (ytActivityApp.FEED_REQUESTED != ytActivityApp.FRIEND_ACTIVITY_FEED) {
+          HTML_string.push('<span class="' +
+            ytActivityApp.CSS_ENTRY_MY_USERNAME_LINK_CLASSNAME + '">' +
+            entry.author + '</span> ');
+        } else {
+          // in friend activity feed so make author of event clickable
+          HTML_string.push('<a class="' +
+                    ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME +
+                    '" href="#" onclick="ytActivityApp.getActivityFeed(\'' +
+                    entry.author + '\')">' + entry.author + '</a> ');
+        }
+
         HTML_string.push(english_string)
         // activity type
         if (is_video_activity) {
@@ -280,4 +342,3 @@ ytActivityApp.processJSON = function(data) {
 
 
 }
-
