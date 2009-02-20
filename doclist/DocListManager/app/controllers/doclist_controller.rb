@@ -22,7 +22,7 @@ class DoclistController < ApplicationController
     url += '?showfolders=true'
     
     begin
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -40,7 +40,7 @@ class DoclistController < ApplicationController
   def documents
     begin
       url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{DOCUMENT_DOC_TYPE}"
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -56,7 +56,7 @@ class DoclistController < ApplicationController
   def spreadsheets
     begin
       url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{SPREADSHEET_DOC_TYPE}"
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -74,7 +74,7 @@ class DoclistController < ApplicationController
   def presentations
     begin
       url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{PRESO_DOC_TYPE}"
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -92,7 +92,7 @@ class DoclistController < ApplicationController
   def pdfs
     begin
       url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{PDF_DOC_TYPE}"
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -110,7 +110,7 @@ class DoclistController < ApplicationController
   def folders
     begin
       url = DOCLIST_FEED + "/-/#{FOLDER_DOC_TYPE}?showfolders=true"
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -128,7 +128,7 @@ class DoclistController < ApplicationController
   def starred
     begin
       url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{STARRED_LABEL}?showfolders=true"
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -146,7 +146,7 @@ class DoclistController < ApplicationController
   def trashed
     begin
       url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{TRASHED_LABEL}?showfolders=true"
-      feed = @client.get(url)
+      feed = @client.get(url).to_xml
       @documents = create_docs(feed)
     rescue GData::Client::AuthorizationError
       logout
@@ -165,7 +165,7 @@ class DoclistController < ApplicationController
     # expandAcl projection will inline the ACLs in the resulting feed
     url = params[:url].sub(/\/full/, '/expandAcl')
     
-    entry = @client.get(url)
+    entry = @client.get(url).to_xml
     @document = create_doc(entry)
     if @document.type == DOCUMENT_DOC_TYPE
       export_url = @document.links['export'] + '&exportFormat=png'
@@ -177,14 +177,8 @@ class DoclistController < ApplicationController
   
   def download(export_url=nil)
     export_url ||= params[:export_url]
-
-    # @client.get(url) returns a REXML document. We want the raw response body.
-    # Use the existing client to build a request with the correct headers.
-    service = @client.http_service.new
-    req = GData::HTTP::Request.new(export_url,
-                                   :headers => @client.headers,
-                                   :method => :get)
-    resp = service.make_request(req)
+ 
+    resp = @client.get(export_url)
 
     # Set our response headers based on those returned with the file.
     headers['content-type'] = resp.headers['content-type']
@@ -242,7 +236,7 @@ private
   def set_user_email
     # Query feed to fetch user's email
     if session[:users_email].nil?
-      feed = @client.get(DOCLIST_FEED + '?max-results=0')
+      feed = @client.get(DOCLIST_FEED + '?max-results=0').to_xml
       session[:users_email] = feed.elements['author/email'].text
     end
   end

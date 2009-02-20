@@ -48,9 +48,9 @@ class ApplicationController < ActionController::Base
   
   def setup_client
     scopes = [DOCLIST_SCOPE, SPREADSHEETS_SCOPE, CONTACTS_SCOPE]
-    @client = GData::Client::Base.new({:authsub_scope => scopes.join(' '),
-                                       :source => 'google-DocListManager-v1'})
-
+    @client = GData::Client::DocList.new({:authsub_scope => scopes.join(' '),
+				                         :source => 'google-DocListManager-v1'})
+    
     if params[:token].nil? and session[:token].nil?
       next_url = url_for :controller => self.controller_name, :action => self.action_name
       secure = false
