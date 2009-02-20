@@ -2,6 +2,7 @@
 
 $GLOBALS['tubestalker_config']['dev_key'] = '';
 $GLOBALS['tubestalker_config']['client_id'] = '';
+$GLOBALS['tubestalker_config']['enable_memcache'] = true;
 $GLOBALS['tubestalker_config']['memcache_server'] = '127.0.0.1';
 $GLOBALS['tubestalker_config']['memcache_port'] = 11211;
 $GLOBALS['tubestalker_config']['feed_expiry_time'] = 60;
