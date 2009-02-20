@@ -114,10 +114,6 @@ ytActivityApp.getActivityFeed = function(username, friendfeed) {
           ytActivityApp.processJSON);
       }
     }
-  } else {
-    // not logged in
-    var html = $('#' + ytActivityApp.USER_LOGIN_DIV).html()
-    $('#' + ytActivityApp.USER_LOGIN_DIV).html('Not logged in: ' + html)
   }
 }
 
@@ -126,10 +122,6 @@ ytActivityApp.getFriendActivityFeed = function() {
     // TODO optimize this
     $('#status').show();
     $.getJSON(ytActivityApp.URI, { q: "friendfeed" },ytActivityApp.processJSON);
-      } else {
-    // not logged in
-    var html = $('#' + ytActivityApp.USER_LOGIN_DIV).html()
-    $('#' + ytActivityApp.USER_LOGIN_DIV).html('Not logged in: ' + html)
   }
 }
 
