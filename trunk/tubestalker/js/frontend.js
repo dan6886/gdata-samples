@@ -66,6 +66,7 @@ ytActivityApp.getActivityFeed = function(username) {
     // check whether we are looking for data from a specific user
     if (username) {
       ytActivityApp.CURRENT_USERNAME = username;
+      alert('current username set to ' + ytActivityApp.CURRENT_USERNAME);
       $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
         ytActivityApp.processJSON);
     } else {
@@ -105,11 +106,11 @@ ytActivityApp.processJSON = function(data) {
       
       // if no activity found then what???
       if (data.length < 1) {
-        // TODO output to a div
-        alert('no data found for user ' + ytActivityApp.CURRENT_USERNAME + ', do something else ');
-            $.getJSON(ytActivityApp.URI, { q: "userfeed" }, ytActivityApp.processJSON);
-
+        $('#status').html('no activity found for this user').show();
+        alert(ytActivityApp.CURRENT_USERNAME);
+        return;
       }
+
       var video_number = 0;
       for (var i = 0; i < data.length; i++) {
         var entry = data[i];
@@ -268,8 +269,8 @@ ytActivityApp.processJSON = function(data) {
 
       }
 
-        $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').show("slow")
-        $('#status').hide();
+      $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').show("slow")
+      $('#status').hide();
 
 }
 
