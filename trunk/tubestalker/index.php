@@ -204,20 +204,13 @@ function renderPage() {
   var loggedIn = $loggedIn;
   var actionUrl = '$actionUrl';
   </script>
-  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-  <script type="text/javascript">
-    // Load jQuery
-    google.load("jquery", "1");
-    google.load("jqueryui", "1");
-    google.load("swfobject", "2.1");
-  </script>
+  <script type="text/javascript" src="js/ext/swfobject.js"></script>
+  <script type="text/javascript" src="js/ext/jquery-1.3.1.min.js"></script>
   <script type="text/javascript" src="js/ext/thickbox-compressed.js"></script>
   <script type="text/javascript" src="js/ext/date_magic.js"></script>
   <script type="text/javascript" src="js/frontend.js"></script>
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
-
-  
   <title>Activity Viewer for YouTube</title>
 </head>
 <body>
