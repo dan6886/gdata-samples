@@ -23,6 +23,12 @@
 
   }
   
+  .api_not_available {
+      color: red;
+      padding-left: 3px;
+  }
+  
+  
   .thin_line {
       border: none;
       border-bottom: 1px solid #ddd;
@@ -196,7 +202,6 @@
 
   }
   
-  /* divs for activity "icons" */
   .icon {
       display: inline;
       padding: 2px;

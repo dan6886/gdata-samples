@@ -20,13 +20,14 @@ ytActivityApp.CSS_ENTRY_THUMB_DIV_CLASSNAME = 'video_thumbnail';
 // for rating and view count
 ytActivityApp.CSS_ENTRY_METADATA_SPAN_CLASSNAME = 'video_metadata';
 ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME = 'videobox';
-ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME = 'activity_timestamp'
-ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME = 'username_link'
-ytActivityApp.CSS_ENTRY_MY_USERNAME_LINK_CLASSNAME = 'my_username_link'
-ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME = 'video_title'
-ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME = 'video_id'
-ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found'
-ytActivityApp.CSS_USER_ACTIVITY_NOT_FOUND_CLASSNAME = 'user_activity_not_found'
+ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME = 'activity_timestamp';
+ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME = 'username_link';
+ytActivityApp.CSS_ENTRY_MY_USERNAME_LINK_CLASSNAME = 'my_username_link';
+ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME = 'video_title';
+ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME = 'video_id';
+ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found';
+ytActivityApp.CSS_USER_ACTIVITY_NOT_FOUND_CLASSNAME = 'user_activity_not_found';
+ytActivityApp.CSS_API_NOT_AVAILABLE_CLASSNAME = 'api_not_available';
 // metadata
 ytActivityApp.METADATA_TITLE_NOT_FOUND = 'title not found';
 ytActivityApp.METADATA_UPLOADER_NOT_FOUND = 'uploader not found';
@@ -42,6 +43,17 @@ ytActivityApp.YOUTUBE_VIDEO_URL = 'http://www.youtube.com/watch?v=';
 
 ytActivityApp.LOADING_IMAGE_HTML = '<small>Fetching data ... </small><br />' + 
   '<img src="css/ext/loadingAnimation.gif" width="208" height="13"/>';
+
+
+ytActivityApp.API_NOT_AVAILABLE_MESSAGE =
+  'Oops! The Youtube API is currently not available. Please check the ' + 
+  '<a class="logout_link" href="http://groups.google.com/group/youtube-api">' + 
+  '<strong>YouTube APIs Announcement Forum</strong></a> for updates.<br />';
+
+ytActivityApp.EMBEDDING_DISABLED_MESSAGE = 
+  'Note! The owner of this video has disabled embedding. ' + 
+  'If you click, you can watch the video on YouTube.com in a new tab';
+  
 
 ytActivityApp.CURRENT_USERNAME = null;
 ytActivityApp.USER_ACTIVITY_FEED = 0;
@@ -146,6 +158,15 @@ ytActivityApp.processJSON = function(data) {
       // parse JSON
       console.log("------...----processing json");
       console.log(data);
+      
+      if (data == 'SERVER_ERROR') {
+        $('#' + ytActivityApp.FEED_RESULTS_DIV).html(
+          '<span class="' + ytActivityApp.CSS_API_NOT_AVAILABLE_CLASSNAME +
+          '">' + ytActivityApp.API_NOT_AVAILABLE_MESSAGE + '</span><br />');
+        $('#status').hide();
+        return;
+      }
+      
       if (data.length < 1) {
         $('#' + ytActivityApp.FEED_RESULTS_DIV).html(
           '<span class="' +
@@ -262,27 +283,40 @@ ytActivityApp.processJSON = function(data) {
                   player_url = player_url + '&autoplay=1';
                   added_video = true;
                 }
-                
+
+                //
                 if(added_video) {    
                   HTML_string.push('<a id="play_video_number_' + video_number +'" href="#">');
+                } else {
+                  // no embed
+                  HTML_string.push('<a class="play_on_youtube" target="_blank" ' +
+                  'href="' + ytActivityApp.YOUTUBE_VIDEO_URL + id +
+                  '" title="' + ytActivityApp.EMBEDDING_DISABLED_MESSAGE +
+                  '">');
                 }
-                HTML_string.push('<img src="' + thumbnail_url + '" width="130" height="97" />');
-                if(added_video) {
+                  HTML_string.push('<img src="' + thumbnail_url +
+                  '" width="130" height="97" />');
                   HTML_string.push('</a>');
-                }
                 HTML_string.push('<br/></div>');
               }
               
               if(added_video) {
                 HTML_string.push('<a id="t_play_video_number_' + video_number + '" href="#">');
+              } else {
+                // play on yt
+                HTML_string.push('<a class="play_on_youtube" target="_blank" ' +
+                  'href="' + ytActivityApp.YOUTUBE_VIDEO_URL + id + 
+                  '" title="' + ytActivityApp.EMBEDDING_DISABLED_MESSAGE +
+                  '">');
               }
-              HTML_string.push('<span class="' +
+
+                HTML_string.push('<span class="' +
                 ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME + '">' +
-                title + '</strong>');
-              if(added_video) {
+                title + '</span>');
                 HTML_string.push('</a>');
-              }
-              HTML_string.push('</span>');
+
+            
+            
               HTML_string.push('<span class="' +
                 ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME +
                 '">(video id: ' + id + ')</span><br />');
