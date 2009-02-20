@@ -202,23 +202,18 @@ function renderPage() {
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
   
-  <title>TubeStalker!</title>
+  <title>YouTube Activity Stream viewer</title>
 </head>
 <body>
     <div id="all"><br />
+      <span class="title">YouTube activity stream viewer | </span>
+      <div id="loginlogout"><a href="$actionUrl">Log in</a></div>
       <div id="top">
-        <div id="title">TUBESTALKER</div>
-        <div id="loginlogout">
-            <p><a href="$actionUrl">login </a></p>
-        </div>
-        <div id="status">no status</div>
+        <div id="status"></div>
       </div>
       <br clear="all" />
       <div id="activity_stream"></div>
       <br clear="all" />
-      
-      <div id="log">
-      </div>
     </div>
   <a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
   <div id="videobox"></div>

@@ -15,41 +15,21 @@
   }
 
   #top {
-      background-color: #fff;
-      height: 50px;
-      padding: 10px;
   }
   
   #title {
-      display: inline;
-      padding: 20px;
-      font-size: 150%;
-      width: 33%;
+      color: #7F7F7F;
   }
   
   #loginlogout {
       display: inline;
-      background-color: blue;
-      width: 33%;
+      width: 500px;
   }
   
   #status {
-      display: inline;
-      background-color: red;
-      width: 33%;
-  }
-  
-  
-  
-  #stream {
-    height: 500px;
-    background-color: #fff;
-  }
-
-  #log {
-    height: 700px;
-    background-color: #ddd;
-    font-family: courier, monospace;
+      display: none;
+      background-color: #fff;
+      padding: 10px;
   }
 
   #video_thumbnail {
@@ -60,24 +40,13 @@
   
   #activity_stream {
       background-color: #fff;
+      margin-top: -25px;
   }
   
   .activity_entry {
       padding: 10px;
       margin-top: 2px;
       margin-bottom: 2px;
-  }
-  
-  #hidden_video {
-      width: 500px;
-      height: 400px;
-      background: #fff;
-      visibility: hidden;
-      position:absolute;
-      text-align: center;
-      padding: 10px;
-      left:200px;
-      top:50px
   }
   
   ul.feed_output {
@@ -88,11 +57,6 @@
       border-bottom: 1px solid #ddd;
   }
   
-  .video_thumbnail {
-      /* div */
-      border: none;
-  }
-
   span.video_metadata {
       font-size: small;
       color: #7F7F7F;
@@ -114,11 +78,29 @@
   }
 
   a.username_link:hover {
-      /* do something interesting */
       background-color: #A2DF0D;
       color: #000;
   }
+
+  span.my_username_link {
+      padding: 2px;
+      text-decoration: none;
+      color: #000;
+      
+  }
   
+  a.logout_link {
+      padding: 2px;
+      text-decoration: none;
+  }
+  
+  a.logout_link:hover {
+      padding: 2px;
+      text-decoration: underline;
+      background-color: #EE6969;
+
+  }
+      
   
   span.video_title, a {
       font-size: 105%;
@@ -143,7 +125,7 @@
   
 
   span.metadata_not_found {
-      color: #7F7F7F;
+      color: #4F4F4F;
       font-size: x-small;
       background-color: #BFBFBF;
       padding: 2px;

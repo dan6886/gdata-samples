@@ -5,6 +5,8 @@
 var ytActivityApp = {};
 
 ytActivityApp.URI = 'index.php';
+ytActivityApp.LOGOUT_URI = 'index.php?action=logout';
+
 // divs
 ytActivityApp.FEED_RESULTS_DIV = 'activity_stream';
 ytActivityApp.LOGGING_DIV = 'log';
@@ -19,6 +21,7 @@ ytActivityApp.CSS_ENTRY_METADATA_SPAN_CLASSNAME = 'video_metadata';
 ytActivityApp.CSS_ENTRY_HIDDEN_VIDEO_DIV_CLASSNAME = 'videobox';
 ytActivityApp.CSS_ENTRY_TIMESTAMP_SPAN_CLASSNAME = 'activity_timestamp'
 ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME = 'username_link'
+ytActivityApp.CSS_ENTRY_MY_USERNAME_LINK_CLASSNAME = 'my_username_link'
 ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME = 'video_title'
 ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME = 'video_id'
 ytActivityApp.CSS_ENTRY_VIDEO_METADATA_NOT_FOUND_CLASSNAME = 'metadata_not_found'
@@ -36,21 +39,30 @@ ytActivityApp.VIDEO_METADATA_NOT_AVAILABLE_MESSAGE =
   'uploaded or a duplicate upload.';
 ytActivityApp.YOUTUBE_VIDEO_URL = 'http://www.youtube.com/watch?v=';
 
+ytActivityApp.LOADING_IMAGE_HTML = '<small>Fetching data ... </small><br />' + 
+  '<img src="css/ext/loadingAnimation.gif" width="208" height="13"/>';
+
+
 
 ytActivityApp.CURRENT_USERNAME = null;
 
 $(document).ready(function(){
-   ytActivityApp.getActivityFeed();
+  $('#status').html(ytActivityApp.LOADING_IMAGE_HTML);
+  ytActivityApp.getActivityFeed();
 });
 
 ytActivityApp.getActivityFeed = function(username) {
   if (loggedIn == true) {
-
+    // TODO optimize this
+    $('#status').show();
     $.get(ytActivityApp.URI, { q: "whoami" },
       function(data){
-        $('#' + ytActivityApp.USER_LOGIN_DIV).html(data)
+        var my_username = data.substring(1, data.length-1);
+        ytActivityApp.CURRENT_USERNAME = my_username;
+        $('#' + ytActivityApp.USER_LOGIN_DIV).html('Logged in as: ' +
+          my_username + ' &mdash; <a class="logout_link" href="' +
+          ytActivityApp.LOGOUT_URI + '" >log out</a>')
       });
-
     // check whether we are looking for data from a specific user
     if (username) {
       ytActivityApp.CURRENT_USERNAME = username;
@@ -69,16 +81,16 @@ ytActivityApp.getActivityFeed = function(username) {
 }
 
 ytActivityApp.displayMovie = function(swfUrl, videoName) {
-  return function() {
-    $("#videobox").html('<div id="ytapiplayer"></div>');
-    var params = { allowScriptAccess: "always" };
-    swfobject.embedSWF(swfUrl, "ytapiplayer", "425", "356", "8", null, null, params);
-    $("#play_video").attr('title', videoName);
-    $("#play_video").click();
-    $("#TB_window").bind('unload', ytActivityApp.clearVideoBox);
-  }
-}
-
+   return function() {
+     $("#videobox").html('<div id="ytapiplayer"></div>');
+     var params = { allowScriptAccess: "always" };
+     swfobject.embedSWF(swfUrl, "ytapiplayer", "425", "356", "8", null, null, params);
+     $("#play_video").attr('title', videoName);
+     $("#play_video").click();
+     $("#TB_window").bind('unload', ytActivityApp.clearVideoBox);
+   }
+ }
+ 
 ytActivityApp.clearVideoBox = function() {
   $("#videobox").html('');
 }
@@ -102,13 +114,8 @@ ytActivityApp.processJSON = function(data) {
       for (var i = 0; i < data.length; i++) {
         var entry = data[i];
         var HTML_string = [];
-        if(entry.updated) {
-          var updated = new Date();
-          updated.setISO8601(entry.updated);
-        }
-        else {
-          var updated = ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND;
-        }
+        var updated = entry.updated ||
+          ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND;
         var activity_type = entry.activity_type;
         var english_string = null;
         var is_video_activity = false;
@@ -152,9 +159,9 @@ ytActivityApp.processJSON = function(data) {
           updated + '</span><br />');
         HTML_string.push('<div class="icon ' + activity_type + '">+</div>');
           
-        HTML_string.push('<a class="' +
-          ytActivityApp.CSS_ENTRY_USERNAME_LINK_CLASSNAME + '" href="#">' +
-          entry.author + '</a> ');
+        HTML_string.push('<span class="' +
+          ytActivityApp.CSS_ENTRY_MY_USERNAME_LINK_CLASSNAME + '">' +
+          entry.author + '</span> ');
         HTML_string.push(english_string)
         // activity type
         if (is_video_activity) {
@@ -203,7 +210,9 @@ ytActivityApp.processJSON = function(data) {
                 '">(video id: ' + id + ')</span><br />');
               HTML_string.push('<span class="' +
                 ytActivityApp.CSS_ENTRY_METADATA_SPAN_CLASSNAME + '">');
-              HTML_string.push('View count: ' + view_count + '<br />');
+              if (view_count != ytActivityApp.METADATA_VIEW_COUNT_NOT_FOUND) {
+                HTML_string.push('View count: ' + view_count + '<br />');
+              }
               if (rating != ytActivityApp.METADATA_RATING_NOT_FOUND) {
                 HTML_string.push('Average rating: ' + entry.video_info.rating.average +
                   ' (rated by ' + entry.video_info.rating.numRaters + ' users)');
@@ -243,5 +252,7 @@ ytActivityApp.processJSON = function(data) {
       }
 
         $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').show("slow")
+        $('#status').hide();
+
 }
 
