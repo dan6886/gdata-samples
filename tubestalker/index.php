@@ -201,11 +201,11 @@ function renderPage() {
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
   
-  <title>YouTube Activity Stream viewer</title>
+  <title>YouTube Activity Stream Viewer</title>
 </head>
 <body>
     <div id="all"><br />
-      <span class="title">YouTube activity stream viewer | </span>
+      <span class="title">YouTube Activity Stream Viewer | </span>
       <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
       <div id="top">
         <div id="status"></div>
