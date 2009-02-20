@@ -114,8 +114,13 @@ ytActivityApp.processJSON = function(data) {
       for (var i = 0; i < data.length; i++) {
         var entry = data[i];
         var HTML_string = [];
-        var updated = entry.updated ||
-          ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND;
+        if(entry.updated) {
+          var updated = new Date();
+          updated.setISO8601(entry.updated);
+        }
+        else {
+          var updated = ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND;
+        }
         var activity_type = entry.activity_type;
         var english_string = null;
         var is_video_activity = false;
