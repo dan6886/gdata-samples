@@ -23,7 +23,7 @@ class ContactsController < ApplicationController
     end
     
     feed = @client.get(CONTACTS_FEED +
-                       "?max-results=#{MAX_CONTACTS_RESULTS.to_s}")
+                       "?max-results=#{MAX_CONTACTS_RESULTS.to_s}").to_xml
 
     @contacts = []
     feed.elements.each('entry') do |entry|
@@ -44,11 +44,11 @@ class ContactsController < ApplicationController
       redirect_to :controller => 'doclist', :action => 'documents' and return
     end
     
-    groups_feed = @client.get(CONTACTS_SCOPE + 'groups/default/full/');
+    groups_feed = @client.get(CONTACTS_SCOPE + 'groups/default/full/').to_xml
     group_id = my_contacts_group_id(groups_feed)
     url = CONTACTS_FEED +
           "?group=#{group_id}&max-results=#{MAX_CONTACTS_RESULTS.to_s}"
-    feed = @client.get(url)
+    feed = @client.get(url).to_xml
     
     session[:users_email] = feed.elements['id'].text if !session[:users_email]
     
