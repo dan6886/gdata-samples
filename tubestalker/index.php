@@ -196,6 +196,7 @@ function renderPage() {
     google.load("swfobject", "2.1");
   </script>
   <script type="text/javascript" src="js/ext/thickbox-compressed.js"></script>
+  <script type="text/javascript" src="js/ext/date_magic.js"></script>
   <script type="text/javascript" src="js/frontend.js"></script>
 
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
