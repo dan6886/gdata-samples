@@ -201,15 +201,27 @@ ytActivityApp.processJSON = function(data) {
                   player_url = player_url + '&autoplay=1';
                   added_video = true;
                 }
-                    
-                HTML_string.push('<a id="play_video_number_' + video_number +
-                '" href="#"><img src="' + thumbnail_url + '" width="130" height="97" /></a><br />');
-                HTML_string.push('</div>');
+                
+                if(added_video) {    
+                  HTML_string.push('<a id="play_video_number_' + video_number +'" href="#">');
+                }
+                HTML_string.push('<img src="' + thumbnail_url + '" width="130" height="97" />');
+                if(added_video) {
+                  HTML_string.push('</a>');
+                }
+                HTML_string.push('<br/></div>');
               }
               
-              HTML_string.push('<a id="t_play_video_number_' + video_number + '" href="#"><span class="' +
+              if(added_video) {
+                HTML_string.push('<a id="t_play_video_number_' + video_number + '" href="#">');
+              }
+              HTML_string.push('<span class="' +
                 ytActivityApp.CSS_ENTRY_VIDEO_TITLE_SPAN_CLASSNAME + '">' +
-                title + '</strong></a> ');
+                title + '</strong>');
+              if(added_video) {
+                HTML_string.push('</a>');
+              }
+              HTML_string.push('</span>');
               HTML_string.push('<span class="' +
                 ytActivityApp.CSS_ENTRY_VIDEO_ID_SPAN_CLASSNAME +
                 '">(video id: ' + id + ')</span><br />');
