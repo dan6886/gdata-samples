@@ -198,7 +198,6 @@ function renderPage() {
   <script type="text/javascript" src="js/ext/thickbox-compressed.js"></script>
   <script type="text/javascript" src="js/ext/date_magic.js"></script>
   <script type="text/javascript" src="js/frontend.js"></script>
-
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
   
@@ -207,7 +206,7 @@ function renderPage() {
 <body>
     <div id="all"><br />
       <span class="title">YouTube activity stream viewer | </span>
-      <div id="loginlogout"><a href="$actionUrl">Log in</a></div>
+      <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
       <div id="top">
         <div id="status"></div>
       </div>

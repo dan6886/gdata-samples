@@ -98,9 +98,18 @@
       padding: 2px;
       text-decoration: underline;
       background-color: #EE6969;
-
   }
-      
+  
+  a.login_link {
+      padding: 2px;
+      text-decoration: none;
+  }
+  
+  a.login_link:hover {
+      padding: 2px;
+      text-decoration: underline;
+      background-color: #10D72F;
+  }          
   
   span.video_title, a {
       font-size: 105%;
