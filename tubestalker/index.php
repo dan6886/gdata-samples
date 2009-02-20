@@ -38,7 +38,13 @@ function fetchVideoMetadata($videoId) {
     $video['uploader'] = $videoEntry->author[0]->name->text;
   }
   catch(Zend_Gdata_App_HttpException $e){
-    $video = 'NOT_AVAILABLE';
+    $httpStatus = $e->getResponse()->getStatus();
+    if($httpStatus > 500) {
+      $video = 'SERVER_ERROR';
+    }
+    else {
+      $video = 'NOT_AVAILABLE';
+    }
   }
   
   return $video;
@@ -222,7 +228,13 @@ function returnUserFeed($username = null) {
     echo renderActivityFeed($activityFeed, "useractivity-$username");
   }
   catch(Zend_Gdata_App_HttpException $e){
-    echo json_encode('NOT_AVAILABLE');
+    $httpStatus = $e->getResponse()->getStatus();
+    if($httpStatus > 500) {
+      echo json_encode('SERVER_ERROR');
+    }
+    else {
+      echo json_encode('NOT_AVAILABLE');
+    }
   }
 }
 
@@ -237,7 +249,13 @@ function returnFriendFeed() {
     echo renderActivityFeed($friendActivityFeed, "friendactivity-$username");
   }
   catch(Zend_Gdata_App_HttpException $e){
-    echo json_encode('NOT_AVAILABLE');
+    $httpStatus = $e->getResponse()->getStatus();
+    if($httpStatus > 500) {
+      echo json_encode('SERVER_ERROR');
+    }
+    else {
+      echo json_encode('NOT_AVAILABLE');
+    }
   }
 }
 
