@@ -214,21 +214,24 @@ function renderPage() {
   <title>Activity Viewer for YouTube</title>
 </head>
 <body>
-    <div id="all"><br />
+<div id="all"><br />
       <div id="top">
       <div class="title">Activity Viewer for YouTube</div>
       <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
-<!--      <hr class="thin_line"> -->
-      <br /><div id="friend_user_select">Select feed type:  <form id="feed_type_select" onClick="ytActivityApp.switchFeedURI()">
-          <input id="activity_feed" type="radio" name="feed_select" value="activity" checked> Your activity
-          <input id="friend_feed" type="radio" name="feed_select" value="friend"> Your friend activity
-      </form>
-      </div>
-
+        <div id="options"><div id="friend_user_select_div">Select feed type:  <form id="feed_type_select" onClick="ytActivityApp.switchFeedURI();">
+            <input id="activity_feed" type="radio" name="feed_select" value="activity" checked /> Your activity
+            <input id="friend_feed" type="radio" name="feed_select" value="friend" /> Friend activity</form>
+        </div>
+        <div id="username_search_div">Seach for activity by username:
+            <input id="users_string_input" type="text" name="users_string" onkeypress="if (event.keyCode == 13) ytActivityApp.getActivityFeedForManyUsers(document.getElementById('users_string_input').value);"/>
+            <button name="submit" value="foo" onClick="ytActivityApp.getActivityFeedForManyUsers(document.getElementById('users_string_input').value);" />Search</button>
+            <small class="dark_text">(enter up to 20 names, separated by commas)</small>
+        </div>
+        </div><!-- end options -->
         <div id="status">
             <div id="user_status"></div>
         </div>
-      </div>
+      </div> <!-- end top -->
       <br clear="all" />
       <div id="activity_stream"></div>
       <br clear="all" />
