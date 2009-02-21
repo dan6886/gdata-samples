@@ -247,7 +247,7 @@ $(document).ready(function(){
   // Check the loggedIn variable that gets set in the PHP script
   if (loggedIn) {
     // Show the search and feed selection options
-    $('#options').slideDown("slow");
+    $('#options').css('display','block');
 
     // Get the username of the currently authenticated user
     ytActivityApp.getCurrentlyAuthenticatedUsername();
