@@ -28,18 +28,6 @@
       padding-left: 3px;
   }
   
-  
-  .thin_line {
-      border: none;
-      border-bottom: 1px solid #ddd;
-  }
-  
-      
-  
-  #feed_type_select {
-      display: inline;
-  }
-  
   .title {
       display: inline;
       color: #000;
@@ -47,12 +35,44 @@
       font-size: 150%;
       padding-left: 3px;
   }
+     
+     
+  .dark_text {
+      color: #1F1F1F;
+  }
   
-  #friend_user_select {
+  #feed_type_select {
+      display: inline;
+
+  }
+  
+  #user_activity_input {
+      display: inline;
+      
+  }
+  
+  #options {
+      display: none;
       padding: 7px 5px 5px 5px;
       background-color: #E4E4E4;
       color: #0033D3;
       border: 1px solid #999;
+      height: 50px;
+      
+  }
+  #username_search_div {
+      display: inline;
+      width: 55%;
+      float: right;
+      border-left: 1px solid #999;
+      padding-left: 5px;
+  }
+  #friend_user_select_div {
+      display: inline;
+      width: 40%;
+      float: left;
+      padding-top: 10px;
+      padding-left: 5px;
   }
   
   input {
