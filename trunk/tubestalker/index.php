@@ -1,6 +1,29 @@
 <?php
-// TODO add copyright thing
+/* Copyright (c) 2007 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Author: Jeff Fisher <api.jfisher@google.com>
+ */
+
 require_once 'config.inc.php';
+
+/**
+ * Note that the Gdata components of the Zend Framework must be installed
+ * on the machine that is running this code. Please refer to our documentation:
+ *
+ * http://code.google.com/apis/gdata/articles/php_client_lib.html 
+ */
 require_once 'Zend/Loader.php';
 Zend_Loader::loadClass('Zend_Gdata_YouTube');
 Zend_Loader::loadClass('Zend_Gdata_AuthSub');
@@ -28,9 +51,9 @@ function getMemcache() {
 }
 
 // Fetches information about a video based upon its YouTube ID and stores
-// this data in memcache.
+// this data in memcache (if endabled).
 function fetchVideoMetadata($videoId) {
-  
+
   if($GLOBALS['tubestalker_config']['enable_memcache']) {
     $memcache = getMemcache();
     $video = $memcache->get("video-$videoId");
@@ -46,7 +69,7 @@ function fetchVideoMetadata($videoId) {
   try {
     $yt = getYtService();
     $videoEntry = $yt->getVideoEntry($videoId);
-  
+
     $video = Array();
     $video['id'] = $videoEntry->getVideoId();
     $video['title'] = $videoEntry->getVideoTitle();
@@ -56,22 +79,21 @@ function fetchVideoMetadata($videoId) {
     $video['thumbnail'] = $thumbnails[0]['url'];
     $video['player'] = $videoEntry->getFlashPlayerUrl();
     $video['uploader'] = $videoEntry->author[0]->name->text;
-  }
-  catch(Zend_Gdata_App_HttpException $e){
+
+  } catch(Zend_Gdata_App_HttpException $e){
     $httpStatus = $e->getResponse()->getStatus();
+
     if($httpStatus > 500) {
       $video = 'SERVER_ERROR';
-    }
-    else {
+    } else {
       $video = 'NOT_AVAILABLE';
     }
   }
-  
+  // If memcache is enable, store the video data for the set expiry time
   if($GLOBALS['tubestalker_config']['enable_memcache']) {
     $expiration_time = $GLOBALS['tubestalker_config']['metadata_expiry_time'];
     $memcache->set("video-$videoId", $video, MEMCACHE_COMPRESSED, $expiration_time);
   }
-  
   return $video;
 }
 
@@ -82,18 +104,19 @@ function renderActivityFeed($feed, $feedId) {
   if($GLOBALS['tubestalker_config']['enable_memcache']) {
     $memcache = getMemcache();
     $compactFeed = $memcache->get($feedId);
-  }
-  else {
+  } else {
     $compactFeed = false;
   }
 
   if(!$compactFeed) {
     $compactFeed = Array();
+
     foreach($feed as $entry) {
       $cEntry = Array();
       $cEntry['author'] = $entry->getAuthorName();
       $cEntry['activity_type'] = $entry->getActivityType();
       $cEntry['updated'] = $entry->getUpdated()->text;
+
       switch($cEntry['activity_type']) {
         case 'video_rated':
           $cEntry['rating'] = $entry->getRatingValue();
@@ -111,12 +134,12 @@ function renderActivityFeed($feed, $feedId) {
       $compactFeed[] = $cEntry;
     }
     $compactFeed = json_encode($compactFeed);
+
     if($GLOBALS['tubestalker_config']['enable_memcache']) {
       $expiration_time = $GLOBALS['tubestalker_config']['feed_expiry_time'];
       $memcache->set($feedId, $compactFeed, MEMCACHE_COMPRESSED, $expiration_time);
     }
   }
-  
   return $compactFeed;
 }
 
@@ -125,15 +148,13 @@ function renderActivityFeed($feed, $feedId) {
 function fetchUsername() {
   if(isset($_SESSION['ytUsername'])) {
     $username =  $_SESSION['ytUsername'];
-  }
-  else {
+  } else {
     try {
       $yt = getYtService();
       $userProfileEntry = $yt->getUserProfile('default');
       $username = $userProfileEntry->getUsername()->text;
       $_SESSION['ytUsername'] = $username;
-    }
-    catch(Zend_Gdata_App_HttpException $e){
+    } catch(Zend_Gdata_App_HttpException $e){
       $username = 'UNKNOWN';
     }
   }
@@ -147,12 +168,10 @@ function getAuthSubUrl() {
   $secure = false;
   $session = true;
   return Zend_Gdata_AuthSub::getAuthSubTokenUri($next, $scope, $secure, $session);
-  
 }
 
 // Handles exchanging for an AuthSub session token
 function exchangeToken($token) {
-  //do the exchange
   $_SESSION['sessionToken'] = Zend_Gdata_AuthSub::getAuthSubSessionToken($token);
   redirect($_SERVER['PHP_SELF']);
 }
@@ -189,12 +208,12 @@ function renderPage() {
   if(isUserLoggedIn()) {
     $loggedIn = 'true';
     $actionUrl = "{$_SERVER['PHP_SELF']}?action=logout";
-  } 
-  else {
+  } else {
     $loggedIn = 'false';
     $actionUrl = htmlentities(getAuthSubUrl());
   }
-  
+
+  // Print out the HTML of the page
   echo <<<END_OF_HTML
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -204,40 +223,49 @@ function renderPage() {
   var loggedIn = $loggedIn;
   var actionUrl = '$actionUrl';
   </script>
+  <!-- Javascript includes -->
   <script type="text/javascript" src="js/ext/swfobject.js"></script>
   <script type="text/javascript" src="js/ext/jquery-1.3.1.min.js"></script>
   <script type="text/javascript" src="js/ext/thickbox-compressed.js"></script>
   <script type="text/javascript" src="js/ext/date_magic.js"></script>
   <script type="text/javascript" src="js/frontend.js"></script>
+  <!-- CSS includes -->
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/ext/thickbox.css" type="text/css" media="screen" />
   <title>Activity Viewer for YouTube</title>
 </head>
 <body>
 <div id="all"><br />
-      <div id="top">
-      <div class="title">Activity Viewer for YouTube</div>
-      <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
-        <div id="options"><div id="friend_user_select_div">Select feed type:  <form id="feed_type_select" onClick="ytActivityApp.switchFeedURI();">
-            <input id="activity_feed" type="radio" name="feed_select" value="activity" checked /> Your activity
-            <input id="friend_feed" type="radio" name="feed_select" value="friend" /> Friend activity</form>
-        </div>
-        <div id="username_search_div">Seach for activity by username:
-            <input id="users_string_input" type="text" name="users_string" onkeypress="if (event.keyCode == 13) ytActivityApp.getActivityFeedForManyUsers(document.getElementById('users_string_input').value);"/>
-            <button name="submit" value="foo" onClick="ytActivityApp.getActivityFeedForManyUsers(document.getElementById('users_string_input').value);" />Search</button>
-            <small class="dark_text">(enter up to 20 names, separated by commas)</small>
-        </div>
-        </div><!-- end options -->
-        <div id="status">
-            <div id="user_status"></div>
-        </div>
-      </div> <!-- end top -->
-      <br clear="all" />
-      <div id="activity_stream"></div>
-      <br clear="all" />
+  <div id="top">
+    <div class="title">Activity Viewer for YouTube</div>
+    <div id="loginlogout"><a class="login_link" href="$actionUrl">Log in</a></div>
+    <!-- the feed selection and username search options -->
+    <div id="options">
+      <div id="friend_user_select_div">Select feed type: <form id="feed_type_select" onClick="ytActivityApp.switchFeedURI();">
+        <input id="activity_feed" type="radio" name="feed_select" value="activity" checked /> Your activity
+        <input id="friend_feed" type="radio" name="feed_select" value="friend" /> Friend activity
+        </form>
+      </div>
+      <div id="username_search_div">Seach for activity by username:
+        <!-- handle form input on ENTER key and on button click -->
+        <input id="users_string_input" type="text" name="users_string" onkeypress="if (event.keyCode == 13) ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);"/>
+        <button name="submit" value="foo" onClick="ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);" />Search</button>
+        <small class="dark_text">(enter up to 20 names, separated by commas)</small>
+      </div>
     </div>
-  <a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
-  <div id="videobox"></div>
+    <!-- div to display various status messages -->
+    <div id="status">
+      <div id="user_status"></div>
+    </div>
+  </div>
+  <br class="clear_both" />
+  <!-- div to render feed output into -->
+  <div id="activity_stream"></div>
+  <br class="clear_both" />
+</div>
+<a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
+<!-- hidden div to render the embedded player -->
+<div id="videobox"></div>
 </body>
 </html>
 END_OF_HTML;
@@ -245,9 +273,7 @@ END_OF_HTML;
 
 // Return a user activity feed in JSON encoding to the AJAX frontend
 function returnUserFeed($username = null) {
-  
   requireLogin();
-  
   if(!$username) {
     $username = fetchUsername();
   }
@@ -256,13 +282,12 @@ function returnUserFeed($username = null) {
     $yt = getYtService();
     $activityFeed = $yt->getActivityForUser($username);
     echo renderActivityFeed($activityFeed, "useractivity-$username");
-  }
-  catch(Zend_Gdata_App_HttpException $e){
+  } catch(Zend_Gdata_App_HttpException $e){
     $httpStatus = $e->getResponse()->getStatus();
+
     if($httpStatus > 500) {
       echo json_encode('SERVER_ERROR');
-    }
-    else {
+    } else {
       echo json_encode('NOT_AVAILABLE');
     }
   }
@@ -277,13 +302,12 @@ function returnFriendFeed() {
     $yt = getYtService();
     $friendActivityFeed = $yt->getFriendActivityForCurrentUser();
     echo renderActivityFeed($friendActivityFeed, "friendactivity-$username");
-  }
-  catch(Zend_Gdata_App_HttpException $e){
+  } catch(Zend_Gdata_App_HttpException $e){
     $httpStatus = $e->getResponse()->getStatus();
+
     if($httpStatus > 500) {
       echo json_encode('SERVER_ERROR');
-    }
-    else {
+    } else {
       echo json_encode('NOT_AVAILABLE');
     }
   }
@@ -292,9 +316,7 @@ function returnFriendFeed() {
 // Return the current user's YouTube username to the frontend in JSON encoding
 function returnUsername() {
   requireLogin();
-  
   $username = fetchUsername();
-
   echo json_encode($username);
 }
 
@@ -302,13 +324,12 @@ function returnUsername() {
 function handleRequest() {
   if(isset($_GET['token'])) {
     exchangeToken($_GET['token']);
-  }
-  else if(isset($_GET['action'])) {
+  } else if(isset($_GET['action'])) {
     if($_GET['action'] == 'logout') {
       doLogout();
     }
-  }
-  else if(isset($_GET['q'])) {
+  } else if(isset($_GET['q'])) {
+
     switch($_GET['q']) {
       case 'userfeed':
         returnUserFeed($_GET['who']);
@@ -322,12 +343,10 @@ function handleRequest() {
       default:
         echo "Invalid request.";
     }
-  }
-  else {
+  } else {
     renderPage();
   }
 }
-
 // call the "main" method for the application.
 handleRequest();
 
