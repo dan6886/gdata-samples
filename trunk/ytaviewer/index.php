@@ -208,6 +208,7 @@ function renderPage() {
   if(isUserLoggedIn()) {
     $loggedIn = 'true';
     $actionUrl = "{$_SERVER['PHP_SELF']}?action=logout";
+    $username =  $_SESSION['ytUsername'];
   } else {
     $loggedIn = 'false';
     $actionUrl = htmlentities(getAuthSubUrl());
@@ -222,6 +223,7 @@ function renderPage() {
   <script type="text/javascript">
   var loggedIn = $loggedIn;
   var actionUrl = '$actionUrl';
+  var authenticatedUsername = '$username';
   </script>
   <!-- Javascript includes -->
   <script type="text/javascript" src="js/ext/swfobject.js"></script>
@@ -246,10 +248,10 @@ function renderPage() {
         <input id="friend_feed" type="radio" name="feed_select" value="friend" /> Friend activity
         </form>
       </div>
-      <div id="username_search_div">Seach for activity by username:
+      <div id="username_search_div">Seach for username:
         <!-- handle form input on ENTER key and on button click -->
         <input id="users_string_input" type="text" name="users_string" onkeypress="if (event.keyCode == 13) ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);"/>
-        <button name="submit" value="foo" onClick="ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);" />Search</button>
+        <button name="submit" value="foo" onClick="ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);" />Search</button><br />
         <small class="dark_text">(enter up to 20 names, separated by commas)</small>
       </div>
     </div>
