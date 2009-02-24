@@ -283,7 +283,15 @@ $(document).ready(function(){
     } else {
       ytActivityApp.getFriendActivityFeed();
     }
-  }
+  } else {
+    // Not logged in
+    $('#top').css({'margin-top': '150px', 'width': '100%',
+      'font-weight': 'bold', 'font-size': 'x-large'});
+    $('#' + ytActivityApp.USER_LOGIN_DIV).css(
+      {'font-size': '200%', 'font-weight': 'bold',
+      'background-color': '#F2FF7F', 'font-size': 'large',
+      'padding': '15px'});
+    }
 });
 
 /**
