@@ -304,21 +304,26 @@ ytActivityApp.switchFeedURI = function() {
   if (selected_button == 0) {
     ytActivityApp.FEED_REQUESTED = ytActivityApp.USER_ACTIVITY_FEED;
     ytActivityApp.getActivityFeed();
-  } else {
+  } else if (selected_button == 1) {
     ytActivityApp.FEED_REQUESTED = ytActivityApp.FRIEND_ACTIVITY_FEED;
     ytActivityApp.getFriendActivityFeed();
+  } else if (selected_button == 2) {
+    // Add a message to the form
+    $('#users_string_input').attr({ value: 'Enter usernames...'});
   }
+}
+
+ytActivityApp.clearUserNameForm = function() {
+  $('#users_string_input').css('border-bottom', 'none').css('color', 'black');
+  $('#users_string_input').attr({ value: ''});
+
 }
 
 /**
  * Reset the feed selection form back to fetch the activity feed (default)
  */
 ytActivityApp.resetFormSelection = function() {
-  var form = document.getElementById(ytActivityApp.FORM_RADIO_SELECTION_ID);
-  form[0].checked = true;
-  form[1].checked = false;
   ytActivityApp.FEED_REQUESTED = ytActivityApp.USER_ACTIVITY_FEED;
-
 }
 
 /**
@@ -361,7 +366,6 @@ ytActivityApp.cleanFormInputAndRequestActivityFeed = function(usernames) {
   var validUsernamesString = validUsernames.join(',');
   ytActivityApp.CURRENT_USERNAME = validUsernamesString;
   ytActivityApp.getActivityFeed(validUsernamesString);
-  $('#users_string_input').val("");
 }
 
 /**
@@ -372,15 +376,24 @@ ytActivityApp.getActivityFeed = function(username) {
   if (loggedIn == true) {
     $('#status').show();
     ytActivityApp.resetFormSelection();
+    var form = document.getElementById(ytActivityApp.FORM_RADIO_SELECTION_ID);
     
     // Fetch activity for a specific user
     if (username) {
       ytActivityApp.CURRENT_USERNAME = username;
+      form[0].checked = false;
+      form[1].checked = false;
+      form[2].checked = true;
+      $('#users_string_input').attr({ value: username});
       $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
         ytActivityApp.processJSON);
     } else {
       // Fetch activity for the currently authenticated user
       ytActivityApp.CURRENT_USERNAME = ytActivityApp.MY_USERNAME;
+      form[0].checked = true;
+      form[1].checked = false;
+      form[2].checked = false;
+      $('#users_string_input').attr({ value: ''});
       $.getJSON(ytActivityApp.URI, { q: "userfeed" },
         ytActivityApp.processJSON);
     }
@@ -394,6 +407,7 @@ ytActivityApp.getActivityFeed = function(username) {
 ytActivityApp.getFriendActivityFeed = function() {
   if (loggedIn == true) {
     $('#status').show();
+    $('#users_string_input').attr({ value: ''});
     $.getJSON(ytActivityApp.URI, { q: "friendfeed" },ytActivityApp.processJSON);
   }
 }
@@ -537,7 +551,7 @@ ytActivityApp.processJSON = function(data) {
       '</span><br />');
 
     // Add a different CSS class for each activity
-    HTML_string.push('<div class="icon ' + activity_type + '"> &ndash; </div>');
+    HTML_string.push('<div class="icon ' + activity_type + '"> +</div>');
 
     // If the feed is an activity feed, then don't make the current user's
     // name clickable
