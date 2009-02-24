@@ -208,6 +208,7 @@ function renderPage() {
   if(isUserLoggedIn()) {
     $loggedIn = 'true';
     $actionUrl = "{$_SERVER['PHP_SELF']}?action=logout";
+    $username =  $_SESSION['ytUsername'];
   } else {
     $loggedIn = 'false';
     $actionUrl = htmlentities(getAuthSubUrl());
@@ -222,6 +223,7 @@ function renderPage() {
   <script type="text/javascript">
   var loggedIn = $loggedIn;
   var actionUrl = '$actionUrl';
+  var authenticatedUsername = '$username';
   </script>
   <!-- Javascript includes -->
   <script type="text/javascript" src="js/ext/swfobject.js"></script>
@@ -244,13 +246,15 @@ function renderPage() {
       <div id="friend_user_select_div">Select feed type: <form id="feed_type_select" onClick="ytActivityApp.switchFeedURI();">
         <input id="activity_feed" type="radio" name="feed_select" value="activity" checked /> Your activity
         <input id="friend_feed" type="radio" name="feed_select" value="friend" /> Friend activity
+        <input id="username_feed" type="radio" name="feed_select" value="usernames" /> Activity for user(s):
         </form>
-      </div>
-      <div id="username_search_div">Seach for activity by username:
-        <!-- handle form input on ENTER key and on button click -->
-        <input id="users_string_input" type="text" name="users_string" onkeypress="if (event.keyCode == 13) ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);"/>
-        <button name="submit" value="foo" onClick="ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);" />Search</button>
-        <small class="dark_text">(enter up to 20 names, separated by commas)</small>
+          <div id="user_input_fake_form">
+          <input id="users_string_input" type="text" name="users_string"
+          onfocus="ytActivityApp.clearUserNameForm();" 
+          onkeypress="if (event.keyCode == 13) ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);"/>
+          <button name="submit" value="foo" onClick="ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);" />Search</button><br />
+            <span class="dark_text">(enter up to 20 names, separated by commas)</span>
+          </div>
       </div>
     </div>
     <!-- div to display various status messages -->
@@ -263,7 +267,7 @@ function renderPage() {
   <div id="activity_stream"></div>
   <br class="clear_both" />
 </div>
-<a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
+<a id="play_video" href="#TB_inline?height=366&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
 <!-- hidden div to render the embedded player -->
 <div id="videobox"></div>
 </body>
