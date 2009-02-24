@@ -267,7 +267,7 @@ function renderPage() {
   <div id="activity_stream"></div>
   <br class="clear_both" />
 </div>
-<a id="play_video" href="#TB_inline?height=356&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
+<a id="play_video" href="#TB_inline?height=366&amp;width=425&amp;inlineId=videobox" class="thickbox"></a>
 <!-- hidden div to render the embedded player -->
 <div id="videobox"></div>
 </body>
