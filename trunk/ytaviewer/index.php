@@ -33,8 +33,8 @@ session_start();
 // Returns a Zend_Gdata_YouTube service object with keys and such
 function getYtService() {
   $applicationId = "TubeStalker";
-  $clientId = $GLOBALS['tubestalker_config']['client_id'];
-  $devKey = $GLOBALS['tubestalker_config']['dev_key'];
+  $clientId = $GLOBALS['ytaviewer_config']['client_id'];
+  $devKey = $GLOBALS['ytaviewer_config']['dev_key'];
   $httpClient = Zend_Gdata_AuthSub::getHttpClient($_SESSION['sessionToken']);
   $yt = new Zend_Gdata_YouTube($httpClient, $applicationId, $clientId, $devKey);
   $yt->setMajorProtocolVersion(2);
@@ -44,8 +44,8 @@ function getYtService() {
 // Returns a Memcache object to interact with the memcached servers
 function getMemcache() {
   $memcache = new Memcache;
-  $server = $GLOBALS['tubestalker_config']['memcache_server'];
-  $port = $GLOBALS['tubestalker_config']['memcache_port'];
+  $server = $GLOBALS['ytaviewer_config']['memcache_server'];
+  $port = $GLOBALS['ytaviewer_config']['memcache_port'];
   $memcache->connect($server, $port) or die ("Could not connect to memcached");
   return $memcache;
 }
@@ -54,7 +54,7 @@ function getMemcache() {
 // this data in memcache (if endabled).
 function fetchVideoMetadata($videoId) {
 
-  if($GLOBALS['tubestalker_config']['enable_memcache']) {
+  if($GLOBALS['ytaviewer_config']['enable_memcache']) {
     $memcache = getMemcache();
     $video = $memcache->get("video-$videoId");
   }
@@ -90,8 +90,8 @@ function fetchVideoMetadata($videoId) {
     }
   }
   // If memcache is enable, store the video data for the set expiry time
-  if($GLOBALS['tubestalker_config']['enable_memcache']) {
-    $expiration_time = $GLOBALS['tubestalker_config']['metadata_expiry_time'];
+  if($GLOBALS['ytaviewer_config']['enable_memcache']) {
+    $expiration_time = $GLOBALS['ytaviewer_config']['metadata_expiry_time'];
     $memcache->set("video-$videoId", $video, MEMCACHE_COMPRESSED, $expiration_time);
   }
   return $video;
@@ -101,7 +101,7 @@ function fetchVideoMetadata($videoId) {
 // representation that is stored in memcache based upon the value of $feedId
 function renderActivityFeed($feed, $feedId) {
   
-  if($GLOBALS['tubestalker_config']['enable_memcache']) {
+  if($GLOBALS['ytaviewer_config']['enable_memcache']) {
     $memcache = getMemcache();
     $compactFeed = $memcache->get($feedId);
   } else {
@@ -135,8 +135,8 @@ function renderActivityFeed($feed, $feedId) {
     }
     $compactFeed = json_encode($compactFeed);
 
-    if($GLOBALS['tubestalker_config']['enable_memcache']) {
-      $expiration_time = $GLOBALS['tubestalker_config']['feed_expiry_time'];
+    if($GLOBALS['ytaviewer_config']['enable_memcache']) {
+      $expiration_time = $GLOBALS['ytaviewer_config']['feed_expiry_time'];
       $memcache->set($feedId, $compactFeed, MEMCACHE_COMPRESSED, $expiration_time);
     }
   }
