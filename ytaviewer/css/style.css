@@ -1,6 +1,6 @@
 /* CSS for YouTube Activity Stream Viewer application */
 body {
-  background-color: #aaa;
+  background-color: #fff;
   color: #1F1F1F;
   font-family: Helvetica, Sans, Arial;
   font-size: medium;
@@ -14,6 +14,12 @@ img {
 input {
   margin-left: 10px;
   margin-top: 2px;
+}
+
+h4 {
+  padding: 2px;
+  border-bottom: 1px solid #999;
+  background-color: #eee;
 }
 
 
@@ -88,18 +94,17 @@ input {
 
 #friend_user_select_div {
   display: inline;
-  width: 40%;
+  width: 50%;
   float: left;
   padding-top: 10px;
-  padding-left: 5px;
 }
   
 #username_search_div {
   border-left: 1px solid #999;
   display: inline;
   float: right;
+  width: 49%;
   padding-left: 5px;
-  width: 55%;
 }
 
 /* == classes for messages and smaller elements == */
@@ -126,8 +131,7 @@ input {
 .title {
   color: #000;
   display: inline;
-  font-size: 150%;
-  font-weight: bold;
+  font-size: 100%;
   padding-left: 3px;
 }
 
