@@ -121,6 +121,12 @@ ytActivityApp.CSS_USER_ACTIVITY_NOT_FOUND_CLASSNAME = 'user_activity_not_found';
 ytActivityApp.CURRENT_USERNAME = null;
 
 /**
+ * The username(s) for the currently authenticated user
+ * @type String
+ */
+ytActivityApp.MY_USERNAME = null;
+
+/**
  * The message to display if embedding is disabled for a video
  * @type String
  */
@@ -249,8 +255,24 @@ $(document).ready(function(){
     // Show the search and feed selection options
     $('#options').css('display','block');
 
-    // Get the username of the currently authenticated user
-    ytActivityApp.getCurrentlyAuthenticatedUsername();
+    // On page reloads use the username saved in PHP's session
+    if (authenticatedUsername) {
+      ytActivityApp.MY_USERNAME = authenticatedUsername;
+      $('#' + ytActivityApp.USER_LOGIN_DIV).html(
+        'Logged in as: ' + ytActivityApp.MY_USERNAME +
+        ' &mdash; <a class="logout_link" href="' +
+        ytActivityApp.LOGOUT_URI + '" >log out</a>');
+    } else {
+      // On the first load, we need to fetch the username directly
+      $.get(ytActivityApp.URI, { q: "whoami" },
+        function(data){
+          ytActivityApp.MY_USERNAME = data.substring(1, data.length-1);
+          $('#' + ytActivityApp.USER_LOGIN_DIV).html(
+            'Logged in as: ' + ytActivityApp.MY_USERNAME +
+            ' &mdash; <a class="logout_link" href="' +
+            ytActivityApp.LOGOUT_URI + '" >log out</a>');
+        });
+    }
 
     // Display the div to show that we are loading activity
     $('#status').html(ytActivityApp.LOADING_IMAGE_HTML);
@@ -261,26 +283,16 @@ $(document).ready(function(){
     } else {
       ytActivityApp.getFriendActivityFeed();
     }
-  }
+  } else {
+    // Not logged in
+    $('#top').css({'margin-top': '150px', 'width': '100%',
+      'font-weight': 'bold', 'font-size': 'x-large'});
+    $('#' + ytActivityApp.USER_LOGIN_DIV).css(
+      {'font-size': '200%', 'font-weight': 'bold',
+      'background-color': '#F2FF7F', 'font-size': 'large',
+      'padding': '15px'});
+    }
 });
-
-/**
- * Retrieve the actual YouTube.com username of the currently authenticated user
- * and populate the log-in status div element.
- */
-ytActivityApp.getCurrentlyAuthenticatedUsername = function() {
-  $.get(ytActivityApp.URI, { q: "whoami" },
-    function(data){
-      var my_username = data.substring(1, data.length-1);
-
-      // Save the username
-      ytActivityApp.CURRENT_USERNAME = my_username;
-      // Populate the login div element
-      $('#' + ytActivityApp.USER_LOGIN_DIV).html('Logged in as: ' +
-          my_username + ' &mdash; <a class="logout_link" href="' +
-          ytActivityApp.LOGOUT_URI + '" >log out</a>')
-    });
-}
 
 /**
  * Switch the feed to be retrieved based on the radio button selected.
@@ -300,19 +312,26 @@ ytActivityApp.switchFeedURI = function() {
   if (selected_button == 0) {
     ytActivityApp.FEED_REQUESTED = ytActivityApp.USER_ACTIVITY_FEED;
     ytActivityApp.getActivityFeed();
-  } else {
+  } else if (selected_button == 1) {
     ytActivityApp.FEED_REQUESTED = ytActivityApp.FRIEND_ACTIVITY_FEED;
     ytActivityApp.getFriendActivityFeed();
+  } else if (selected_button == 2) {
+    // Add a message to the form
+    $('#users_string_input').attr({ value: 'Enter usernames...'});
   }
+}
+
+ytActivityApp.clearUserNameForm = function() {
+  $('#users_string_input').css('border-bottom', 'none').css('color', 'black');
+  $('#users_string_input').attr({ value: ''});
+
 }
 
 /**
  * Reset the feed selection form back to fetch the activity feed (default)
  */
 ytActivityApp.resetFormSelection = function() {
-  var form = document.getElementById(ytActivityApp.FORM_RADIO_SELECTION_ID);
-  form[0].checked = true;
-  form[1].checked = false;
+  ytActivityApp.FEED_REQUESTED = ytActivityApp.USER_ACTIVITY_FEED;
 }
 
 /**
@@ -352,7 +371,9 @@ ytActivityApp.cleanFormInputAndRequestActivityFeed = function(usernames) {
       validUsernames.push(username);
     }
   }
-  ytActivityApp.getActivityFeed(validUsernames.join(','), null);
+  var validUsernamesString = validUsernames.join(',');
+  ytActivityApp.CURRENT_USERNAME = validUsernamesString;
+  ytActivityApp.getActivityFeed(validUsernamesString);
 }
 
 /**
@@ -363,13 +384,24 @@ ytActivityApp.getActivityFeed = function(username) {
   if (loggedIn == true) {
     $('#status').show();
     ytActivityApp.resetFormSelection();
+    var form = document.getElementById(ytActivityApp.FORM_RADIO_SELECTION_ID);
     
     // Fetch activity for a specific user
     if (username) {
+      ytActivityApp.CURRENT_USERNAME = username;
+      form[0].checked = false;
+      form[1].checked = false;
+      form[2].checked = true;
+      $('#users_string_input').attr({ value: username});
       $.getJSON(ytActivityApp.URI, { q: "userfeed", who: username },
         ytActivityApp.processJSON);
     } else {
       // Fetch activity for the currently authenticated user
+      ytActivityApp.CURRENT_USERNAME = ytActivityApp.MY_USERNAME;
+      form[0].checked = true;
+      form[1].checked = false;
+      form[2].checked = false;
+      $('#users_string_input').attr({ value: ''});
       $.getJSON(ytActivityApp.URI, { q: "userfeed" },
         ytActivityApp.processJSON);
     }
@@ -383,6 +415,7 @@ ytActivityApp.getActivityFeed = function(username) {
 ytActivityApp.getFriendActivityFeed = function() {
   if (loggedIn == true) {
     $('#status').show();
+    $('#users_string_input').attr({ value: ''});
     $.getJSON(ytActivityApp.URI, { q: "friendfeed" },ytActivityApp.processJSON);
   }
 }
@@ -432,7 +465,7 @@ ytActivityApp.processJSON = function(data) {
     $('#status').hide();
     return;
   }
-  
+
   // If there are no result, display a message and return.
   if (data.length < 1) {
     $('#' + ytActivityApp.FEED_RESULTS_DIV).html(
@@ -447,6 +480,20 @@ ytActivityApp.processJSON = function(data) {
   }
 
   $('#' + ytActivityApp.FEED_RESULTS_DIV).html('<ul class="feed_output">');
+
+  // Add a small header with the title of the feed being requested
+  if (ytActivityApp.FEED_REQUESTED == ytActivityApp.FRIEND_ACTIVITY_FEED) {
+    $('#' + ytActivityApp.FEED_RESULTS_DIV).append(
+      '<h4>Your Friend Activity</h4>');
+  } else {
+    if (ytActivityApp.CURRENT_USERNAME) {
+      $('#' + ytActivityApp.FEED_RESULTS_DIV).append(
+        '<h4>Activity for ' + ytActivityApp.CURRENT_USERNAME + '</h4>');
+    } else {
+      $('#' + ytActivityApp.FEED_RESULTS_DIV).append(
+        '<h4>Your Activity</h4>');
+    }
+  }
 
   // Keep track of each video number for the embedded player
   var video_number = 0;
@@ -463,7 +510,7 @@ ytActivityApp.processJSON = function(data) {
     else {
       var updated = ytActivityApp.METADATA_UPDATED_TS_NOT_FOUND;
     }
-    
+
     var activity_type = entry.activity_type;
     // A more user-friendly string describing the activity
     var english_string = null;
@@ -512,7 +559,7 @@ ytActivityApp.processJSON = function(data) {
       '</span><br />');
 
     // Add a different CSS class for each activity
-    HTML_string.push('<div class="icon ' + activity_type + '"> &ndash; </div>');
+    HTML_string.push('<div class="icon ' + activity_type + '"> +</div>');
 
     // If the feed is an activity feed, then don't make the current user's
     // name clickable
@@ -675,3 +722,4 @@ ytActivityApp.processJSON = function(data) {
   $('#' + ytActivityApp.FEED_RESULTS_DIV).append('</ul></div>').show("slow")
   $('#status').hide();
 }
+

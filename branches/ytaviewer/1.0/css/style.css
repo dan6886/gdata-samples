@@ -1,6 +1,7 @@
 /* CSS for YouTube Activity Stream Viewer application */
+
 body {
-  background-color: #aaa;
+  background-color: #fff;
   color: #1F1F1F;
   font-family: Helvetica, Sans, Arial;
   font-size: medium;
@@ -14,6 +15,12 @@ img {
 input {
   margin-left: 10px;
   margin-top: 2px;
+}
+
+h4 {
+  padding: 2px;
+  border-bottom: 1px solid #999;
+  background-color: #eee;
 }
 
 
@@ -40,7 +47,8 @@ input {
   color: #0033D3;
   display: none;
   height: 50px;
-  padding: 7px 5px 5px 5px;
+  padding: 20px 10px 5px 10px;
+
 }
 
 #loginlogout {
@@ -88,19 +96,18 @@ input {
 
 #friend_user_select_div {
   display: inline;
-  width: 40%;
-  float: left;
-  padding-top: 10px;
-  padding-left: 5px;
 }
   
-#username_search_div {
-  border-left: 1px solid #999;
+#user_input_fake_form {
   display: inline;
+  margin-top: -25px;
+  width: 300px;
   float: right;
-  padding-left: 5px;
-  width: 55%;
+  padding-left: 10px;
 }
+
+
+
 
 /* == classes for messages and smaller elements == */
 
@@ -121,13 +128,14 @@ input {
 
 .dark_text {
   color: #1F1F1F;
+  font-size: x-small;
+  padding-left: 10px;
 }
 
 .title {
   color: #000;
   display: inline;
-  font-size: 150%;
-  font-weight: bold;
+  font-size: 100%;
   padding-left: 3px;
 }
 
@@ -225,7 +233,7 @@ span.video_title:hover {
 /* == classes for the divs that indicate the different activity types == */
 .icon {
   display: inline;
-  padding: 2px;
+  padding: 0px 2px 0px 2px;
   margin-right: 5px;
   font-size: small;
 }
