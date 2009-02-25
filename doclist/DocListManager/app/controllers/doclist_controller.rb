@@ -24,11 +24,10 @@ class DoclistController < ApplicationController
     begin
       feed = @client.get(url).to_xml
       @documents = create_docs(feed)
+      @doc_type = DOCUMENT_DOC_TYPE
     rescue GData::Client::AuthorizationError
       logout
     end
-    
-    @doc_type = DOCUMENT_DOC_TYPE
 
     if !request.xhr?
       render :action => 'documents'
@@ -38,127 +37,41 @@ class DoclistController < ApplicationController
   end
   
   def documents
-    begin
-      url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{DOCUMENT_DOC_TYPE}"
-      feed = @client.get(url).to_xml
-      @documents = create_docs(feed)
-    rescue GData::Client::AuthorizationError
-      logout
-    end
-    
     @doc_type = DOCUMENT_DOC_TYPE
-    
-    if request.xhr?
-      render :partial => 'documents_list'
-    end
+    get_documents_for(:category => [@doc_type, MINE_LABEL])
   end
   
   def spreadsheets
-    begin
-      url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{SPREADSHEET_DOC_TYPE}"
-      feed = @client.get(url).to_xml
-      @documents = create_docs(feed)
-    rescue GData::Client::AuthorizationError
-      logout
-    end
-    
     @doc_type = SPREADSHEET_DOC_TYPE
-    
-    if !request.xhr?
-      render :action => 'documents'
-    else
-      render :partial => 'documents_list'
-    end
+    get_documents_for(:category => [@doc_type, MINE_LABEL])
   end
   
   def presentations
-    begin
-      url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{PRESO_DOC_TYPE}"
-      feed = @client.get(url).to_xml
-      @documents = create_docs(feed)
-    rescue GData::Client::AuthorizationError
-      logout
-    end
-    
     @doc_type = PRESO_DOC_TYPE
-    
-    if !request.xhr?
-      render :action => 'documents'
-    else
-      render :partial => 'documents_list'
-    end
+    get_documents_for(:category => [@doc_type, MINE_LABEL])
   end
   
   def pdfs
-    begin
-      url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{PDF_DOC_TYPE}"
-      feed = @client.get(url).to_xml
-      @documents = create_docs(feed)
-    rescue GData::Client::AuthorizationError
-      logout
-    end
-
     @doc_type = PDF_DOC_TYPE
-
-    if !request.xhr?
-      render :action => 'documents'
-    else
-      render :partial => 'documents_list'
-    end
+    get_documents_for(:category => [@doc_type, MINE_LABEL])
   end
   
   def folders
-    begin
-      url = DOCLIST_FEED + "/-/#{FOLDER_DOC_TYPE}?showfolders=true"
-      feed = @client.get(url).to_xml
-      @documents = create_docs(feed)
-    rescue GData::Client::AuthorizationError
-      logout
-    end
-    
     @doc_type = FOLDER_DOC_TYPE
-    
-    if !request.xhr?
-      render :action => 'documents'
-    else
-      render :partial => 'documents_list'
-    end
+    get_documents_for(:category => [@doc_type, MINE_LABEL],
+                      :params=>'showfolders=true')
   end
   
   def starred
-    begin
-      url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{STARRED_LABEL}?showfolders=true"
-      feed = @client.get(url).to_xml
-      @documents = create_docs(feed)
-    rescue GData::Client::AuthorizationError
-      logout
-    end
-    
     @doc_type = DOCUMENT_DOC_TYPE
-
-    if !request.xhr?
-      render :action => 'documents'
-    else
-      render :partial => 'documents_list'
-    end
+    get_documents_for(:category => [STARRED_LABEL, MINE_LABEL],
+                      :params=>'showfolders=true')
   end
   
   def trashed
-    begin
-      url = DOCLIST_FEED + "/-/#{MINE_LABEL}/#{TRASHED_LABEL}?showfolders=true"
-      feed = @client.get(url).to_xml
-      @documents = create_docs(feed)
-    rescue GData::Client::AuthorizationError
-      logout
-    end
-    
     @doc_type = DOCUMENT_DOC_TYPE
-
-    if !request.xhr?
-      render :action => 'documents'
-    else
-      render :partial => 'documents_list'
-    end
+    get_documents_for(:category => [TRASHED_LABEL, MINE_LABEL],
+                      :params=>'showfolders=true')
   end
   
   def show
@@ -288,6 +201,25 @@ private
       documents.push(doc) if !doc.nil?
     end
     return documents
+  end
+  
+  def get_documents_for(options={})
+    options[:category] ||= [MINE_LABEL]
+
+    begin
+      uri = DOCLIST_FEED + "/-/#{options[:category].join('/')}"
+      uri += "?#{options[:params]}" if options[:params]
+      feed = @client.get(uri).to_xml
+      @documents = create_docs(feed)
+    rescue GData::Client::AuthorizationError
+      logout
+    end
+
+    unless request.xhr?
+      render :action => 'documents'
+    else
+      render :partial => 'documents_list'
+    end
   end
   
 end
