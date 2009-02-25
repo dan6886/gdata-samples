@@ -32,7 +32,7 @@ session_start();
 
 // Returns a Zend_Gdata_YouTube service object with keys and such
 function getYtService() {
-  $applicationId = "TubeStalker";
+  $applicationId = "YTAViewer";
   $clientId = $GLOBALS['ytaviewer_config']['client_id'];
   $devKey = $GLOBALS['ytaviewer_config']['dev_key'];
   $httpClient = Zend_Gdata_AuthSub::getHttpClient($_SESSION['sessionToken']);
