@@ -1,0 +1,285 @@
+{% extends "base.html" %} 
+
+{% block body %}
+
+<div id="localsearch" class="wrap">
+  <form action="javascript:void(0);" id="local-form" class="medrounded">
+    <h3>Search for restaurants in your area</h3>
+    <table id="local-searchform">
+      <tr>
+        <td>
+          <input type="text" id="local-term" value="Citizen Cake"  class="text"/>
+          <label for="local-term">What kind of food do you want to search for?</label>
+        </td>
+        <td>
+          <input type="text" id="local-location" value="San Francisco, CA, USA"  class="text" />
+          <label for="local-term">Where do you want to search?</label>
+        </td>
+        <td>
+          <input type="submit" id="local-search" class="button" value="Search"></input>
+        </td>
+      </tr>
+    </table>
+    <div id="local-results"></div>
+    <div id="restaurant-info"></div>
+    
+  </form>
+  
+</div>
+<script type="text/javascript">
+  var flip_ajax_api_info = 0;
+  if (google.loader.ClientLocation) {
+    loc = google.loader.ClientLocation.address;
+    $("#local-location").val(loc.city + ", " + loc.region + ", " + loc.country);
+  }
+
+  function search_select(restaurant_id) {
+    $("#restaurant-" + restaurant_id).addClass("disabled");
+    var request = $.ajax({
+      type: "POST",
+      url: "/ajax/restaurants",
+      data: { "restaurant_id" : restaurant_id },
+      dataType: "text",
+      success: function(data) {
+        restaurants_update_list(data);
+      }
+    });
+  };
+
+  function show_restaurant_info(restaurant_id) {
+    $('#local-results').addClass('hidden');
+    $("#restaurant-info").removeClass('hidden');
+    $("#restaurant-info").css('visibility', 'visible');
+    $('#restaurant-info').html(
+      '<div class="loading">Loading data ...<br />' + 
+      '<img src="/static/images/loadingAnimation.gif" /></div>');
+    
+    // Load some data from the YouTube and PWA APIs
+    $("#restaurant-info").load(
+      "/ajax/restaurants/restaurant_info?restaurant_id=" + restaurant_id, null,
+      add_close_button);
+  };
+  
+  function ajax_api_restaurant_info(restaurant_name) {
+    // Set up searchControl
+    var searchControl = new google.search.SearchControl();
+    // Set up options to show results from Blog search
+    var options = new google.search.SearcherOptions();
+    options.setExpandMode(google.search.SearchControl.EXPAND_MODE_OPEN);
+    options.setRoot(document.getElementById("blog-search-results"));
+
+    // Set up options to show partial results from other searchers
+    var p_options = new google.search.SearcherOptions();
+    p_options.setExpandMode(google.search.SearchControl.EXPAND_MODE_PARTIAL);
+    p_options.setRoot(document.getElementById("blog-search-results"));
+    // Add searchers
+    searchControl.addSearcher(new google.search.BlogSearch, options);
+    searchControl.addSearcher(new google.search.WebSearch, p_options);
+    searchControl.addSearcher(new google.search.NewsSearch, p_options);
+    searchControl.addSearcher(new google.search.BookSearch, p_options);
+
+    // Draw the search control
+    searchControl.draw(document.getElementById("searchcontrol"));
+    // Execute an intial search
+    searchControl.execute(restaurant_name);
+  };
+
+  function toggle_ajax_api_data() {
+    $('tr.ajax-search-results').toggle();
+    if (flip_ajax_api_info % 2 == 0) {
+      $('#ajax-results-toggle').text('Hide Results from AJAX Search API');
+      flip_ajax_api_info++;
+    } else {
+      $('#ajax-results-toggle').text('Show Results from AJAX Search API');
+      flip_ajax_api_info++;
+    }
+  };
+
+  function close_restaurant_info() {
+    $('#restaurant-info').addClass('hidden');
+    $('#local-results').removeClass('hidden');
+  };
+
+  function add_close_button() {
+  };
+
+  function search_ondata() {
+  };
+
+  $("#local-form").submit(function() {
+    $('#local-results').html('');
+    $('#restaurant-info').html('');
+    $('#local-results').removeClass('hidden');
+    var location = encodeURIComponent($("#local-location").val());
+    var term = encodeURIComponent($("#local-term").val());
+    $("#local-results").load("/ajax/restaurants/search?term=" + term + "&location=" + location, null, search_ondata);
+    return false;
+  });
+  
+  function search_close() {
+    $("#local-results").text("");
+  };
+</script>
+
+<div id="belowsearchwrap" class="largebottomrounded">
+  
+  {% if invites %}
+    <div id="inviteslist" class="inset medrounded">
+      <h3>You've been invited out!</h3>
+      <table class="friend-table">
+      {% for invite in invites %}
+        <tr>
+          <td><img src="{{ invite.user.thumbnail_url }}" class="thumbnailurl" /></td>
+          <td>
+            <a href="{{ invite.user.profile_url }}">{{ invite.user.display_name }}</a>
+            wants to go to <strong>{{ invite.restaurant.name }}</strong>
+            {% ifnotequal invite.restaurant.rating_average "-1" %}
+              <img src="/static/images/{{ invite.restaurant.rating_average }}stars.png" />
+            {% endifnotequal %} with you.
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
+  {% endif %}
+  
+  <div id="friendconnect-text" class="inset medrounded">
+    <script type="text/javascript">
+      init = function(times) {
+        if (times > 1) {
+          window.top.location.href = "/";
+        }
+      };
+    </script>
+    {% ifequal viewer.user_type "loggedout_friendconnectuser" %}
+      <h3>Logged out of Friend Connect!</h3>
+      <p>It looks like your account is linked with a Google Friend Connect
+        account, but you are not signed in.  Your friends list will be
+        unavailable until you log back in to Friend Connect!</p>
+      <p id="friendconnect-text-login"></p>
+      <script type="text/javascript">
+        google.friendconnect.renderSignInButton({
+          "id" : "friendconnect-text-login",
+          "text" : "Log back in to Friend Connect",
+          "style" : "long"
+        });
+      </script>
+    {% endifequal %}
+    {% ifequal viewer.user_type "user" %}
+      <h3>Invite your friends out to dinner</h3>
+      <p>Did you know that you can interact with your friends on this site?  
+        By logging in with a 
+        <a target="_blank" href="http://www.google.com/friendconnect">Google 
+        Friend Connect</a> account, you'll be able to
+        see where your friends want to eat, and invite them to the places you
+        want to try.   After all, dinner is better when it's social!
+      </p>
+      <p id="friendconnect-text-login"></p>
+      <script type="text/javascript">
+        google.friendconnect.renderSignInButton({
+          "id" : "friendconnect-text-login",
+          "text" : "View your friends on this site",
+          "style" : "standard"
+        });
+      </script>
+    {% endifequal %}
+    {% ifequal viewer.user_type "friendconnectuser" %}
+      <h3>Your friends</h3>
+      <div id="friends-list">
+        {% include "ajax_friends.html" %}
+      </div>
+      <table class="friend-table">
+        <tr>
+          <td class="prev">
+            <a id="friends-prev" {% if not friends_prev_start %}class="hidden"{% endif %} href="/ajax/friends?start={{ friends_prev_start }}&count={{ friends_count }}">&lt;- Previous</a>
+          </td>
+          <td class="next">
+            <a id="friends-next" {% if not friends_next_start %}class="hidden"{% endif %} href="/ajax/friends?start={{ friends_next_start }}&count={{ friends_count }}">Next -&gt;</a>
+          </td>
+        </tr>
+      </table>
+
+      <script type="text/javascript">
+        function friends_page() {
+          var request = $.ajax({
+            type: "GET",
+            url: $(this).attr("href"),
+            dataType: "text",
+            success: function(data) {
+              prev_start = request.getResponseHeader("X-Start-Prev");
+              next_start = request.getResponseHeader("X-Start-Next");
+              count = request.getResponseHeader("X-Count");
+
+              if (next_start) {
+                next = "/ajax/friends?start=" + next_start + "&count=" + count;
+                $("#friends-next").attr("href", next).removeClass("hidden");
+              } else {
+                $("#friends-next").addClass("hidden");
+              }
+              if (prev_start) {
+                prev = "/ajax/friends?start=" + prev_start + "&count=" + count;
+                $("#friends-prev").attr("href", prev).removeClass("hidden");
+              } else {
+                $("#friends-prev").addClass("hidden");
+              } 
+              $("#friends-list").html(data);      
+            }
+          });
+          return false;
+        };
+
+        $("#friends-prev").click(friends_page);
+        $("#friends-next").click(friends_page);
+
+      </script>
+    {% endifequal %}
+
+    <p class="psa">Make new friends on the <a href="/members.html">members</a> page!</p>
+  </div>
+
+  <h3>Your bookmarked restaurants <img src="/static/images/tag_red.png" /></h3>
+  <div id="labels-list">
+    {% include "ajax_restaurants.html" %}
+  </div>
+
+  <script type="text/javascript">
+    function restaurants_delete(key) {
+      var request = $.ajax({
+        type: "DELETE",
+        url: "/ajax/restaurants?key=" + key,
+        dataType: "text",
+        success: function(data) { 
+          restaurants_update_list(data);  
+        }
+      });
+      return false;
+    };
+  
+    function restaurants_refresh() {
+      var request = $.ajax({
+        type: "GET",
+        url: "/ajax/restaurants",
+        dataType: "text",
+        success: function(data) {
+          restaurants_update_list(data);
+        }
+      });
+    };
+    
+    function restaurants_update_list(html) {
+      $("#labels-list").html(html);
+      {% if viewer_friends %}
+        $(".invite").removeClass("hidden");
+      {% endif %}
+    };
+    
+    {% if viewer_friends %}
+      $(".invite").removeClass("hidden");
+    {% endif %}
+  </script>
+
+
+  {% include "widget_invite.html" %}
+  <br class="clear" />
+</div>
+{% endblock body %}

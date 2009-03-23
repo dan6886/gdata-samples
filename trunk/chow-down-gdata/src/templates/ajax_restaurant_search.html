@@ -1,0 +1,39 @@
+{% if restaurants %}
+<img id="searchresult-map" src="http://maps.google.com/staticmap?markers={% for restaurant in restaurants %}{{ restaurant.location }},blue{{ forloop.counter }}|{% endfor %}&size=300x300&maptype=mobile&sensor=false&key={{ maps_api_key }}" />
+
+
+<table class="restaurant-table">
+{% for restaurant in restaurants %}
+  <tr id="restaurant-{{ restaurant.restaurant_id }}" class="{% cycle 'even','odd' %} searchresult">
+    <td class="counter">{{ forloop.counter }}.)</td>
+    <td>
+      <div class="title">
+        <a href="javascript:void(0);" onclick="show_restaurant_info('{{ restaurant.restaurant_id }}');">{{ restaurant.name }}</a>
+
+      </div>
+      <div class="address">
+        {{ restaurant.address }}, {{ restaurant.city }} {{ restaurant.state }}
+      </div>
+      <div class="check">
+        <a href="javascript:void(0);" onclick="search_select('{{ restaurant.restaurant_id }}');">Bookmark this restaurant</a>
+      </div>
+      <div class="info">
+        <a href="javascript:void(0);" onclick="show_restaurant_info('{{ restaurant.restaurant_id }}');">More ...</a>
+      </div>
+
+    </td>
+    <td class="rating">
+      {% ifnotequal restaurant.rating_average "-1" %}
+        <img src="/static/images/{{ restaurant.rating_average }}stars.png" /><br />
+      {% endifnotequal %}
+      ({{ restaurant.rating_count }} reviews)
+    </td>
+
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+<p style="text-align: center">Sorry, there were no results for that search.</p>
+{% endif %}
+<p class="closelink"><a id="searchresult-close" href="javascript:void(0);" onclick="search_close();" class="smallrounded whitebutton">Close</a></p>
+<br class="clear" />

@@ -1,0 +1,21 @@
+Welcome to The Chow Down!
+
+ * To run locally, edit src/customsettings.py.default and follow the 
+   instructions in that file.  
+   
+ * If you want to deploy, register a new App Engine site and change the 
+   application setting in app.yaml to match the name that you registered.
+   
+ * The source code is documented, so poke through it to follow along.  If you
+   want a better walkthrough, read:
+   http://code.google.com/apis/friendconnect/articles/serverside_integration.html
+ 
+ * The source of this project lives at:
+   http://code.google.com/p/google-friend-connect-samples/
+   Patches are welcome!
+   
+ * The live demo site lives at:
+   http://chow-down.appspot.com
+   
+Post to http://groups.google.com/group/google-friend-connect-developers if 
+things go horribly wrong. 

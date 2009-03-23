@@ -1,0 +1,13 @@
+{% if viewer_friends %}
+  Showing friends {{ viewer_friends.start|add:"1" }} to {{ viewer_friends.end }} of {{ viewer_friends.total }}
+  {% for friend in viewer_friends %}
+  <div id="invitefriends-friend-{{ friend.provider_id }}" class="hidden invitefriends-friend">
+    <img src="{{ friend.thumbnail_url }}" />
+    <input type="hidden" id="invitefriends-name-{{ friend.provider_id }}" value="{{ friend.display_name }}" />
+    <input type="checkbox" id="invitefriends-checkbox-{{ friend.provider_id }}" 
+           class="invitefriends-checkbox"
+           value="{{ friend.guid }}"
+           onclick="invitefriends_togglefriend('{{ friend.provider_id }}')"/><a href="{{ friend.profile_url }}">{{ friend.display_name }}</a>
+  </div>
+  {% endfor %}
+{% endif %}
