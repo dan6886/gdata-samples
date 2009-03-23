@@ -1,0 +1,34 @@
+{% if viewer_friends %}
+  Showing friends {{ viewer_friends.start|add:"1" }} to {{ viewer_friends.end }} of {{ viewer_friends.total }}
+
+  <table class="friend-table">
+  {% for friend in viewer_friends %}
+    <tr>
+      <td><img src="{{ friend.thumbnail_url }}" class="thumbnailurl" /></td>
+      <td>
+        <a href="{{ friend.profile_url }}">{{ friend.display_name }}</a>
+        {% if friend.labels %}
+          wants to go to: 
+          <table class="restaurant-table">
+            {% for label in friend.labels %}
+              <tr>
+                <td class="name">{{ label.restaurant.name }}</td>
+                <td class="rating">
+                  {% ifnotequal label.restaurant.rating_average "-1" %}
+                    <img src="/static/images/{{ label.restaurant.rating_average }}stars.png" /><br />
+                  {% endifnotequal %}
+                </td>
+              </tr>
+              
+            {% endfor %}
+          </table>
+        {% else %}
+        does not want to go to any restaurants.  Why don't you invite them out?
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+{% else %}
+<p>You haven't made any friends yet!</p>
+{% endif %}

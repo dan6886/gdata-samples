@@ -1,0 +1,162 @@
+{% ifequal viewer.user_type "friendconnectuser" %}
+<div id="invitefriends" class="hidden" style="position: fixed; width: 30%; padding-top: 50px;">
+  <div class="shadow largerounded">
+  <div class="chrome medrounded">
+    <a class="cancel" href="javascript:void(0);" onclick="invitefriends_close();">Cancel</a>
+    <h3>Invite your friends</h3>
+
+    <form id="invitefriends-form" action="javascript:void(0);">
+      <input id="invitefriends-labelid" type="hidden" />
+      <table class="friend-table">
+        <tr>
+          <td colspan="2" id="invitefriends-list"></td>
+        </tr>
+        <tr>
+          <td class="prev"><a id="invitefriends-prev" {% if not friends_prev_start %}class="hidden"{% endif %} href="/invite/friends?start={{ friends_prev_start }}&count={{ friends_count }}">&lt;- Previous</a></td>
+          <td class="next"><a id="invitefriends-next" {% if not friends_next_start %}class="hidden"{% endif %} href="/invite/friends?start={{ friends_next_start }}&count={{ friends_count }}">Next -&gt;</a></td>
+        </tr>
+        <tr>
+          <td id="invitefriends-selected"></td>
+          <td class="invite">
+            <input type="submit" class="button" value="Invite"></input>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+function invitefriends_show(label_id) {
+  //var window_width = $(window).outerWidth();
+  //var window_height = $(window).outerHeight();
+  
+  window.invitefriends_selected = {};
+  $("#invitefriends-labelid").val(label_id);
+  
+  $("#invitedfriends-" + label_id + " .invitedfriend-id").map(function(i, friend) {
+    var id_input = $(friend);
+    name = id_input.closest(".invitedfriend-name").text();
+    window.invitefriends_selected[id_input.val()] = name;
+  });  
+  
+  friends_url = "/invite/friends?start=0&count={{ friends_count }}";
+  invitefriends_getfriendslist(friends_url, function() {
+    $("#invitefriends").removeClass("hidden")
+                       .css("left", "35%")
+                       .css("top", "100px")[0].scrollIntoView(true);    
+  });
+};
+
+function invitefriends_close() {
+  $("#invitefriends").addClass("hidden");
+};
+
+function invitefriends_updateselected() {
+  names = [];
+  $.each(window.invitefriends_selected, function(id, name) {
+    names.push(name);
+  });
+  
+  if (names.length > 0) {
+    $("#invitefriends-selected").html("Inviting <strong>" + names.join("</strong>, <strong>") + "</strong>");
+  }
+};
+
+function invitefriends_togglefriend(user_id) {
+  var checkbox = $("#invitefriends-checkbox-" + user_id);
+  var container = $("#invitefriends-friend-" + user_id);
+  guid = checkbox.val();
+  if (checkbox.is(":checked")) {
+    window.invitefriends_selected[guid] = $("#invitefriends-name-" + user_id).val();
+  } else {
+    delete window.invitefriends_selected[guid];
+  }
+  invitefriends_updateselected();
+};
+
+function invitefriends_selectedids() {  
+  ids = []
+  $.each(window.invitefriends_selected, function(id, name) {
+    ids.push(id);
+  });
+  return ids;
+};
+
+function invitefriends_oninvite() {
+  ids = invitefriends_selectedids();
+  var request = $.ajax({
+    type: "POST",
+    url: "/invite/friends",
+    data: { "label_id" : $("#invitefriends-labelid").val(),
+            "invited_ids" : ids.join(",") },
+    dataType: "text",
+    success: function(data) {
+      restaurants_refresh();
+      invitefriends_close();
+    }
+  });
+
+  return false;
+};
+
+function invitefriends_renderpage() {
+  $.each($("#invitefriends-list .invitefriends-checkbox"), function (index, checkbox) {
+    checkbox = $(checkbox);
+    if (window.invitefriends_selected.hasOwnProperty(checkbox.val())) {
+      checkbox.attr("checked", true);
+    }
+  });
+  
+  $("#invitefriends-list .hidden").removeClass("hidden");
+};
+
+function invitefriends_getfriendslist(url, callback) {
+  var request = $.ajax({
+    type: "GET",
+    url: url,
+    dataType: "text",
+    success: function(data) {
+      prev_start = request.getResponseHeader("X-Start-Prev");
+      next_start = request.getResponseHeader("X-Start-Next");
+      count = request.getResponseHeader("X-Count");
+
+      if (next_start) {
+        next = "/invite/friends?start=" + next_start + "&count=" + count;
+        $("#invitefriends-next").attr("href", next).removeClass("hidden");
+      } else {
+        $("#invitefriends-next").addClass("hidden");
+      }
+      if (prev_start) {
+        prev = "/invite/friends?start=" + prev_start + "&count=" + count;
+        $("#invitefriends-prev").attr("href", prev).removeClass("hidden");
+      } else {
+        $("#invitefriends-prev").addClass("hidden");
+      } 
+      
+      
+      $("#invitefriends-list").html(data);   
+      $("#invitefriends-selected").text(""); 
+      invitefriends_renderpage();
+      invitefriends_updateselected();
+      if (callback) {
+        callback(); 
+      }
+    }
+  });
+};
+
+function invitefriends_page() {
+  invitefriends_getfriendslist($(this).attr("href"));
+  return false;
+};
+
+$("#invitefriends-prev").click(invitefriends_page);
+$("#invitefriends-next").click(invitefriends_page);    
+$("#invitefriends-form").submit(invitefriends_oninvite);
+
+</script>
+
+{% endifequal %}

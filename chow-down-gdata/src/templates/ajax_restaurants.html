@@ -1,0 +1,44 @@
+{% if labels %}
+  <table class="restaurant-table">
+  {% for label in labels %}
+    <tr>
+      <td class="counter">{{ forloop.counter }}.)</td>
+      <td>
+        <div class="title">
+          <a href="javascript:void(0);" onclick="show_restaurant_info('{{ label.restaurant.restaurant_id }}');">{{ label.restaurant.name }}</a>
+        </div>
+        <div class="address">
+        {% if label.restaurant.url %}
+        <a href="{{ label.restaurant.url }}" target="_blank">{{ label.restaurant.url }} </a><br />
+        {% endif %}
+
+          {{ label.restaurant.address }}, {{ label.restaurant.city }} {{ label.restaurant.state }}
+        </div>
+        {% if label.invitees %}
+          <div id="invitedfriends-{{ label.key }}" class="invites smallrounded">You've invited:
+
+          {% for friend in label.invitees %}
+              <img src="{{ friend.thumbnail_url }}" /> 
+              <a href="{{ friend.profile_url }}>" class="invitedfriend-name"><input class="invitedfriend-id" type="hidden" value="{{ friend.guid }}" />{{ friend.display_name }}</a>{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+          to this restaurant.
+          </div>
+        {% endif %}
+        <div class="controls">
+          <a class="delete" href="javascript:void(0);" onclick="restaurants_delete('{{ label.key }}');">Remove</a>
+          <a class="hidden invite" href="javascript:void(0);" onclick="invitefriends_show('{{ label.key }}');">Invite</a>
+          
+        </div>
+      </td>
+      <td class="rating">
+        {% ifnotequal label.restaurant.rating_average "-1" %}
+          <img src="/static/images/{{ label.restaurant.rating_average }}stars.png" /><br />
+        {% endifnotequal %}
+        ({{ label.restaurant.rating_count }} reviews)
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+{% else %}
+<p>You haven't marked any restaurants to try yet!</p>
+{% endif %}
