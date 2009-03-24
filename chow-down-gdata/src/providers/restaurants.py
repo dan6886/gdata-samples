@@ -230,7 +230,7 @@ class RestaurantProvider(object):
       "rating_count" : rating_count,
       "url" : result["BusinessUrl"],
       "location" : location,
-      "categories" : categories,
+      "categories" : categories
     }
     
     return models.Restaurant(**params)
@@ -333,7 +333,7 @@ class RestaurantProvider(object):
       return self._convert_result_to_restaurant(result)
     return None
   
-  def restaurant_info(self, restaurant_id):
+  def restaurant_info(self, restaurant_id, cache_metadata=True):
     """ Fetch information about a particular restaurant by using the YouTube
     Data API and the Picasa Web Albums API.
     
@@ -347,18 +347,27 @@ class RestaurantProvider(object):
       fetched from either API.
      """
     restaurant = self.get_restaurant(restaurant_id)
-    restaurant.has_video = False
+    metadata_has_been_searched = False
+    try:
+      metadata_has_been_searched = restaurant.metadata_has_been_searched
+    except AttributeError:
+      pass
+    if metadata_has_been_searched is True:
+      # We already did the retrieval below so just return the restaurant
+      logging.info(
+        "YT and Picasa data found in cache for restaurant %s" % restaurant_id); 
+      return restaurant
 
     # Search the YouTube API using the Gdata Python Client
     gdata_youtube_client = gdata.youtube.service.YouTubeService();
-
     # Construct a query object
     query = gdata.youtube.service.YouTubeVideoQuery()
-
     # Set the search term and the number of results to retrieve
     query.vq = "%s %s" % (restaurant.name, restaurant.city)
     video_feed = gdata_youtube_client.YouTubeQuery(query)
-    
+    logging.info(
+      "Searching YouTube for videos for restaurant %s" % restaurant_id)
+    restaurant.has_video = False
     if len(video_feed.entry) > 0:
       # We only care about the first entry
       video_entry = video_feed.entry[0]
@@ -383,8 +392,10 @@ class RestaurantProvider(object):
     photo_feed = gdata_picasawebalbums_client.GetFeed(
       "/data/feed/api/all?q=%s%%20%s&max-results=10&thumbsize=32c" %
         (query_parameters[0], query_parameters[1]))
-    restaurant.has_photos = False
+    logging.info(
+      "Searching Picasa Web Albums for images on restaurant %s" % restaurant_id)
 
+    restaurant.has_photos = False
     # A temporary list to hold the photo data while it is being parsed
     temp_photos = []
     if len(photo_feed.entry) > 0:
@@ -392,6 +403,11 @@ class RestaurantProvider(object):
       for photo_entry in photo_feed.entry:
         temp_photos.append(self._process_picasa_photo_data(photo_entry))
       restaurant.photos = temp_photos
+    # Remember whether we searched the YT and PWA APIs for metadata
+    restaurant.metadata_has_been_searched = True
+
+    if cache_metadata is True:
+      self._cache_restaurant(restaurant)
     return restaurant
   
   def _process_picasa_photo_data(self, photo_entry):
