@@ -29,6 +29,7 @@ module DoclistHelper
         url_list['pdf'] = export_link + '&exportFormat=pdf'
         url_list['ppt'] = export_link + '&exportFormat=ppt'
         url_list['swf'] = export_link + '&exportFormat=swf'
+	url_list['png'] = export_link + '&exportFormat=png'
       when ApplicationController::SPREADSHEET_DOC_TYPE
         url_list['pdf'] = export_link + '&fmcmd=12'
         url_list['xls'] = export_link + '&fmcmd=4'
