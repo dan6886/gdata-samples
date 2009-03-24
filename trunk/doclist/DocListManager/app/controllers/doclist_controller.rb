@@ -80,7 +80,7 @@ class DoclistController < ApplicationController
     
     entry = @client.get(url).to_xml
     @document = create_doc(entry)
-    if @document.type == DOCUMENT_DOC_TYPE
+    if @document.type == DOCUMENT_DOC_TYPE or @document.type == PRESO_DOC_TYPE
       export_url = @document.links['export'] + '&exportFormat=png'
       # Src value for an imaging containing a data URI
       @preview_img = Base64.encode64(download(export_url))
