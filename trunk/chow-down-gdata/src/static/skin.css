@@ -668,12 +668,12 @@ td.youtube {
   width: 450px;
 }
 
-.youtube-video {
+#youtube-video {
   padding-left: 10px;
   border-left: 1px solid #aaa;
 }
 
-.video-metadata {
+#video-metadata {
   color: #fff;
 }
 

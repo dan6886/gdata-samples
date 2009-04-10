@@ -24,7 +24,7 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-# Used 49 times in query history.
+# Used 2 times in query history.
 - kind: Label
   properties:
   - name: user

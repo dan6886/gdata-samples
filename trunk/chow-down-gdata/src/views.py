@@ -226,7 +226,8 @@ class JsonRestaurantInfoView(controller.JsonRenderer):
     """ Takes a search from the querystring and renders the results as JSON."""
     params = self.require_parameters("restaurant_id")
     provider = restaurants.RestaurantProvider()
-    result = provider.restaurant_info(params["restaurant_id"])
+    #result = provider.restaurant_info(params["restaurant_id"])
+    result = provider.get_restaurant(params["restaurant_id"])
     self.render({
       "restaurant" : result,
     })
