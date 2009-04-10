@@ -7,7 +7,16 @@ $.getJSON(YouTubeFeedUrl,
     function(data) {
       if(data.feed && data.feed.entry && data.feed.entry[0]) {
         var entry = data.feed.entry[0];
-        var swfUrl = entry.media$group.media$content[0].url;
+        
+        var swfUrl = null;
+        for(var i in entry.media$group.media$content) {
+          if(entry.media$group.media$content[i].yt$format == '5') {
+            swfUrl = entry.media$group.media$content[i].url;
+          }
+        }
+        if(!swfUrl) {
+          return;
+        }
         $("<div/>").attr("id", "ytplayer").appendTo("#youtube-video");
         swfobject.embedSWF(swfUrl, "ytplayer", "425", "356", "8");
         $("<strong>").text(entry.title.$t).appendTo("#youtube-video").wrap("<p></p>");
