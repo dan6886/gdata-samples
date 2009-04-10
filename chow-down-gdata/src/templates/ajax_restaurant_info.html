@@ -1,5 +1,53 @@
 {% if restaurant %}
 <div id="restaurant-info-inner">
+<script type="text/javascript">
+
+var YouTubeFeedUrl = "http://gdata.youtube.com/feeds/api/videos?v=2&q=" + encodeURIComponent("{{restaurant.name}} {{restaurant.city}}") + "&alt=json-in-script&format=5&max-results=1&callback=?";
+$.getJSON(YouTubeFeedUrl,
+    function(data) {
+      if(data.feed && data.feed.entry && data.feed.entry[0]) {
+        var entry = data.feed.entry[0];
+        var swfUrl = entry.media$group.media$content[0].url;
+        $("<div/>").attr("id", "ytplayer").appendTo("#youtube-video");
+        swfobject.embedSWF(swfUrl, "ytplayer", "425", "356", "8");
+        $("<strong>").text(entry.title.$t).appendTo("#youtube-video").wrap("<p></p>");
+        $("<div/>").attr("id", "video-metadata").text("uploaded by ").appendTo("#youtube-video");
+        var uploader = entry.author[0].name.$t;
+        $("<a/>").attr("target", "_blank").attr("href", "http://www.youtube.com/user/" + uploader).text(uploader).appendTo("#video-metadata");
+        $("<br/>").appendTo("#video-metadata");
+        $("<span/>").attr("class", "video-metadata-description").text(entry.media$group.media$description.$t).appendTo("#video-metadata");
+      }
+    }
+  );
+  
+var PicasaFeedUrl = "http://picasaweb.google.com/data/feed/api/all?v=2&q=" + encodeURIComponent("{{restaurant.name}} {{restaurant.city}}") + "&alt=json-in-script&kind=photo&max-results=10&thumbsize=32c&callback=?";
+$.getJSON(PicasaFeedUrl,
+    function(data) {
+      if(!(data.feed && data.feed.entry && data.feed.entry[0])) {
+        return;
+      }
+      $("#picasa-images").show();
+      $.each(data.feed.entry, function(i, item){
+        var altLink = "#";
+        for(var i in item.link) {
+          if(item.link[i].rel == 'alternate') {
+            altLink = item.link[i].href;
+          }
+        }
+        var title = "Untitled";
+        if(item.media$group.media$description.$t) {
+          title = item.media$group.media$description.$t;
+        }
+        title = title + " by " + item.author[0].name.$t;
+        $("<a/>").attr("href", altLink).attr("target", "_blank").append(
+          $("<img/>").attr("src", item.media$group.media$thumbnail[0].url).attr("class","picasa-image").attr("title", title)
+        ).appendTo("#restaurant-photos");
+        
+        $("#restaurant-photos > a").wrap("<li class='restaurant-photo'><div class='restaurant-photo-div'></div></li>");
+      });
+    }
+  );
+</script>
 <table class="restaurant-info-table">
   <tr>
     <td>
@@ -22,39 +70,15 @@
       </div>
     </td>
     <td class="youtube">
-      {% if restaurant.has_video %}
-      <div class="youtube-video">
-        {{ restaurant.player }}
-        <p><strong>{{ restaurant.video_title }}</strong></p>
-        <div class="video-metadata">uploaded by
-          <a href="http://www.youtube.com/user/{{ restaurant.video_author_name }}" target="_blank">{{ restaurant.video_author_name }}</a><br />
-          <span class="video-metadata-description">
-            {{ restaurant.video_description }}
-          </span>
-        </div>
-      </div>
-      {% endif %}
+      <div id="youtube-video"/>
     </td>
   </tr>
   <tr>
     <td colspan="2">
-    {% if restaurant.has_photos %}
-    <div id="picasa-images">Images from Picasa:<br/>
+    <div id="picasa-images" style="display:none">Images from Picasa:<br/>
       <ul id="restaurant-photos">
-        {% for photo in restaurant.photos %}
-        <li class="restaurant-photo">
-          <div class="restaurant-photo-div">
-            <a href="{{ photo.alt_link_href }}" target="_blank">
-            <img class="picasa-image" src="{{ photo.thumbnail_url }}"
-                 width="{{ photo.thumbnail_width }}"
-                 height="{{ photo.thumbnail_height }}" 
-                 title="{{ photo.title }} by {{ photo.author_name }}"/>
-            </a>
-          </div>
-        </li>
-        {% endfor %}
       </ul>
-    </div>    {% endif %}
+    </div>    
     </td>
   </tr>
   <tr>

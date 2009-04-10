@@ -30,14 +30,6 @@ from google.appengine.api import urlfetch
 # Django imports
 from django.utils import simplejson
 
-# GData Python Client imports
-import gdata.youtube.service
-import gdata.photos.service
-import gdata.urlfetch
-
-# Set request handling to gdata.urlfetch
-gdata.service.http_request_handler = gdata.urlfetch
-
 # Local imports
 import utils
 import models
@@ -251,7 +243,12 @@ class RestaurantProvider(object):
       logging.info("Fetching yql query: %s" % query)
       query = urllib.quote_plus(query)
       url = "http://query.yahooapis.com/v1/public/yql?q=%s&format=json" % query
-      response = simplejson.loads(urlfetch.fetch(url).content)["query"]
+      response = simplejson.loads(urlfetch.fetch(url).content)
+      
+      if response is None:
+        return None
+      
+      response = response["query"]
     
       if response is None or int(response["count"]) == 0:
         return None
@@ -332,116 +329,6 @@ class RestaurantProvider(object):
     if result:
       return self._convert_result_to_restaurant(result)
     return None
-  
-  def restaurant_info(self, restaurant_id, cache_metadata=True):
-    """ Fetch information about a particular restaurant by using the YouTube
-    Data API and the Picasa Web Albums API.
-    
-    This method makes use of the Python Client Library (v1.2.4).
-    
-    Args:
-      The ID of the restaurant for which to fetch data.
-      
-    Returns:
-      The models.Restaurant object with additional properties that contain data
-      fetched from either API.
-     """
-    restaurant = self.get_restaurant(restaurant_id)
-    metadata_has_been_searched = False
-    try:
-      metadata_has_been_searched = restaurant.metadata_has_been_searched
-    except AttributeError:
-      pass
-    if metadata_has_been_searched is True:
-      # We already did the retrieval below so just return the restaurant
-      logging.info(
-        "YT and Picasa data found in cache for restaurant %s" % restaurant_id); 
-      return restaurant
-
-    # Search the YouTube API using the Gdata Python Client
-    gdata_youtube_client = gdata.youtube.service.YouTubeService();
-    # Construct a query object
-    query = gdata.youtube.service.YouTubeVideoQuery()
-    # Set the search term and the number of results to retrieve
-    query.vq = "%s %s" % (restaurant.name, restaurant.city)
-    video_feed = gdata_youtube_client.YouTubeQuery(query)
-    logging.info(
-      "Searching YouTube for videos for restaurant %s" % restaurant_id)
-    restaurant.has_video = False
-    if len(video_feed.entry) > 0:
-      # We only care about the first entry
-      video_entry = video_feed.entry[0]
-      if video_entry is not None:
-        restaurant.has_video = True
-        restaurant.video_title = video_entry.title.text
-        restaurant.video_author_name = video_entry.author[0].name.text
-        restaurant.video_description = video_entry.media.description.text
-
-        # Look for the URL to the embedded YouTube Player
-        swf_url = video_entry.GetSwfUrl()
-        if swf_url:
-          restaurant.player = """
-            <object width="425" height="350">
-              <param name="movie" value="%s"></param>
-              <embed src="%s" type="application/x-shockwave-flash"
-              width="425" height="350"></embed></object>""" % (swf_url, swf_url)
-      
-    # Search the Picasa Web Albums API using the Gdata Python Client
-    gdata_picasawebalbums_client = gdata.photos.service.PhotosService()
-    query_parameters = map(urllib.quote, [restaurant.name, restaurant.city]);
-    photo_feed = gdata_picasawebalbums_client.GetFeed(
-      "/data/feed/api/all?q=%s%%20%s&max-results=10&thumbsize=32c" %
-        (query_parameters[0], query_parameters[1]))
-    logging.info(
-      "Searching Picasa Web Albums for images on restaurant %s" % restaurant_id)
-
-    restaurant.has_photos = False
-    # A temporary list to hold the photo data while it is being parsed
-    temp_photos = []
-    if len(photo_feed.entry) > 0:
-      restaurant.has_photos = True
-      for photo_entry in photo_feed.entry:
-        temp_photos.append(self._process_picasa_photo_data(photo_entry))
-      restaurant.photos = temp_photos
-    # Remember whether we searched the YT and PWA APIs for metadata
-    restaurant.metadata_has_been_searched = True
-
-    if cache_metadata is True:
-      self._cache_restaurant(restaurant)
-    return restaurant
-  
-  def _process_picasa_photo_data(self, photo_entry):
-    """ Process data retrieved from the PicasaWebAlbums API.
-    
-    This method takes the gdata.photos.PhotoEntry object and creates a stock
-    dictionary out of it, keeping only metadata that is relevant to this
-    application.
-    
-    Args:
-      photo_entry: A gdata.photos.PhotoEntry object.
-      
-    Returns:
-      A dictionary with relevant metadata. 
-    """
-    photo = {}
-    photo['author_uri'] = photo_entry.author[0].uri.text
-    photo['author_name'] = photo_entry.author[0].name.text
-    photo['title'] = photo_entry.media.title.text or ''
-    photo['description'] = photo_entry.media.description.text or ''
-    photo['keywords'] = ''
-    if photo_entry.media.keywords is not None:
-      photo['keywords'] = photo_entry.media.keywords.text
-    
-    # This could be handled more elegantly in a later version
-    photo['published'] = photo_entry.published.text[:10]
-    for link in photo_entry.link:
-      if link.rel == 'alternate':
-        photo['alt_link_href'] = link.href
-    thumbnail = photo_entry.media.thumbnail[0]
-    photo['thumbnail_url'] = thumbnail.url
-    photo['thumbnail_width'] = thumbnail.width
-    photo['thumbnail_height'] = thumbnail.height
-    return photo
   
   def search(self, term, location):
     """ Performs a search for restaurants in a specific location.
