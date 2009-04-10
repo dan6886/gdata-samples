@@ -1,0 +1,56 @@
+{% extends "base.html" %} 
+
+{% block body %}
+<div id="login-text" class="xlargerounded">
+  <h1>Welcome to the <strong>Chow Down</strong></h1>
+  <p>The Chow Down lets you search for restaurants in your area and bookmark
+    them to try out later.  Using Google Friend Connect, you can see which 
+    restaurants your friends have bookmarked, and invite them to come try out
+    a new place to eat.
+  </p>
+</div>
+<div id="contentwrap" class="largebottomrounded">
+  <table>
+    <tr>
+      <td>
+        <div>
+          <h2>Registered users</h2>
+          <form method="POST">
+            <label for="login-displayname">User Name:</label>
+            <input type="text" id="login-displayname" name="user_name" class="text"></input>
+            {% if form_errors.user_name %}* Required{% endif %}
+            <br />
+  
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="password" class="text"></input>
+            {% if form_errors.password %}* Required{% endif %}
+
+            <div class="buttonwrap">
+              <input type="submit" value="Sign In" class="button"></input>
+            </div>
+          </form>
+          <p class="whitebutton smallrounded">Don't have an account?  <a href="/register">Register here</a></p>
+        </div>
+      </td>
+      <td>
+        <div>
+          <h2>Don't want to register?</h2>
+          <div id="login-fcbutton">Loading...</div>
+        </div>
+        <script type="text/javascript">
+          google.friendconnect.renderSignInButton({
+            "id" : "login-fcbutton",
+            "text" : "Sign in with Google Friend Connect",
+            "style" : "long"
+          });
+          window.init = function(times) {
+            if (times > 1) {
+              window.top.location.href = "/";
+            }
+          };
+        </script>
+      </td>
+    </tr>
+  </table>
+</div>
+{% endblock body %}

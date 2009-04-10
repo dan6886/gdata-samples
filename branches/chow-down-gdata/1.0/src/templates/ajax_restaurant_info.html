@@ -1,0 +1,93 @@
+{% if restaurant %}
+<div id="restaurant-info-inner">
+<table class="restaurant-info-table">
+  <tr>
+    <td>
+      <div class="title">
+        <span class="restaurant-info-name">{{ restaurant.name }}</span><br />
+        {% if restaurant.url %}
+        <a href="{{ restaurant.url }}" target="_blank">{{ restaurant.url }} </a>
+        {% endif %}
+      </div>
+      <div class="address">
+        {{ restaurant.address }}, {{ restaurant.city }} {{ restaurant.state }}
+      </div>
+      {% ifnotequal restaurant.rating_average "-1" %}
+      <div class="restaurant-info-rating">
+        <img src="/static/images/{{ restaurant.rating_average }}stars.png" 
+             onload="ajax_api_restaurant_info('{{ restaurant.name }}');" />
+        <br />
+      {% endifnotequal %}
+      ({{ restaurant.rating_count }} reviews)
+      </div>
+    </td>
+    <td class="youtube">
+      {% if restaurant.has_video %}
+      <div class="youtube-video">
+        {{ restaurant.player }}
+        <p><strong>{{ restaurant.video_title }}</strong></p>
+        <div class="video-metadata">uploaded by
+          <a href="http://www.youtube.com/user/{{ restaurant.video_author_name }}" target="_blank">{{ restaurant.video_author_name }}</a><br />
+          <span class="video-metadata-description">
+            {{ restaurant.video_description }}
+          </span>
+        </div>
+      </div>
+      {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+    {% if restaurant.has_photos %}
+    <div id="picasa-images">Images from Picasa:<br/>
+      <ul id="restaurant-photos">
+        {% for photo in restaurant.photos %}
+        <li class="restaurant-photo">
+          <div class="restaurant-photo-div">
+            <a href="{{ photo.alt_link_href }}" target="_blank">
+            <img class="picasa-image" src="{{ photo.thumbnail_url }}"
+                 width="{{ photo.thumbnail_width }}"
+                 height="{{ photo.thumbnail_height }}" 
+                 title="{{ photo.title }} by {{ photo.author_name }}"/>
+            </a>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>    {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+    <div id="toggle-ajax-api-results">
+      <a id="ajax-results-toggle" href="javascript:void(0);"
+         onclick="toggle_ajax_api_data();">
+         Show Results from AJAX Search API</a>
+      <br class="clear">
+      <div class="close-td smallrounded">
+        <a id="searchresult-close" href="javascript:void(0);" 
+             onclick="close_restaurant_info();" class="smallrounded">Close</a>
+      </div>
+    </div>
+    </td>
+  </tr>
+  <tr class="ajax-search-results">
+    <td>AJAX Search API Results:<br />
+      <div id="searchcontrol"></div>
+    </td>
+    <td>
+      <div id="blog-search-results"></div>
+      <br class="clear">
+      <div class="close-td smallrounded">
+        <a id="searchresult-close" href="javascript:void(0);" onclick="close_restaurant_info();" class="smallrounded">Close</a>
+      </div>
+    </td>
+  </tr>
+</table>
+</div>
+{% else %}
+<p>No info found ...</p>
+<p class='closelink'>
+  <a id="searchresult-close" href="javascript:void(0);" onclick="close_restaurant_info();" class="smallrounded">Close</a></p>
+<br class="clear" />
+{% endif %}

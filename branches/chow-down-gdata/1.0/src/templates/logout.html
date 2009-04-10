@@ -1,0 +1,23 @@
+{% extends "base.html" %} 
+
+{% block body %}
+<div id="contentwrap" class="largerounded">
+  <h2>Logging you out</h2>
+  <p>Thanks for visiting!</p>
+</div>
+<br class="clear" />
+<script type="text/javascript">
+  window.init = function(times) {
+    if (times <= 1) {
+      setMessage("Signing out");
+      google.friendconnect.requestSignOut();
+      window.setTimeout(function() {
+        window.top.location.href = "/logout";
+      }, 3000);
+    } else {
+      setMessage("Redirecting");
+      window.top.location.href = "/login";      
+    }
+  };
+</script>
+{% endblock body %}

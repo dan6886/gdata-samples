@@ -1,0 +1,32 @@
+{% extends "base.html" %} 
+
+{% block body %}
+
+<!-- Define the div tag where the gadget will be inserted. -->
+<div id="membersgadget" style="height:365px;"></div>
+<!-- Render the gadget into a div. -->
+<script type="text/javascript">
+var skin = {};
+skin['ENDCAP_BG_COLOR'] = '#eee';
+skin['ENDCAP_LINK_COLOR'] = '#36b';
+skin['CONTENT_LINK_COLOR'] = '#36b';
+skin['CONTENT_SECONDARY_LINK_COLOR'] = '#36b';
+
+skin['HEIGHT'] = '385';
+skin['BORDER_COLOR'] = '#cccccc';
+skin['ENDCAP_TEXT_COLOR'] = '#333333';
+skin['ALTERNATE_BG_COLOR'] = '#ffffff';
+skin['CONTENT_BG_COLOR'] = '#ffffff';
+skin['CONTENT_TEXT_COLOR'] = '#333333';
+skin['CONTENT_SECONDARY_TEXT_COLOR'] = '#666666';
+skin['CONTENT_HEADLINE_COLOR'] = '#333333';
+google.friendconnect.container.renderMembersGadget(
+ { id: 'membersgadget',
+   site: '{{ friendconnect.site_id }}' },
+  skin);
+</script>
+<div id="memberstext">
+  <h3>These people are Chow Down members. Why not make a new friend?</h3>
+  <div class="psa">Or <a href="/">go back to the main page</a>.</div>
+</div>
+{% endblock %}

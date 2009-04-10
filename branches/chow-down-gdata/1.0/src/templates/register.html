@@ -1,0 +1,49 @@
+{% extends "base.html" %} 
+
+{% block body %}
+<div id="contentwrap" class="largeleftrounded">
+  <h2>Register for an account</h2>
+  <p>Registering will give you access to the site and let you start bookmarking
+    restaurants to try later.  It's as easy as filling out the short form 
+    below:</p>
+    
+  <form method="POST">
+    <label for="form_user_name" class="{% if errors.fields.user_name %}required{% endif %}">User Name:</label>
+    <input type="text" id="form_user_name" name="user_name" class="text"></input>
+    <br />
+    
+    <label for="form_password" class="{% if errors.fields.password %}required{% endif %}">Password:</label>
+    <input type="password" id="form_password" name="password" class="text"></input>
+    <br />
+    
+    <label for="form_password_again" class="{% if errors.fields.password_again %}required{% endif %}">Password (again):</label>
+    <input type="password" id="form_password_again" name="password_again" class="text"></input>  
+    <br />
+    
+    <label>Choose a profile photo:</label>
+    <table id="register-photoselect">
+      <tr>
+        <td><img src="/static/profilephotos/anon01.gif" /></td>
+        <td><img src="/static/profilephotos/anon02.gif" /></td>
+        <td><img src="/static/profilephotos/anon03.gif" /></td>
+        <td><img src="/static/profilephotos/anon04.gif" /></td>
+      </tr>
+      <tr>
+        <td><input type="radio" name="thumbnail_image" value="anon01.gif" checked="checked" class="radio" /></td>
+        <td><input type="radio" name="thumbnail_image" value="anon02.gif" class="radio" /></td>
+        <td><input type="radio" name="thumbnail_image" value="anon03.gif" class="radio" /></td>
+        <td><input type="radio" name="thumbnail_image" value="anon04.gif" class="radio" /></td>
+      </tr>
+    </table>
+    <div class="buttonwrap">
+      <input type="submit" value="Register" class="button"></input>
+    </div>
+  </form>
+  <br class="clear" />
+  <p>Don't want to create an account?  You can still sign in using a Google
+    Friend Connect account!  Just go back to the sign-in page
+    and click <em>Sign in with Google Friend Connect</em>.</p>
+  <p class="homelink"><a href="/login" class="whitebutton smallrounded">Back to the sign in page</a></p>
+</div>
+
+{% endblock body %}
