@@ -1,4 +1,4 @@
-<!-- Indices written at 4/24/09 3:20 PM -->
+<!-- Indices written at 4/24/09 3:41 PM -->
 
 <datastore-indexes>
 
@@ -6,12 +6,6 @@
     <datastore-index kind="VideoSubmission" ancestor="false" source="auto">
         <property name="status" direction="asc"/>
         <property name="articleId" direction="desc"/>
-        <property name="createdIndex" direction="desc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="VideoSubmission" ancestor="false" source="auto">
-        <property name="status" direction="asc"/>
         <property name="createdIndex" direction="desc"/>
     </datastore-index>
 
