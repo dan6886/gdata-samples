@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+	<application>tchotchke-demo</application>
+	<version>1</version>
+	
+	<ssl-enabled>true</ssl-enabled>
+	<sessions-enabled>true</sessions-enabled>
+	
+	<!-- Configure java.util.logging -->
+	<system-properties>
+		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+		<!-- The DisableCookieHandler property needs to be set to true when using
+         the GData Java client. -->
+    <property name="com.google.gdata.DisableCookieHandler" value="true"/>
+    
+    <!-- Set up with Developer Key and Client ID -->
+    <property name="com.google.tchotchke.YTDeveloperKey" value=""/>
+    <property name="com.google.tchotchke.YTClientID" value=""/>
+    
+    <!-- Configure to support your domain. Value is a regex of allowed hostnames. -->
+    <property name="com.google.tchotchke.RedirectWhitelist" value="example.com"/>
+    
+    <!-- Configure memcache delays in seconds -->
+    <property name="com.google.tchotchke.ArticleSubmissionCacheTime" value="60"/>
+    
+	</system-properties>
+	
+</appengine-web-app>
