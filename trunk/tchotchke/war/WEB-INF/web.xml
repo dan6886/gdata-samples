@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
+	<servlet>
+	 <servlet-name>TokenHandler</servlet-name>
+	 <servlet-class>com.google.tchotchke.TokenServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+    <servlet-name>TokenHandler</servlet-name>
+    <url-pattern>/handleToken</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>LogoutHandler</servlet-name>
+   <servlet-class>com.google.tchotchke.LogoutServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>LogoutHandler</servlet-name>
+    <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>VideoUploadHandler</servlet-name>
+   <servlet-class>com.google.tchotchke.VideoUploadServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>VideoUploadHandler</servlet-name>
+    <url-pattern>/uploadVideo</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>VideoWidget</servlet-name>
+   <jsp-file>VideoWidget.jsp</jsp-file>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>VideoWidget</servlet-name>
+    <url-pattern>/showVideos</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+   <servlet-name>ModerationHandler</servlet-name>
+   <jsp-file>Moderate.jsp</jsp-file>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ModerationHandler</servlet-name>
+    <url-pattern>/moderate</url-pattern>
+  </servlet-mapping>
+  
+  <security-constraint>
+    <web-resource-collection>
+        <url-pattern>/moderate</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  
+  
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>
