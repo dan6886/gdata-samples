@@ -1,0 +1,87 @@
+/* css for sample */
+body {
+  min-width: 850px; 
+  background-color: #eee;
+  font-family: Georgia;
+  font-size: medium;
+  line-height: 150%;
+}
+#container {
+  padding-left: 150px;
+  padding-right: 450px;
+  border-top: 1px solid #ddd;
+} 
+
+#container .column {
+  position: relative;
+  float: left;
+}
+#article_center {
+  width: 450px; /* 100%; */
+  background-color: #fff;
+  padding: 0px 10px 10px 10px;
+}
+#left_sidebar {
+  width: 150px;
+  right: 170px;
+  margin-left: -450px;
+  background-color: #111;
+  color: #fff;
+}
+#right_sidebar {
+  width: 450px;
+  margin-right: -450px;
+}
+#footer {
+  clear: both;
+}
+
+#header {
+  padding: 10px;
+  height: 70px;
+  background-color: #fff;
+}
+
+
+/* css for iframe */
+.syndicated_uploader {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+}
+
+
+#syndicated_uploader {
+  background-color: #fff;
+  font-size: x-small;
+  /*scroll  */
+}
+
+
+#syndicated_uploader_main {
+  background-color: red;
+}
+
+.syndicated_uploader_video_div {
+  /* holds individual video metadata ? */
+
+}
+
+
+.video_metadata_uploader {
+  display: inline;
+}
+
+
+.video_metadata_thumbnail {
+  border: none;
+}
+
+#video_box {
+  /* will contain the ytplayer div for thickbox */
+  display: none;
+}
+
+/*** IE6 Fix ***/
+* html #left {
+  left: 150px;
+}

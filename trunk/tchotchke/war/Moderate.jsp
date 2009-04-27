@@ -8,11 +8,23 @@
  %>
 <head>
   <title>Videos!</title>
+  <link href="/css/tchotchke.css" rel="stylesheet" type="text/css" />
+  <link href="/css/ext/thickbox.css" rel="stylesheet" type="text/css" media="screen">
+  <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="/js/ext/thickbox-compressed.js"></script>
+  <script type="text/javascript" src="/js/ext/swfobject.js"></script>
+  <script type="text/javascript" src="/js/tchotchke.js"></script>
+  <script type="text/javascript">
+  var videos = <%= controller.getVideoSubmissions() %>;
+  ytSyndUploader.LOG_TO_CONSOLE = true;
+  ytSyndUploader.renderVideoAdminForm(videos);
+  </script>
 </head>
 <body>
   <div>
     <h1>Moderation!</h1>
   </div>
+  <div id="syndicated_uploader_admin_interface"></div>
   <div>
     <p><%= controller.getVideoSubmissions() %></p>
   </div>
