@@ -10,14 +10,24 @@
   %>
 <head>
   <title>Videos!</title>
+  <link href="/css/tchotchke.css" rel="stylesheet" type="text/css" />
+  <link href="/css/ext/thickbox.css" rel="stylesheet" type="text/css" media="screen">
+  <script type="text/javascript" src="/js/ext/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="/js/ext/thickbox-compressed.js"></script>
+  <script type="text/javascript" src="/js/ext/swfobject.js"></script>
+  <script type="text/javascript" src="/js/tchotchke.js"></script>
   <script type="text/javascript">
     function handleSignIn() {
       parent.location = "<%= StringEscapeUtils.escapeJavaScript(sessionManager.getAuthSubLink()) %>";
     }
+    var videoList = "<%= StringEscapeUtils.escapeHtml(controller.getVideoSubmissionsAsString()) %>";
+    
+    ytSyndUploader.LOG_TO_CONSOLE = true;
+    ytSyndUploader.renderMultipleVideos(videoList);
   </script>
 </head>
 <body>
-  <div>
+  <div class="syndicated_uploader_main">
     <h1>YouTube Videos For This Article</h1>
     <% if(sessionManager.hasFlash("upload_notice")) { %>
       <p class="notice"><%= StringEscapeUtils.escapeHtml(sessionManager.getFlash("upload_notice")) %></p>
@@ -55,9 +65,7 @@
       }
     %>
   </div>
-  <div>
-    <p><%= controller.getVideoSubmissionsAsString() %></p>
-  </div>
+  <div id="syndicated_uploader_video_display"></div>
   <div>
   <% if(controller.hasPrevPage()) { %>
     <a href="<%= controller.getPrevPageUrl() %>">Prev</a>
