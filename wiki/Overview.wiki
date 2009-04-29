@@ -1,0 +1,6 @@
+#summary Samples for using the Google Data APIs
+[http://code.google.com/apis/gdata]
+
+= Updates =
+
+For a more in-depth look at the [http://www.googlecodesamples.com/youtube/php/YouTubeActivityViewer/ YouTubeActivityViewer], check out our new [http://code.google.com/apis/youtube/articles/youtube_api_activity_php.html article].
