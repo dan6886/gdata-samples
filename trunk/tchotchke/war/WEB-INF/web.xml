@@ -37,7 +37,7 @@
   
   <servlet>
    <servlet-name>VideoWidget</servlet-name>
-   <jsp-file>VideoWidget.jsp</jsp-file>
+   <jsp-file>/VideoWidget.jsp</jsp-file>
   </servlet>
   
   <servlet-mapping>
@@ -47,7 +47,7 @@
   
    <servlet>
    <servlet-name>ModerationHandler</servlet-name>
-   <jsp-file>Moderate.jsp</jsp-file>
+   <jsp-file>/Moderate.jsp</jsp-file>
   </servlet>
   
   <servlet-mapping>
