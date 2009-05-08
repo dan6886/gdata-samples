@@ -252,7 +252,7 @@ function renderPage() {
           <input id="users_string_input" type="text" name="users_string"
           onfocus="ytActivityApp.clearUserNameForm();" 
           onkeypress="if (event.keyCode == 13) ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);"/>
-          <button name="submit" value="foo" onClick="ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);" />Search</button><br />
+          <button name="submit" value="foo" onClick="ytActivityApp.cleanFormInputAndRequestActivityFeed(document.getElementById('users_string_input').value);">Search</button><br />
             <span class="dark_text">(enter up to 20 names, separated by commas)</span>
           </div>
       </div>
