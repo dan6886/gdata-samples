@@ -83,7 +83,7 @@ function fetchVideoMetadata($videoId) {
   } catch(Zend_Gdata_App_HttpException $e){
     $httpStatus = $e->getResponse()->getStatus();
 
-    if($httpStatus > 500) {
+    if($httpStatus >= 500) {
       $video = 'SERVER_ERROR';
     } else {
       $video = 'NOT_AVAILABLE';
