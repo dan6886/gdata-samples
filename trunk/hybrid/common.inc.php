@@ -1,62 +1,19 @@
 <?php
-/* Copyright (c) 2007 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Author: Eric Bidelman <e.bidelman@google.com>
- */
- 
-// OAuth library - http://oauth.googlecode.com/svn/code/php/
+// OAuth libraries - http://oauth.googlecode.com/svn/code/php/
 require_once('OAuth.php');
 
-// OpenID library - http://www.openidenabled.com/php-openid/
+// OpenID libraries - http://www.openidenabled.com/php-openid/
 require_once 'Auth/OpenID/Consumer.php';
 require_once 'Auth/OpenID/FileStore.php';
 require_once 'Auth/OpenID/SReg.php';
 require_once 'Auth/OpenID/PAPE.php';
 
-// Load the necessary Zend classes - http://framework.zend.com/download/gdata
-require_once 'Zend/Loader.php';
-Zend_Loader::loadClass('Zend_Gdata_HttpClient');
-Zend_Loader::loadClass('Zend_Gdata_Docs');
-Zend_Loader::loadClass('Zend_Gdata_Spreadsheets');
+// Google's accepted signature methods
+$hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
+$rsa_method = new OAuthSignatureMethod_RSA_SHA1();
 
-// OAuth 'credentials'
-$CONSUMER_KEY = 'YOUR_CONSUMER_KEY';
-$CONSUMER_SECRET = 'YOUR_CONSUMER_SECRET';
-
-$SIG_METHOD = new OAuthSignatureMethod_HMAC_SHA1();
-$SCOPES = array(
-  'http://docs.google.com/feeds/',
-  'http://spreadsheets.google.com/feeds/',
-  'http://sandbox.gmodules.com/api/'
-);
-
-$openid_params = array(
-  'openid.ns'              => 'http://specs.openid.net/auth/2.0',
-  'openid.claimed_id'      => 'http://specs.openid.net/auth/2.0/identifier_select',
-  'openid.identity'        => 'http://specs.openid.net/auth/2.0/identifier_select',
-  'openid.return_to'       => "http://{$CONSUMER_KEY}{$_SERVER['PHP_SELF']}",
-  'openid.realm'           => "http://{$CONSUMER_KEY}",
-  'openid.mode'            => @$_REQUEST['openid_mode'],
-  'openid.ns.ext1'         => 'http://openid.net/srv/ax/1.0',
-  'openid.ext1.mode'       => 'fetch_request',
-  'openid.ext1.type.email' => 'http://axschema.org/contact/email',
-  'openid.ext1.required'   => 'email',
-  'openid.ns.oauth'        => 'http://specs.openid.net/extensions/oauth/1.0',
-  'openid.oauth.consumer'  => $CONSUMER_KEY,
-  'openid.oauth.scope'     => implode(' ', $SCOPES)
-);
+$SIG_METHODS = array($rsa_method->get_name() => $rsa_method,
+                     $hmac_method->get_name() => $hmac_method);
 
 /**
  * Makes an HTTP request to the specified URL
@@ -99,8 +56,8 @@ function send_signed_request($http_method, $url, $auth_header=null,
       break;
     case 'DELETE':
       $headers = array($auth_header);
-      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers); 
-      curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_method); 
+      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+      curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_method);
       break;
   }
   $response = curl_exec($curl);
