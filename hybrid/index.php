@@ -1,26 +1,75 @@
 <?php
-/* Copyright (c) 2007 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Author: Eric Bidelman <e.bidelman@google.com>
- */
- 
-// Loads OAuth, OpenID, Zend libraries and common utility functions.
+session_start();
+
+// OAuth/OpenID libraries and utility functions.
 require_once 'common.inc.php';
 
+// Load the necessary Zend Gdata classes.
+require_once 'Zend/Loader.php';
+Zend_Loader::loadClass('Zend_Gdata_HttpClient');
+Zend_Loader::loadClass('Zend_Gdata_Docs');
+Zend_Loader::loadClass('Zend_Gdata_Spreadsheets');
+
 // Setup OAuth consumer with our "credentials"
-$consumer = new OAuthConsumer($CONSUMER_KEY, $CONSUMER_SECRET, NULL);
+$CONSUMER_KEY = 'CONSUMER_KEY';
+$CONSUMER_SECRET = 'CONSUMER_SECRET';
+$consumer = new OAuthConsumer($CONSUMER_KEY, $CONSUMER_SECRET);
+
+$sig_method = $SIG_METHODS['HMAC-SHA1'];
+$scopes = array(
+  'http://docs.google.com/feeds/',
+  'http://spreadsheets.google.com/feeds/',
+  'http://sandbox.gmodules.com/api/'
+);
+
+$openid_params = array(
+  'openid.ns'                => 'http://specs.openid.net/auth/2.0',
+  'openid.claimed_id'        => 'http://specs.openid.net/auth/2.0/identifier_select',
+  'openid.identity'          => 'http://specs.openid.net/auth/2.0/identifier_select',
+  'openid.return_to'         => "http://{$CONSUMER_KEY}{$_SERVER['PHP_SELF']}",
+  'openid.realm'             => "http://{$CONSUMER_KEY}",
+  'openid.mode'              => @$_REQUEST['openid_mode'], //'checkid_immediate', 'checkid_setup',
+  'openid.ns.ui'             => 'http://specs.openid.net/extensions/ui/1.0',
+  'openid.ns.ext1'           => 'http://openid.net/srv/ax/1.0',
+  'openid.ext1.mode'         => 'fetch_request',
+  'openid.ext1.type.email'   => 'http://axschema.org/contact/email',
+  'openid.ext1.type.first'   => 'http://axschema.org/namePerson/first',
+  'openid.ext1.type.last'    => 'http://axschema.org/namePerson/last',
+  'openid.ext1.type.country' => 'http://axschema.org/contact/country/home',
+  'openid.ext1.type.lang'    => 'http://axschema.org/pref/language',
+  'openid.ext1.type.web'     => 'http://axschema.org/contact/web/default',
+  'openid.ext1.required'     => 'email,first,last,country,lang,web',
+  'openid.ns.oauth'          => 'http://specs.openid.net/extensions/oauth/1.0',
+  'openid.oauth.consumer'    => $CONSUMER_KEY,
+  'openid.oauth.scope'       => implode(' ', $scopes)
+);
+
+$openid_ext = array(
+  'openid.ns.ext1'           => 'http://openid.net/srv/ax/1.0',
+  'openid.ext1.mode'         => 'fetch_request',
+  'openid.ext1.type.email'   => 'http://axschema.org/contact/email',
+  'openid.ext1.type.first'   => 'http://axschema.org/namePerson/first',
+  'openid.ext1.type.last'    => 'http://axschema.org/namePerson/last',
+  'openid.ext1.type.country' => 'http://axschema.org/contact/country/home',
+  'openid.ext1.type.lang'    => 'http://axschema.org/pref/language',
+  'openid.ext1.type.web'     => 'http://axschema.org/contact/web/default',
+  'openid.ext1.required'     => 'email,first,last,country,lang,web',
+  'openid.ns.oauth'          => 'http://specs.openid.net/extensions/oauth/1.0',
+  'openid.oauth.consumer'    => $CONSUMER_KEY,
+  'openid.oauth.scope'       => implode(' ', $scopes)
+);
+
+
+if (isset($_GET['popup']) && !isset($_SESSION['redirect_to'])) {
+  $query_params = substr($_SERVER['QUERY_STRING'], strlen('popup=true') + 1);
+  $_SESSION['redirect_to'] = "http://{$CONSUMER_KEY}{$_SERVER['PHP_SELF']}?{$query_params}";
+  echo '<script type = "text/javascript">window.close();</script>';
+  exit;
+} else if (isset($_SESSION['redirect_to'])) {
+  $redirect = $_SESSION['redirect_to'];
+  unset($_SESSION['redirect_to']);
+  header('Location: ' .$redirect);
+}
 
 $request_token = @$_REQUEST['openid_ext2_request_token'];
 if ($request_token) {
@@ -36,7 +85,7 @@ if ($request_token) {
   );
   $req = OAuthRequest::from_consumer_and_token($consumer, $access_token,
                                                'GET', $feedUri, $params);
-  $req->sign_request($SIG_METHOD, $consumer, $access_token);
+  $req->sign_request($sig_method, $consumer, $access_token);
 
   // Note: the Authorization header changes with each request
   $httpClient->setHeaders($req->to_header());
@@ -53,7 +102,7 @@ if ($request_token) {
   $params = array('max-results' => 50);
   $req = OAuthRequest::from_consumer_and_token($consumer, $access_token, 'GET',
                                                $feedUri, $params);
-  $req->sign_request($SIG_METHOD, $consumer, $access_token);
+  $req->sign_request($sig_method, $consumer, $access_token);
 
   // Note: the Authorization header changes with each request
   $httpClient->setHeaders($req->to_header());
@@ -70,7 +119,7 @@ if ($request_token) {
   $feedUri = 'http://sandbox.gmodules.com/api/people/@me/@all';
   $req = OAuthRequest::from_consumer_and_token($consumer, $access_token, 'GET',
                                                $feedUri, NULL);
-  $req->sign_request($SIG_METHOD, $consumer, $access_token);
+  $req->sign_request($sig_method, $consumer, $access_token);
 
   // Portable Contacts isn't GData, but we can use send_signed_request() from
   // common.inc.php to make an authenticated request.
@@ -116,14 +165,14 @@ switch(@$_REQUEST['openid_mode']) {
  * @return string The access token
  */
 function getAccessToken($request_token_str) {
-  global $consumer, $SIG_METHOD;
+  global $consumer, $sig_method;
 
   $token = new OAuthToken($request_token_str, NULL);
 
   $token_endpoint = 'https://www.google.com/accounts/OAuthGetAccessToken';
   $request = OAuthRequest::from_consumer_and_token($consumer, $token, 'GET',
                                                    $token_endpoint);
-  $request->sign_request($SIG_METHOD, $consumer, $token);
+  $request->sign_request($sig_method, $consumer, $token);
 
   $response = send_signed_request($request->get_normalized_http_method(),
                                   $token_endpoint, $request->to_header(), NULL,
@@ -165,6 +214,27 @@ function listEntries($feed) {
 <title>Google Hybrid Protocol Demo (OpenID + OAuth)</title>
 <link href="hybrid.css" type="text/css" rel="stylesheet"/>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="popuplib.js"></script>
+<script type="text/javascript">
+  var upgradeToken = function() {
+    window.location = '<?php echo $_SESSION['redirect_to'] ?>';
+  };
+  var extensions = <?php echo json_encode($openid_ext); ?>;
+  var googleOpener = popupManager.createPopupOpener({
+    'realm' : '<?php echo $openid_params['openid.realm'] ?>',
+    'opEndpoint' : 'https://www.google.com/accounts/o8/ud',
+    'returnToUrl' : '<?php echo $openid_params['openid.return_to'] . '?popup=true' ?>',
+    'onCloseHandler' : upgradeToken,
+    'shouldEncodeUrls' : true,
+    'extensions' : extensions
+  });
+  $(document).ready(function () {
+    jQuery('#LoginWithGoogleLink').click(function() {
+      googleOpener.popup(450, 500);
+      return false;
+    });
+  });
+</script>
 <script type="text/javascript">
 function toggle(id, type) {
   if (type === 'list') {
@@ -179,7 +249,9 @@ function toggle(id, type) {
 </head>
 <body>
 
-<h3><span class="google"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></span> Hybrid Protocol (<a href="http://openid.net">OpenID</a> + <a href="http://oauth.net">OAuth</a>) Demo</h3>
+<h3><span class="google"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></span> Hybrid Protocol
+(<a href="http://openid.net">OpenID</a>+<a href="http://oauth.net">OAuth</a>) Demo
+[ <small><a href="http://code.google.com/apis/accounts/docs/OpenID.html">documentation</a></small> ]</h3>
 
 <div style="float:left;"><img src="hybrid_logo.png"/></div>
 <div>
@@ -189,13 +261,18 @@ function toggle(id, type) {
   <input type="text" name="openid_identifier" id="openid_identifier" size="40" value="google.com/accounts/o8/id" /> <input type="submit" value="login" />
   <br>
   Sign in with a
-  <a href="<?php echo $_SERVER['PHP_SELF'] . '?openid_mode=checkid_setup&openid_identifier=google.com/accounts/o8/id' ?>"><img height="16" width="16" align="absmiddle" style="margin-right: 3px;" src="gfavicon.gif" border="0"/><span class="google"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span> Account</span></a>
+  <a href="<?php echo $_SERVER['PHP_SELF'] . '?openid_mode=checkid_setup&openid_identifier=google.com/accounts/o8/id' ?>" id="LoginWithGoogleLink"><img height="16" width="16" align="absmiddle" style="margin-right: 3px;" src="gfavicon.gif" border="0"/><span class="google"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span> Account</span></a> (popup)
 </fieldset>
 </form>
 </div>
 
 <?php if(@$_REQUEST['openid_mode'] === 'id_res'): ?>
-  <p>Welcome: <strong><?php echo $_REQUEST['openid_ext1_value_email'] ?></strong></p>
+  <p>
+  Welcome: <?php echo "{$_REQUEST['openid_ext1_value_first']} {$_REQUEST['openid_ext1_value_last']} - {$_REQUEST['openid_ext1_value_email']}" ?><br>
+  country: <?php echo $_REQUEST['openid_ext1_value_country'] ?><br>
+  language: <?php echo $_REQUEST['openid_ext1_value_lang'] ?><br>
+  web: <?php echo $_REQUEST['openid_ext1_value_web'] ?><br>
+  </p>
 <?php endif; ?>
 
 <div style="margin-left:140px;">
