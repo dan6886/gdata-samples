@@ -1,0 +1,287 @@
+* {
+font-size: 14px; 
+}
+
+a {
+  color:blue;
+}
+
+body {
+  font-family: 'Myriad Pro', 'Tw Cen MT', Arial, Verdana;
+  color: #666666;
+  line-height: 1.2;
+  margin:0;
+  background: url(../images/oauth_logo.jpg) no-repeat right -50px;
+}
+
+h1, h2, h3, h4, h5 {
+  margin:0;
+  margin-bottom: 5px;
+}
+
+h4 {
+  margin-top:5px;
+}
+
+ul, li, input, form {
+  margin:0;
+  padding:0;
+}
+
+ul {
+  list-style:none;
+  margin-left: 1em;
+}
+
+pre {
+  margin:0;
+}
+
+input, textarea {
+  vertical-align: middle;
+  margin-right: 5px;
+  height: 25px;
+  padding:2px;
+}
+
+input[type='text'] {
+  width: auto;
+}
+
+#oauth_parameters input,
+#oauth_parameters select {
+  width:210px;
+  border:1px solid #ccc;
+}
+
+#oauth_parameters input.disabled {
+  background-color: #dfdfdf;
+  color: #777;
+}
+
+table {
+  font: inherit;
+}
+
+table.main {
+  font: inherit;
+}
+
+table.main .separator-bottom {
+  border-bottom: 1px solid #bababa;
+  padding-bottom: 7px;
+}
+
+.scopes div {
+  float: left;
+  width: 130px;
+}
+
+.scopes li {
+  clear:both;
+}
+
+.loading {
+  font-family: 'Myriad Pro', 'Tw Cen MT', Arial, Verdana;
+  font-size:150%;
+  font-weight: bold;
+  color: #bababa;
+  text-align:center;
+  vertical-align:middle;
+  margin-top:3em;
+}
+
+.dataView {
+ height:40px;
+ margin-bottom: 5px;
+}
+
+#http_response,
+#http_request,
+#base_string {
+  border: 1px solid #ccc;
+  overflow:auto;
+  padding: 5px;
+  background-color: #fff;
+}  
+
+#http_response {
+  height:510px;
+  clear:both;
+}
+
+#http_method {
+  vertical-align:middle;
+}
+
+#input_feed {
+  margin:0;
+}
+
+input#feedUri {
+  font-size: 115%;
+  font-weight:bold;
+  color: #666666;
+  width: 75%;
+  height:37px;
+  border:1px solid #ccc;
+  padding:7px;
+}
+
+.nogutter {
+  overflow:auto;
+  height:545px;
+  border: 1px solid #ccc;
+}
+
+#tokenType {
+  color: red;
+  font-style:italic;
+}
+
+.popupLink {
+  font-size: 90%;
+}
+
+#postData, 
+#privKey {
+  display:none;
+}
+
+textarea.small {
+  width:570px;
+  height:300px;
+}
+
+textarea.large {
+  width:675px;
+  height:600px;
+}
+
+#token_ops {
+  display:none;
+  border-top:1px solid #fff;
+  margin-top:5px;
+  padding-top:5px;
+}
+
+#token_ops span{
+  float:left;
+  margin-right: 10px;
+}
+
+#token_ops a {
+  margin-right: 10px;
+}
+
+#token_ops h4 {
+  margin:0;
+}
+
+/* grey panel --------------------------------------------------- */
+.panel {
+  float:left;
+  margin:0px 10px 10px 0pt;
+  width:100%;
+}
+
+.panel table {
+  width:100%;
+}
+
+.panel .title h3 {
+   font-size:125%;
+   border-bottom:1px solid #fff;
+   margin-bottom: 10px;
+}
+
+.panel ul {
+  padding:0;
+  margin:0;
+}
+
+.corner {
+  height:15px;
+  width:12px;
+}
+
+.topleft {
+  background:url(../images/corners.gif) no-repeat left top;
+}
+
+.topmiddle {
+  background:url(../images/corners.gif) repeat-x left -17px;
+}
+
+.topright {
+  background:url(../images/corners.gif) no-repeat -17px top;
+}
+
+.bottomleft {
+  background:url(../images/corners.gif) no-repeat -49px top;
+}
+
+.bottommiddle {
+  background:url(../images/corners.gif) repeat-x left bottom;
+}
+
+.bottomright {
+  background:url(../images/corners.gif) no-repeat -33px top;
+}
+
+.leftside {
+  border-left:1px solid #e4e4e4;
+}
+
+.middle {
+  background-color:#f1f1f1;
+}
+
+.rightside {
+  border-right:1px solid #e4e4e4;
+}
+/* -------------------------------------------------------------- */
+
+/* token buttons ------------------------------------------------ */
+.button{
+  display:inline-block;
+  display:-moz-inline-box;
+  *display:inline-block;
+  vertical-align:middle;
+  border-width:1px 0;
+  border-style:solid;
+  border-color:#808080;
+  background:url(../images/sprite.png) repeat-x 0 0;
+  margin:auto .25em;
+  margin-bottom:5px;
+}
+
+.button .first-child {
+  display:block;
+  *display:inline-block;
+  border-width:0 1px;
+  border-style:solid;
+  border-color:#808080;
+  margin:0 -1px;
+  *position:relative;
+  left:-1px;  
+}
+
+.button button {
+  display:block;
+  *display:inline-block;
+  border:none;
+  margin:0;
+  background-color:transparent;
+  *overflow:visible;
+  cursor:pointer;
+  font-size:85%;
+  height:2em;
+  padding:2px 10px;
+}
+
+.button-hover {
+  background-position:0 -1300px;
+  border-color:#7D98B8;
+}
+/* -------------------------------------------------------------- */
