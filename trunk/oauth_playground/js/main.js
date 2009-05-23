@@ -95,6 +95,11 @@ playground.SCOPES = {
       'scope' : 'https://www.google.com/h9/feeds/',
       'feeds' : ['profile/default', 'register/default']
   },
+  'Maps' : {
+       'scope' : 'http://maps.google.com/maps/feeds/',
+       'feeds' : ['maps/default/full', 'maps/userID/full/[&lt;elementID&gt;]',
+                  'features/default/[&lt;mapID&gt;]/full/[&lt;elementID&gt;]']
+   },
   'OpenSocial' : {
       'scope' : 'http://sandbox.gmodules.com/api/',
       'feeds' : ['people/@me/@all']
@@ -388,13 +393,22 @@ playground.showResponse = function(responseText) {
      jQuery('#html_link').html('');
   }
 
-  // extract oauth_token and oauth_token_secret values
-  var matches = response.match(/oauth_token=(.*)&oauth_token_secret=(.*)/);
+  // extract oauth_token and oauth_token_secret values from request token step
+  var matches = response.match(/oauth_token=(.*)&oauth_token_secret=(.*)&oauth_callback_confirmed=(.*)/);
   if (matches) {
     jQuery('#oauth_token').val(decodeURIComponent(matches[1]));
     jQuery('#token_secret').val(matches[2]);
     playground.setCookie('token_secret', decodeURIComponent(matches[2]),
                          playground.COOKIE_EXPIRE);
+  } else {
+    // extract oauth_token and secret values for access token step
+    var matches = response.match(/oauth_token=(.*)&oauth_token_secret=(.*)/);
+    if (matches) {
+      jQuery('#oauth_token').val(decodeURIComponent(matches[1]));
+      jQuery('#token_secret').val(matches[2]);
+      playground.setCookie('token_secret', decodeURIComponent(matches[2]),
+                           playground.COOKIE_EXPIRE);
+    }
   }
 
   // extract oauth_timestamp value

@@ -120,7 +120,8 @@ switch(@$_REQUEST['action']) {
     echo json_encode(array(
         'html_link' => '',
         'base_string' =>  $req->get_signature_base_string(),
-        'response' => send_signed_request('GET', $url, array($req->to_header()))
+        'response' => send_signed_request('GET', $url, array($req->to_header())),
+        'authorization_header' => $req->to_header()
     ));
 
     exit;  // ajax request, just stop exec
@@ -171,7 +172,8 @@ switch(@$_REQUEST['action']) {
     echo json_encode(array(
         'html_link' => $req->to_url(),
         'base_string' => $req->get_signature_base_string(),
-        'response' => $response
+        'response' => $response,
+        'authorization_header' => $req->to_header()
     ));
 
     exit;  // ajax request, just stop exec
@@ -192,7 +194,7 @@ switch(@$_REQUEST['action']) {
     // urlencode each url parameter key/value pair
     $tempStr = $pieces[0];
     foreach ($params as $key=>$value) {
-      $tempStr .= '&' . urlencode($key) . '=' . urlencode($value); 
+      $tempStr .= '&' . urlencode($key) . '=' . urlencode($value);
     }
     $feedUri = preg_replace('/&/', '?', $tempStr, 1);
 
@@ -232,10 +234,11 @@ switch(@$_REQUEST['action']) {
     // <pre> tags needed for IE
     $response_body = '<pre>' . $response_body . '</pre>';
 
-    echo json_encode(array('html_link' => $req->to_url(), 
+    echo json_encode(array('html_link' => $req->to_url(),
                            'base_string' =>  $req->get_signature_base_string(),
                            'headers' => isset($result[1]) ? $result[0] : '',
-                           'response' => $response_body));
+                           'response' => $response_body,
+                           'authorization_header' => $auth_header));
     exit;
 
     break;
@@ -255,6 +258,7 @@ switch(@$_REQUEST['action']) {
     echo json_encode(array(
         'html_link' => $req->to_url(),
         'base_string' => $req->get_signature_base_string(),
+        'authorization_header' => $req->to_header(),
         'args' => json_encode($matches[1]),
         'callback' => 'getAvailableFeeds'
     ));
