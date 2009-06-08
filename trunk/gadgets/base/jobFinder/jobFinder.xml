@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
   <ModulePrefs title="Job Finder"
-               author="Eric Bidelman" author_email="e.bidelman@google.com"
+               author="Eric Bidelman" author_email="e.bidelman"
                height="425" scrolling="true">
     <Require feature="opensocial-0.8" />
     <Require feature="setprefs"/>

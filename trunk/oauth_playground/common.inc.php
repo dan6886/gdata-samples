@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Eric Bidelman <e.bidelman@google.com>
+ * Author: Eric Bidelman <e.bidelman>
  */
 
 // RSA private key file for use with RSA-SHA1 signature method

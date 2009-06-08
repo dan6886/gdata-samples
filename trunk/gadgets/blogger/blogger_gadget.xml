@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
  <ModulePrefs title="Blogger Gadget"
-              author="Eric Bidelman api.eric@google.com"
+              author="Eric Bidelman api.eric"
               height="385">
   <Require feature="opensocial-0.8" /> 
   <OAuth>
