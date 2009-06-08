@@ -1,0 +1,32 @@
+<?php
+/**
+ * YouTube API developer key, client ID
+ * Note: Go to http://code.google.com/apis/youtube/dashboard/ to sign up.
+ */
+$GLOBALS['ueber-activity-viewer-php_config']['dev_key']   = '';
+$GLOBALS['ueber-activity-viewer-php_config']['client_id'] = '';
+
+/**
+ * Memcache configuration
+ */
+$GLOBALS['ueber-activity-viewer-php_config']['enable_memcache'] = false;
+$GLOBALS['ueber-activity-viewer-php_config']['memcache_server'] = 'localhost';
+$GLOBALS['ueber-activity-viewer-php_config']['memcache_port'] = 11211;
+$GLOBALS['ueber-activity-viewer-php_config']['feed_expiry_time'] = 60;
+$GLOBALS['ueber-activity-viewer-php_config']['metadata_expiry_time'] = 7200;
+
+/**
+ * DB configuration
+ */
+$GLOBALS['ueber-activity-viewer-php_config']['mysql_username'] = 'uberviewer';
+$GLOBALS['ueber-activity-viewer-php_config']['mysql_password'] = '';
+$GLOBALS['ueber-activity-viewer-php_config']['mysql_hostname'] = '';
+$GLOBALS['ueber-activity-viewer-php_config']['mysql_database'] = '';
+$GLOBALS['ueber-activity-viewer-php_config']['mysql_port'] = 3306;
+$GLOBALS['ueber-activity-viewer-php_config']['mysql_socket'] = '';
+
+/**
+ * Application specific settings
+ */
+$GLOBALS['ueber-activity-viewer-php_config']['num_items_to_retrieve'] = 200;
+$GLOBALS['ueber-activity-viewer-php_config']['num_items_to_page'] = 25;

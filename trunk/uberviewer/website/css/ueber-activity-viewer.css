@@ -1,0 +1,111 @@
+/**
+ * CSS for Ueber-activity-viewer
+ * @author api.jhartmann@google.com
+ */
+body {
+  background-color: #ddd;
+  font-family: arial, sans;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a.results_link {
+  color: #1F1F1F;
+  padding: 2px 5px 2px 5px;
+  background-color: #FFF8AF;
+  font-size: 80%; 
+}
+
+a.results_link:hover {
+  color: #FFF8AF;
+  padding: 2px 5px 2px 5px;
+  background-color: #1F1F1F;
+  font-size: 80%; 
+}
+
+div.activity_entry_div {
+  padding: 2px;
+}
+
+div.activity_entry_div_left {
+  border-right: 1px solid #bbb;
+}
+
+img.ueber-viewer-image {
+  border: none;
+}
+
+.video_thumbnail {
+  width: 120px;
+  height: 90px;
+}
+
+table tr td, table tr th { 
+  padding: 5px; 
+  vertical-align: top
+}
+
+.event_title {
+  font-size: 110%;
+  border-bottom: 1px solid #333;
+}
+
+.metadata {
+  font-size: 80%;
+  color: #333;
+}
+
+.no_metadata_found {
+  color: #333;
+}
+
+#activity_feed_table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#container {
+  background-color: #fff;
+  width: 80%;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+  border: solid 1px #bbb;
+}
+
+#status {
+  position: absolute;
+  top: 20px;
+  left: 60%;
+}
+
+#video_box {
+  /* will contain the ytplayer div for thickbox */
+  display: none;
+}
+
+#video_category {
+  color: #248F11;
+  font-weight: bold;
+}
+
+#video_description {
+  color: #666;
+}
+
+#video_tags {
+  color: #248F11;
+}
+
+#video_title, #username {
+  color: #000;
+  font-size: 100%;
+  font-weight: bold;
+}
