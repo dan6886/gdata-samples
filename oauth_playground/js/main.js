@@ -19,7 +19,7 @@
  * various components in the UI. Its dependencies include the JQuery library,
  * jquery.form.js plugin, and SyntaxHighligher.
  *
- * @author e.bidelman@google.com (Eric Bidelman)
+ * @author e.bidelman (Eric Bidelman)
  */
 
 // Protected namespace
