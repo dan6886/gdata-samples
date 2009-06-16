@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <title>Atom Viewer</title>
+  <link rel="stylesheet" type="text/css" href="/css/main.css"/>
+</head>
+<body>
+  <h1>Magical Atom Viewer</h1>
+  <div>
+    <a href="{{ url|escape }}">{{ url_linktext }}</a>
+  </div>
+  
+  <div class="section">
+  <h2>Interact with Feed</h2>
+  
+  <form action="/getFeed" method="POST">
+  
+  <div>
+  Method:
+  <select name="method">
+    <option value="GET" selected="selected">GET</option>
+    {% if logged_in %}
+    <option value="POST">POST</option>
+    <option value="PUT">PUT</option>
+    <option value="DELETE">DELETE</option>
+    {% endif %}
+  </select>
+  </div>
+  
+  <div>
+  URL: <input size="60" name="feed"/>
+  </div>
+  
+    
+  {% if logged_in %}
+  <div>
+  AuthSub Token: 
+  <select name="token">
+    {% for token in tokens %}
+      <option value="{{ token.token }}">{{ token.scope }}</option>
+    {% endfor %}
+      <option value="None" selected="selected">None</option>
+  </select>
+  </div>
+  
+  <div>
+  ClientLogin Token:
+  <input name="cl_token" />
+  </div>
+  {% endif %}
+
+  <div>
+  <input type="checkbox" name="youtube"/><span style="margin-right: 5px;">YT Dev Key</span>
+  <input size="40" name="youtube_key"/>
+  </div>
+  
+  <div>
+    <input type="checkbox" name="v2" checked/><span style="margin-right: 5px;">Version 2</span>
+  </div>
+  
+  <div>
+  <input type="checkbox" name="display_browser" checked/>Display in Browser
+  </div>
+  
+  {% if logged_in %}
+  <div>
+  <textarea name="request_body" rows="6" cols="60" style="margin-left: 10px">data here</textarea>
+  </div>
+  {% endif %}
+    
+  <div>
+  <input type="submit" value="Send Request"/>
+  </div>
+  
+  </form>
+  </div>
+  
+  {% if logged_in %}
+  <div class="section">
+  <h2>AuthSub Tokens</h2>
+  <h3>Add token:</h3>
+  <div>
+    <form action="/" method="post">
+      <div>
+      Scope: <input size="60" name="scope"/>
+      <input type="hidden" name="next" value="{{ self_link }}"/>
+      </div>
+
+      <div>
+      <input type="submit" value="Add AuthSub Scope"/>
+      </div>
+    </form>
+  </div>
+  <div>
+  <h3>Remove tokens:</h3>
+    {% for token in tokens %}
+      <a href="/removeToken?token={{ token.token }}">{{ token.scope }}</a><br/>
+    {% endfor %}
+  </div>
+  {% endif %}
+  </div>
+</body>
+</html>

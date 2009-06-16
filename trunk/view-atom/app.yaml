@@ -1,0 +1,15 @@
+application: view-atom
+version: 1-1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /highlight
+  static_dir: highlight
+
+- url: /css
+  static_dir: css
+
+- url: /.*
+  script: view-atom.py
+
