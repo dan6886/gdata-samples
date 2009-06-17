@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Simple servlet to handle logging a user out.
+ *
+ */
 @SuppressWarnings("serial")
 public class LogoutServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp)

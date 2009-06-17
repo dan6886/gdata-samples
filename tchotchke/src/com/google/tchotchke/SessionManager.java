@@ -15,7 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gdata.client.http.AuthSubUtil;
 import com.google.gdata.util.AuthenticationException;
 
-// TODO: Comment and add logging
+/**
+ * A more specific form of the NavigationManager that handles user 
+ * authentication.
+ *
+ */
 public class SessionManager extends NavigationManager {
 
   private HttpServletRequest request;
@@ -27,6 +31,9 @@ public class SessionManager extends NavigationManager {
   private static final Logger log = Logger.getLogger(SessionManager.class
       .getName());
 
+  /**
+   * Initialize a new SessionManager with context from the servlet.
+   */
   public SessionManager(HttpServletRequest req, HttpServletResponse resp) {
 
     super(req);
@@ -34,10 +41,20 @@ public class SessionManager extends NavigationManager {
     this.response = resp;
   }
 
+  
+  /**
+   * 
+   * @return true if the user is logged in.
+   */
   public boolean isLoggedIn() {
     return this.getToken() != null;
   }
 
+  /**
+   * Retrieve the AuthSub token of the user if they are logged in. If the 
+   * App Engine session expires, look in the magic cookie for the token instead.
+   * @return An AuthSub token
+   */
   public String getToken() {
     String token = (String) this.request.getSession().getAttribute(
         TOKEN_PROPERTY);
@@ -56,6 +73,11 @@ public class SessionManager extends NavigationManager {
     }
   }
 
+  /**
+   * Check if an AuthSub token is valid.
+   * @param token an AuthSub token.
+   * @return True if the token is valid
+   */
   public static boolean isTokenValid(String token) {
     try {
       AuthSubUtil.getTokenInfo(token, null);
@@ -69,6 +91,10 @@ public class SessionManager extends NavigationManager {
     return true;
   }
 
+  /**
+   * 
+   * @return The YouTube username of the authenticated user.
+   */
   public String getYouTubeUsername() {
     String username = (String) request.getSession().getAttribute("YTUsername");
 
@@ -95,10 +121,18 @@ public class SessionManager extends NavigationManager {
     }
   }
 
+  /**
+   * 
+   * @return a URL to an AuthSub approval page
+   */
   public String getAuthSubLink() {
     return AuthSubUtil.getRequestUrl(getNextUrl(), SCOPE, false, true);
   }
 
+  /**
+   * 
+   * @return a URL to the current application.
+   */
   public String getSelfUrl() {
     StringBuilder selfUrl = new StringBuilder();
     selfUrl.append(request.getScheme()).append("://");
@@ -111,6 +145,10 @@ public class SessionManager extends NavigationManager {
     return selfUrl.toString();
   }
 
+  /**
+   * 
+   * @return The URL to redirect to after AuthSub approval.
+   */
   public String getNextUrl() {
 
     StringBuilder nextUrl = new StringBuilder(getSelfUrl());
@@ -126,6 +164,10 @@ public class SessionManager extends NavigationManager {
     return nextUrl.toString();
   }
 
+  /** 
+   * Handle upgrading a one-time AuthSub token to a session token.
+   * @throws IOException
+   */
   public void upgradeToken() throws IOException {
     String token = AuthSubUtil.getTokenFromReply(request.getQueryString());
 
@@ -165,6 +207,10 @@ public class SessionManager extends NavigationManager {
     return;
   }
 
+  /**
+   * Kill the current session and revoke the AuthSub token.
+   * @throws IOException
+   */
   public void destroySession() throws IOException {
 
     String token = getToken();
@@ -185,6 +231,10 @@ public class SessionManager extends NavigationManager {
     response.sendRedirect(getVideoWidgetLink());
   }
 
+  /**
+   * 
+   * @return The AuthSub authentication cookie.
+   */
   private Cookie getMagicCookie() {
     Cookie[] cookies = request.getCookies();
     if (cookies == null) {
@@ -198,12 +248,19 @@ public class SessionManager extends NavigationManager {
     return null;
   }
 
+  /**
+   * Remove the AuthSub authentication cookie.
+   */
   private void removeMagicCookie() {
     Cookie cookie = new Cookie(COOKIE_NAME, "");
     cookie.setMaxAge(0);
     response.addCookie(cookie);
   }
 
+  /**
+   * Set a new AuthSub authentication cookie that lives for a year.
+   * @param token The AuthSub session token.
+   */
   private void setMagicCookie(String token) {
     Cookie cookie = new Cookie(COOKIE_NAME, token);
     // cookie lives for a year
@@ -211,17 +268,31 @@ public class SessionManager extends NavigationManager {
     response.addCookie(cookie);
   }
 
+  /**
+   * Remember a YouTube browser-based upload URL and token in the user's session
+   * @param token The upload token
+   * @param url The upload form URL
+   */
   public void setUploadToken(String token, String url) {
     request.getSession().setAttribute("upload_token", token);
     request.getSession().setAttribute("upload_url", url);
   }
 
+  /**
+   * 
+   * @return True if the user is currently uploading a video (has already
+   *   submitted a response title and now must select a video file.)
+   */
   public boolean isUploadingVideo() {
     String token = (String) request.getSession().getAttribute("upload_token");
     String url = (String) request.getSession().getAttribute("upload_url");
     return (token != null && url != null);
   }
 
+  /**
+   * 
+   * @return The browser based form upload token.
+   */
   public String getVideoUploadToken() {
     String token = (String) request.getSession().getAttribute("upload_token");
     if (token != null) {
@@ -231,6 +302,10 @@ public class SessionManager extends NavigationManager {
     }
   }
 
+  /**
+   * 
+   * @return The browser based form upload action URL.
+   */
   public String getVideoUploadPostUrl() {
     String url = (String) request.getSession().getAttribute("upload_url");
     if (url != null) {
@@ -258,10 +333,20 @@ public class SessionManager extends NavigationManager {
     request.getSession().setAttribute("flash-" + name, message);
   }
 
+  /**
+   * Check if a flash exists with the given name.
+   * @param name The name of the flash.
+   * @return true if the flash exists.
+   */
   public boolean hasFlash(String name) {
     return (request.getSession().getAttribute("flash-" + name) != null);
   }
 
+  /**
+   * Retrieve a flash with a given name. Reading a flash message consumes it.
+   * @param name The name of the flash.
+   * @return The flash message content.
+   */
   public String getFlash(String name) {
     String message = (String) request.getSession()
         .getAttribute("flash-" + name);

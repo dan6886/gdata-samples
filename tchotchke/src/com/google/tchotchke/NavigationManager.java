@@ -7,8 +7,15 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * The NavigationManager is a simple class that allows the widget to redirect
+ * users to different "views" of itself by altering the query parameters
+ * that are carried over.
+ *
+ */
 public class NavigationManager {
   
+  // An enum of all valid query parameters
   private enum ValidQueryParameter {
     page, articleId
   }
@@ -22,27 +29,55 @@ public class NavigationManager {
     this.request = request;
   }
 
+  /**
+   * 
+   * @return The URL to the logout servlet
+   */
   public String getLogoutLink() {
     return generateUrl("/logout");
   }
 
+  /**
+   * 
+   * @return The URL to the servlet where video metadata is POSTed to
+   */
   public String getVideoMetaDataLink() {
     return generateUrl("/uploadVideo");
   }
   
-  
+  /**
+   * 
+   * @return The URL to the main screen listing approved videos for the 
+   *   current article ID.
+   */
   public String getVideoWidgetLink() {
     return getVideoWidgetLink(null);
   }
 
+  /**
+   * 
+   * @param params Specific URL parameters (key/value) to include in the URL.
+   * @return The URL to the main screen listing approved videos for the 
+   *   current article ID.
+   */
   public String getVideoWidgetLink(Map<String, String> params) {
     return generateUrl("/showVideos", params);
   }
   
+  /**
+   * 
+   * @param params Specific URL parameters (key/value) to include in the URL.
+   * @return The URL to the moderation console
+   */
   public String getModerationLink(Map<String, String> params) {
     return generateUrl("/moderate", params);
   }
   
+  /**
+   * Create a link to a specific servlet in the application
+   * @param destination URL of where to send the user, relative to the domain
+   * @return The desired URL
+   */
   private String generateUrl(String destination) {
     return generateUrl(destination, null);
   }
@@ -53,7 +88,7 @@ public class NavigationManager {
    * 
    * @param destination URL of where to send the user, relative to the domain
    * @param extraParams Any additional one-off query parameters that should be added.
-   * @return
+   * @return The desired URL
    */
   private String generateUrl(String destination, 
       Map<String, String> extraParams) {

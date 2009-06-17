@@ -11,6 +11,10 @@ import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.util.ServiceException;
 
+/**
+ * Class to handle interfacing with the Google Data Java Client Library's
+ * YouTube support.
+ */
 public class YouTubeApiManager {
 
   private YouTubeService service = null;
@@ -18,16 +22,30 @@ public class YouTubeApiManager {
   private static final Logger log = Logger.getLogger(YouTubeApiManager.class
       .getName());
 
+  /**
+   * Create a new instance of the class, initializing a YouTubeService object
+   * with parameters specified in appengine-web.xml
+   */
   public YouTubeApiManager() {
     service = new YouTubeService(System
         .getProperty("com.google.tchotchke.YTClientID"), System
         .getProperty("com.google.tchotchke.YTDeveloperKey"));
   }
 
+  /**
+   * Sets the AuthSub token to use for API requests.
+   * @param token The token to use.
+   */
   public void setToken(String token) {
     service.setAuthSubToken(token);
   }
 
+  /**
+   * Gets the username for the authenticated user, assumes that setToken() has
+   * already been called to provide authentication.
+   * 
+   * @return The current username for the authenticated user.
+   */
   public String getCurrentUsername() {
     try {
 
@@ -42,6 +60,13 @@ public class YouTubeApiManager {
     }
   }
 
+  /**
+   * Submits video metadata to YouTube to get an upload token and URL. 
+   * @param newEntry The VideoEntry containing all video metadata for the upload
+   * @return A FormUploadToken used when uploading a video to YouTube.
+   * @throws ServiceException Error with the API
+   * @throws IOException Error talking to the API
+   */
   public FormUploadToken getFormUploadToken(VideoEntry newEntry)
       throws ServiceException, IOException {
     try {

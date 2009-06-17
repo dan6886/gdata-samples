@@ -14,6 +14,13 @@ import org.json.JSONObject;
 
 import com.google.tchotchke.model.VideoSubmission;
 
+/**
+ * Controller for the Moderate.jsp page with lots of convenience methods.
+ * 
+ * If there is an article ID passed through a query parameter - a list of all
+ * submissions for a particular article will be shown. Otherwise a list of all
+ * unmoderated video submissions will be shown, grouped by article ID.
+ */
 public class ModerationController {
 
   private NavigationManager navMan;
@@ -24,12 +31,17 @@ public class ModerationController {
 
   private List<VideoSubmission> articleSubmissions;
 
+  //A map of article ID to a list of unmoderated videos for that article.
   private Map<String, List<VideoSubmission>> unmoderatedSubmissions;
 
+  // The start of the next page of query results, if any.
   private String nextStart;
 
+  // The start of the previous page of query results, if any.
   private String prevStart;
 
+  // True if we're looking at all videos for an article, false if we're looking
+  // at unmoderated videos for all articles.
   private boolean isArticlePage = false;
 
   private static final Logger log = Logger.getLogger(ModerationController.class
@@ -51,6 +63,11 @@ public class ModerationController {
     }
   }
 
+  /**
+   * If we get a POST with videoid-FOO=ACTION where FOO is a YouTube video ID
+   * and ACTION is one of "APPROVE" or "REJECT", then we will moderate that
+   * submission in the datastore accordingly.
+   */
   public void handleModerationRequest() {
     for (Enumeration<?> e = request.getParameterNames(); e.hasMoreElements();) {
       String param = (String) e.nextElement();
@@ -69,6 +86,11 @@ public class ModerationController {
     }
   }
 
+  /**
+   * Retrieves from the datastore all of the video submissions that are tied
+   * to a particular article ID.
+   * @param articleId The article ID that we want to get videos for.
+   */
   private void fetchVideoSubmissionsForArticle(String articleId) {
 
     String startIndex = request.getParameter("startIndex");
@@ -90,10 +112,17 @@ public class ModerationController {
     }
   }
 
+  /**
+   * Retrieves from the datastore the next batch of videos to moderate.
+   */
   private void fetchRecentUnmoderatedSubmissions() {
     unmoderatedSubmissions = dm.getUnmoderatedVideoSubmissions(25);
   }
 
+  /**
+   * Constructs a JSON array of video submissions to pass to jQuery
+   * @return the stringified JSON array
+   */
   public String getVideoSubmissions() {
 
     if (isArticlePage) {
@@ -127,6 +156,12 @@ public class ModerationController {
     }
   }
 
+  /**
+   * Turns a list of VideoSubmission objects into a JSON array of JSON objects
+   * describing each submission.
+   * @param subs The list of submissions to transform.
+   * @return The JSONArray object transformation.
+   */
   public JSONArray getArticleJson(List<VideoSubmission> subs) {
     JSONArray submissionList = new JSONArray();
 
@@ -146,26 +181,46 @@ public class ModerationController {
     return submissionList;
   }
 
+  /**
+   * 
+   * @return True if there is another page of results
+   */
   public boolean hasNextPage() {
     return (nextStart != null);
   }
 
+  /**
+   * 
+   * @return The URL to the next page of results
+   */
   public String getNextPageUrl() {
     Map<String, String> params = new HashMap<String, String>();
     params.put("startIndex", nextStart);
     return navMan.getModerationLink(params);
   }
 
+  /**
+   * 
+   * @return true if there is a previous page of results.
+   */
   public boolean hasPrevPage() {
     return (prevStart != null);
   }
 
+  /**
+   * 
+   * @return The URL to the previous page of results.
+   */
   public String getPrevPageUrl() {
     Map<String, String> params = new HashMap<String, String>();
     params.put("startIndex", prevStart);
     return navMan.getModerationLink(params);
   }
 
+  /**
+   * 
+   * @return true if this page is listing all videos for an article.
+   */
   public boolean isArticlePage() {
     return isArticlePage;
   }
