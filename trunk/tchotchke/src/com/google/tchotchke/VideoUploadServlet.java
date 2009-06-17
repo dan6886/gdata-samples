@@ -17,6 +17,15 @@ import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.data.youtube.YouTubeNamespace;
 import com.google.gdata.util.ServiceException;
 
+/**
+ * Simple page that handles a redirect from a successful browser-based upload
+ * request and then redirects the user back to the display of approved
+ * videos for this article.
+ * 
+ * This page also acts as a POST target when a user submits a video title. In
+ * that case, the title is saved to the user's session and a video upload token
+ * is returned so they can upload a video file.
+ */
 @SuppressWarnings("serial")
 public class VideoUploadServlet extends HttpServlet {
 
@@ -43,13 +52,14 @@ public class VideoUploadServlet extends HttpServlet {
   }
 
   /**
-   * Returns true on success.
+   * Inspect the query parameters to determine how the browser-based
+   * upload attempt went.
    * 
-   * @param sessionManager
-   * @param id
-   * @param status
-   * @param articleId
-   * @return
+   * @param sessionManager The SessionManager for the current user.
+   * @param id The video ID of the attempted upload
+   * @param status The status of the upload attempt
+   * @param articleId The article ID provided by the news site.
+   * @return true if the video was able to be successfully uploaded.
    */
   public boolean handleVideoUpload(SessionManager sessionManager, String id,
       String status, String articleId) {
@@ -81,6 +91,10 @@ public class VideoUploadServlet extends HttpServlet {
 
   }
 
+  /**
+   * Handle getting a video upload token when the user submits a title
+   * for their response.
+   */
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
 
