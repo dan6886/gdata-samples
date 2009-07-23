@@ -36,6 +36,10 @@ public class VideoSubmission implements Serializable {
 
   @Persistent
   private String videoId;
+  
+  // The AuthSub token used when uploading this video.
+  @Persistent
+  private String authSubToken;
 
   // The article on the news site that this submission belongs to.
   @Persistent
@@ -70,10 +74,12 @@ public class VideoSubmission implements Serializable {
    * @param articleId The news site article ID
    * @param uploader The YouTube username of the uploader
    */
-  public VideoSubmission(String videoId, String articleId, String uploader) {
+  public VideoSubmission(String videoId, String articleId, String uploader,
+      String authSubToken) {
     this.SCHEMA_VERSION = DEFAULT_SCHEMA_VERSION;
     this.id = "video-" + videoId;
     this.videoId = videoId;
+    this.authSubToken = authSubToken;
     this.articleId = articleId;
     this.uploader = uploader;
     this.created = new Date();
@@ -106,6 +112,16 @@ public class VideoSubmission implements Serializable {
    */
   public String getVideoId() {
     return videoId;
+  }
+  
+  /**
+   * Get the AuthSub token associated with this video upload.
+   * Unless the token has been revoked or expired (after a year), you should
+   * be able to update the related video using this as your credentials.
+   * @return A YouTube video ID
+   */
+  public String getAuthSubToken() {
+    return authSubToken;
   }
 
   /**
@@ -204,7 +220,4 @@ public class VideoSubmission implements Serializable {
   public void setUploader(String uploader) {
     this.uploader = uploader;
   }
-
-
-
 }

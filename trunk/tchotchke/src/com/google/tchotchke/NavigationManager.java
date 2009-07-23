@@ -61,7 +61,7 @@ public class NavigationManager {
    *   current article ID.
    */
   public String getVideoWidgetLink(Map<String, String> params) {
-    return generateUrl("/showVideos", params);
+    return generateUrl("/", params);
   }
   
   /**
@@ -94,6 +94,7 @@ public class NavigationManager {
       Map<String, String> extraParams) {
     StringBuilder url = new StringBuilder(destination);
     boolean hasQueryParams = false;
+    
     for (ValidQueryParameter param : ValidQueryParameter.values()) {
       String value = request.getParameter(param.name());
       if (value != null) {
@@ -103,7 +104,9 @@ public class NavigationManager {
           url.append("?");
           hasQueryParams = true;
         }
+
         url.append(param.name()).append("=");
+        
         try {
           url.append(URLEncoder.encode(value, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -122,7 +125,9 @@ public class NavigationManager {
             url.append("?");
             hasQueryParams = true;
           }
+          
           url.append(param).append("=");
+          
           try {
             url.append(URLEncoder.encode(value, "UTF-8"));
           } catch (UnsupportedEncodingException e) {

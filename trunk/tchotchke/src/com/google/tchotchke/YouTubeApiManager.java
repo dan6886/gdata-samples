@@ -27,9 +27,18 @@ public class YouTubeApiManager {
    * with parameters specified in appengine-web.xml
    */
   public YouTubeApiManager() {
-    service = new YouTubeService(System
-        .getProperty("com.google.tchotchke.YTClientID"), System
-        .getProperty("com.google.tchotchke.YTDeveloperKey"));
+    String clientId = System.getProperty("com.google.tchotchke.YTClientID");
+    String developerKey = System.getProperty("com.google.tchotchke.YTDeveloperKey");
+    
+    if (clientId == null || clientId.length() == 0) {
+      log.warning("com.google.tchotchke.YTClientID property is not set.");
+    }
+    
+    if (developerKey == null || developerKey.length() == 0) {
+      log.warning("com.google.tchotchke.YTDeveloperKey property is not set.");
+    }
+    
+    service = new YouTubeService(clientId, developerKey);
   }
 
   /**
@@ -48,14 +57,13 @@ public class YouTubeApiManager {
    */
   public String getCurrentUsername() {
     try {
-
       log.info("Attempting to get username from YouTube");
       UserProfileEntry profile = service.getEntry(new URL(userEntry),
           UserProfileEntry.class);
 
       return profile.getUsername();
     } catch (Exception e) {
-      log.warning("Fetching username failed: " + e.getMessage());
+      log.warning("Fetching username failed: " + e.toString());
       return null;
     }
   }
@@ -77,5 +85,4 @@ public class YouTubeApiManager {
     }
     return null;
   }
-
 }

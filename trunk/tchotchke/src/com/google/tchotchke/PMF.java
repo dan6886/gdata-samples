@@ -17,5 +17,4 @@ public class PMF {
   public static PersistenceManagerFactory get() {
     return pmfInstance;
   }
-  
 }

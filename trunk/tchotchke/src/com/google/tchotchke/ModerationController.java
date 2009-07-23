@@ -224,5 +224,4 @@ public class ModerationController {
   public boolean isArticlePage() {
     return isArticlePage;
   }
-
 }

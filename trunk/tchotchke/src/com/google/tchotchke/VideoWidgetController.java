@@ -34,7 +34,6 @@ public class VideoWidgetController {
 
   /**
    * Initialize self and retrieve the first page of videos.
-   * @param session
    * @throws IOException
    */
   public VideoWidgetController(HttpServletRequest req) throws IOException {
@@ -60,19 +59,24 @@ public class VideoWidgetController {
 
     String startIndex = request.getParameter("startIndex");
 
-    submissions = dm.getVideoSubmissionsForArticle(articleId,
-        DatastoreManager.DEFAULT_PAGE_SIZE, true, startIndex, false);
-    if (submissions.size() == DatastoreManager.DEFAULT_PAGE_SIZE) {
-      nextStart = submissions.get(submissions.size() - 1).getCreatedIndex();
-    }
-
-    if (startIndex != null) {
-      List<VideoSubmission> prevResults = dm
-          .getVideoSubmissionsForArticle(articleId,
-              DatastoreManager.DEFAULT_PAGE_SIZE, true, startIndex, true);
-      if (prevResults.size() > 0) {
-        prevStart = prevResults.get(prevResults.size() - 1).getCreatedIndex();
+    try {
+      submissions = dm.getVideoSubmissionsForArticle(articleId,
+          DatastoreManager.DEFAULT_PAGE_SIZE, true, startIndex, false);
+      if (submissions.size() == DatastoreManager.DEFAULT_PAGE_SIZE) {
+        nextStart = submissions.get(submissions.size() - 1).getCreatedIndex();
       }
+  
+      if (startIndex != null) {
+        List<VideoSubmission> prevResults = dm
+            .getVideoSubmissionsForArticle(articleId,
+                DatastoreManager.DEFAULT_PAGE_SIZE, true, startIndex, true);
+        if (prevResults.size() > 0) {
+          prevStart = prevResults.get(prevResults.size() - 1).getCreatedIndex();
+        }
+      }
+    }
+    catch (Exception e) {
+      return;
     }
   }
 
@@ -150,5 +154,4 @@ public class VideoWidgetController {
     params.put("startIndex", prevStart);
     return navMan.getVideoWidgetLink(params);
   }
-
 }

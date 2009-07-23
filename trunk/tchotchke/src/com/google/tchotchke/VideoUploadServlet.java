@@ -32,6 +32,7 @@ public class VideoUploadServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(VideoUploadServlet.class
       .getName());
 
+  @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
 
@@ -48,7 +49,6 @@ public class VideoUploadServlet extends HttpServlet {
 
     sessionManager.setUploadToken(null, null);
     resp.sendRedirect(sessionManager.getVideoWidgetLink());
-
   }
 
   /**
@@ -82,7 +82,8 @@ public class VideoUploadServlet extends HttpServlet {
         return false;
       }
 
-      dm.addVideoSubmission(id, articleId, sessionManager.getYouTubeUsername());
+      dm.addVideoSubmission(id, articleId, sessionManager.getYouTubeUsername(),
+          sessionManager.getToken());
       return true;
     } else {
       log.warning("Missing article id on video upload.");
@@ -93,8 +94,9 @@ public class VideoUploadServlet extends HttpServlet {
 
   /**
    * Handle getting a video upload token when the user submits a title
-   * for their response.
+   * and description for their response.
    */
+  @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
 
@@ -107,10 +109,11 @@ public class VideoUploadServlet extends HttpServlet {
     }
 
     String title = req.getParameter("title");
+    String description = req.getParameter("description");
     String articleId = req.getParameter("articleId");
     String page = req.getParameter("page");
 
-    if (title == null) {
+    if (title == null || title.length() == 0) {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Need a video title.");
       return;
     }
@@ -126,18 +129,29 @@ public class VideoUploadServlet extends HttpServlet {
 
     VideoEntry newEntry = new VideoEntry();
     YouTubeMediaGroup mg = newEntry.getOrCreateMediaGroup();
+
     mg.setTitle(new MediaTitle());
     mg.getTitle().setPlainTextContent(title);
+
     mg.addCategory(new MediaCategory(YouTubeNamespace.CATEGORY_SCHEME, "News"));
-    mg.setKeywords(new MediaKeywords());
-    mg.getKeywords().addKeyword("news");
-    // TODO: make this tag into a system property.
-    mg.getKeywords().addKeyword("tchotchke");
-    // TODO: make this a dynamic link
+    
+    String keyword = System.getProperty("com.google.tchotchke.Keyword");
+    if (keyword != null && keyword.length() > 0) {
+      mg.setKeywords(new MediaKeywords());
+      mg.getKeywords().addKeyword(keyword);
+    }
+    
     mg.setDescription(new MediaDescription());
-    mg.getDescription().setPlainTextContent("Uploaded via Tchotchke: LINK");
-    mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
-        "tchotchke"));
+    mg.getDescription().setPlainTextContent("Uploaded in response to " + page +
+        "\n\n" + description);
+    
+    String defaultDeveloperTag = System.getProperty(
+        "com.google.tchotchke.DefaultDeveloperTag");
+    if (defaultDeveloperTag != null && defaultDeveloperTag.length() > 0) {
+      mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
+          defaultDeveloperTag));
+    }
+    
     mg.addCategory(new MediaCategory(YouTubeNamespace.DEVELOPER_TAG_SCHEME,
         articleId));
 
@@ -145,14 +159,16 @@ public class VideoUploadServlet extends HttpServlet {
     apiManager.setToken(sessionManager.getToken());
 
     try {
+      // This will make a POST request and obtain an upload token and URL that
+      // can be used to submit a new video with the given metadata.
       FormUploadToken token = apiManager.getFormUploadToken(newEntry);
       sessionManager.setUploadToken(token.getToken(), token.getUrl());
+      
       resp.sendRedirect(sessionManager.getVideoWidgetLink());
     } catch (ServiceException e) {
       resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
           "Error when attempting to fetch upload token.");
-      log.severe("Upload token failed: " + e.getMessage());
+      log.severe("Upload token failed: " + e.toString());
     }
-
   }
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 public class LogoutServlet extends HttpServlet {
+  @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
 
@@ -19,5 +20,4 @@ public class LogoutServlet extends HttpServlet {
     sessionManager.destroySession();
 
   }
-
 }
