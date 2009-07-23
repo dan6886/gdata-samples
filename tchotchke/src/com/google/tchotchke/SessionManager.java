@@ -35,7 +35,6 @@ public class SessionManager extends NavigationManager {
    * Initialize a new SessionManager with context from the servlet.
    */
   public SessionManager(HttpServletRequest req, HttpServletResponse resp) {
-
     super(req);
     this.request = req;
     this.response = resp;
@@ -103,7 +102,7 @@ public class SessionManager extends NavigationManager {
       String token = getToken();
       if(token == null) {
         log.warning("User not logged in, but getYouTubeUsername() called");
-        return "YouTuber";
+        return "[not logged in]";
       }
       ytManager.setToken(token);
       username = ytManager.getCurrentUsername();
@@ -115,7 +114,7 @@ public class SessionManager extends NavigationManager {
 
     if (username == null) {
       log.warning("Can't determine YT username for token.");
-      return "YouTuber";
+      return "[unknown]";
     } else {
       return username;
     }
@@ -126,7 +125,7 @@ public class SessionManager extends NavigationManager {
    * @return a URL to an AuthSub approval page
    */
   public String getAuthSubLink() {
-    return AuthSubUtil.getRequestUrl(getNextUrl(), SCOPE, false, true);
+    return AuthSubUtil.getRequestUrl(getAuthSubNextUrl(), SCOPE, false, true);
   }
 
   /**
@@ -149,8 +148,7 @@ public class SessionManager extends NavigationManager {
    * 
    * @return The URL to redirect to after AuthSub approval.
    */
-  public String getNextUrl() {
-
+  public String getAuthSubNextUrl() {
     StringBuilder nextUrl = new StringBuilder(getSelfUrl());
 
     nextUrl.append("/handleToken");
@@ -317,6 +315,7 @@ public class SessionManager extends NavigationManager {
       } catch (UnsupportedEncodingException e) {
         log.severe("Sky is falling, hard-coded string for encoding is wrong.");
       }
+      
       return nextUrl.toString();
     } else {
       return "";
@@ -353,5 +352,17 @@ public class SessionManager extends NavigationManager {
     request.getSession().removeAttribute("flash-" + name);
     return message;
   }
-
+  
+  /**
+   * 
+   * @return The value of the articleId request parameter, or [unknown].
+   */
+  public String getArticleId() {
+    String articleId = request.getParameter("articleId");
+    if (articleId == null || articleId.length() == 0) {
+      articleId = "[unknown]";
+    }
+    
+    return articleId;
+  }
 }

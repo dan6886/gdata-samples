@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 public class TokenServlet extends HttpServlet {
+  
+  @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
     
     SessionManager sessionManager = new SessionManager(req, resp);
     sessionManager.upgradeToken();
-    
   }
 }

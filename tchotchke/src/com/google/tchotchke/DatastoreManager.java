@@ -34,14 +34,13 @@ public class DatastoreManager {
    * @param uploader The YouTube username of the uploader
    */
   public void addVideoSubmission(String videoId, String articleId,
-      String uploader) {
+      String uploader, String authSubToken) {
     PersistenceManager pm = PMF.get().getPersistenceManager();
 
     try {
       VideoSubmission newSubmission = new VideoSubmission(videoId, articleId,
-          uploader);
+          uploader, authSubToken);
       newSubmission.save(pm);
-
     } finally {
       pm.close();
     }
@@ -302,5 +301,4 @@ public class DatastoreManager {
     String cacheKey = "submissions-" + articleId;
     ms.delete(cacheKey);
   }
-
 }
