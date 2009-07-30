@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2007 Google Inc.
+/* Copyright (c) 2009 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,15 +28,15 @@ Zend_Loader::loadClass('Zend_Gdata_Docs');
 Zend_Loader::loadClass('Zend_Gdata_Spreadsheets');
 
 // Setup OAuth consumer with our "credentials"
-$CONSUMER_KEY = 'CONSUMER_KEY';
-$CONSUMER_SECRET = 'CONSUMER_SECRET';
+$CONSUMER_KEY = 'YOUR_CONSUMER_KEY';
+$CONSUMER_SECRET = 'YOUR_CONSUMER_SECRET';
 $consumer = new OAuthConsumer($CONSUMER_KEY, $CONSUMER_SECRET);
 
 $sig_method = $SIG_METHODS['HMAC-SHA1'];
 $scopes = array(
   'http://docs.google.com/feeds/',
   'http://spreadsheets.google.com/feeds/',
-  'http://sandbox.gmodules.com/api/'
+  'http://www-opensocial.googleusercontent.com/api/people/'
 );
 
 $openid_params = array(
@@ -45,7 +45,7 @@ $openid_params = array(
   'openid.identity'          => 'http://specs.openid.net/auth/2.0/identifier_select',
   'openid.return_to'         => "http://{$CONSUMER_KEY}{$_SERVER['PHP_SELF']}",
   'openid.realm'             => "http://{$CONSUMER_KEY}",
-  'openid.mode'              => @$_REQUEST['openid_mode'], //'checkid_immediate', 'checkid_setup',
+  'openid.mode'              => @$_REQUEST['openid_mode'],
   'openid.ns.ui'             => 'http://specs.openid.net/extensions/ui/1.0',
   'openid.ns.ext1'           => 'http://openid.net/srv/ax/1.0',
   'openid.ext1.mode'         => 'fetch_request',
@@ -54,8 +54,7 @@ $openid_params = array(
   'openid.ext1.type.last'    => 'http://axschema.org/namePerson/last',
   'openid.ext1.type.country' => 'http://axschema.org/contact/country/home',
   'openid.ext1.type.lang'    => 'http://axschema.org/pref/language',
-  'openid.ext1.type.web'     => 'http://axschema.org/contact/web/default',
-  'openid.ext1.required'     => 'email,first,last,country,lang,web',
+  'openid.ext1.required'     => 'email,first,last,country,lang',
   'openid.ns.oauth'          => 'http://specs.openid.net/extensions/oauth/1.0',
   'openid.oauth.consumer'    => $CONSUMER_KEY,
   'openid.oauth.scope'       => implode(' ', $scopes)
@@ -69,16 +68,26 @@ $openid_ext = array(
   'openid.ext1.type.last'    => 'http://axschema.org/namePerson/last',
   'openid.ext1.type.country' => 'http://axschema.org/contact/country/home',
   'openid.ext1.type.lang'    => 'http://axschema.org/pref/language',
-  'openid.ext1.type.web'     => 'http://axschema.org/contact/web/default',
-  'openid.ext1.required'     => 'email,first,last,country,lang,web',
+  'openid.ext1.required'     => 'email,first,last,country,lang',
   'openid.ns.oauth'          => 'http://specs.openid.net/extensions/oauth/1.0',
   'openid.oauth.consumer'    => $CONSUMER_KEY,
-  'openid.oauth.scope'       => implode(' ', $scopes)
+  'openid.oauth.scope'       => implode(' ', $scopes),
+  'openid.ui.icon'           => 'true'
 );
 
 
-if (isset($_GET['popup']) && !isset($_SESSION['redirect_to'])) {
-  $query_params = substr($_SERVER['QUERY_STRING'], strlen('popup=true') + 1);
+if (isset($_REQUEST['popup']) && !isset($_SESSION['redirect_to'])) {
+  $query_params = '';
+  if($_POST) {
+    $kv = array();
+    foreach ($_POST as $key => $value) {
+      $kv[] = "$key=$value";
+    }
+    $query_params = join('&', $kv);
+  } else {
+    $query_params = substr($_SERVER['QUERY_STRING'], strlen('popup=true') + 1);
+  }
+
   $_SESSION['redirect_to'] = "http://{$CONSUMER_KEY}{$_SERVER['PHP_SELF']}?{$query_params}";
   echo '<script type = "text/javascript">window.close();</script>';
   exit;
@@ -133,7 +142,7 @@ if ($request_token) {
   // ===========================================================================
 
   // Query Google's Portable Contacts API ======================================
-  $feedUri = 'http://sandbox.gmodules.com/api/people/@me/@all';
+  $feedUri = 'http://www-opensocial.googleusercontent.com/api/people/@me/@all';
   $req = OAuthRequest::from_consumer_and_token($consumer, $access_token, 'GET',
                                                $feedUri, NULL);
   $req->sign_request($sig_method, $consumer, $access_token);
@@ -288,7 +297,6 @@ function toggle(id, type) {
   Welcome: <?php echo "{$_REQUEST['openid_ext1_value_first']} {$_REQUEST['openid_ext1_value_last']} - {$_REQUEST['openid_ext1_value_email']}" ?><br>
   country: <?php echo $_REQUEST['openid_ext1_value_country'] ?><br>
   language: <?php echo $_REQUEST['openid_ext1_value_lang'] ?><br>
-  web: <?php echo $_REQUEST['openid_ext1_value_web'] ?><br>
   </p>
 <?php endif; ?>
 
