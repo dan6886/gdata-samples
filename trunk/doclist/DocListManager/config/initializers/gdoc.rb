@@ -29,7 +29,8 @@ module GDoc
   class Document
   
     attr_reader :permissions, :xml
-    attr_accessor :title, :doc_id, :type, :last_updated, :links
+    attr_accessor :title, :doc_id, :type, :last_updated, :last_viewed,
+                  :last_modified_by, :author, :links, :writers_can_invite
 
     # Initializer.
     #
@@ -47,6 +48,7 @@ module GDoc
       @links = {}
       @type = options[:type] || ''
       @last_updated = options[:last_updated] || DateTime.new
+      @last_viewed = options[:last_viewed] || DateTime.new
       @xml = options[:xml] || nil
       @permissions = {'owner' => [], 'reader' => [], 'writer' => []}
     end

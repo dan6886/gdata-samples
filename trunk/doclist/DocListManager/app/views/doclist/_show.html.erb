@@ -19,9 +19,16 @@
                          :loading=> "setLoadingMsg('doc_preview', 'loading document info...')")
       %>
     </span>
-    <strong>Last updated</strong>: &nbsp; <%= @document.last_updated.strftime('%Y-%m-%d %H:%M:%S') %><br>
-    <strong><%= @document.type == ApplicationController::SPREADSHEET_DOC_TYPE ? 'key' : 'docID' %></strong>: &nbsp; <%= @document.doc_id %><br>
-    <div style="margin-top:5px;clear:both;"><strong>Who has access</strong>?</div>
+    <table>
+    <tr><td><strong>Resource id</strong>:</td><td><%= "#{@document.type}:#{@document.doc_id}"%></td></tr>
+    <tr><td><strong>Author</strong>:</td><td><%= @document.author %></td></tr>
+    <tr><td><strong>Last viewed </strong>:</td><td><%= @document.last_viewed.strftime('%Y-%m-%d %H:%M:%S') %></td></tr>
+    <tr><td><strong>Last updated</strong>:</td><td><%= @document.last_updated.strftime('%Y-%m-%d %H:%M:%S') %></td></tr>
+    <tr><td><strong>Last modified by</strong>:</td><td><%= @document.last_modified_by %></td></tr>
+    <tr><td><strong>Writers can invite?</strong></td><td><%= @document.writers_can_invite %></td></tr>
+    </table>
+
+    <div style="margin-top:5px;clear:both;"><strong>Sharing permissions</strong>:</div>
     <ul id="permission_list">
       <% @document.permissions.sort.each do |role, peeps| -%>
         <li id="<%= role -%>" style="float:left;width:170px;margin-right:5px;">
