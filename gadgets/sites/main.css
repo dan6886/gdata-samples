@@ -1,0 +1,82 @@
+* {
+  font-family: "Myriad Pro", Verdana, Arial;
+}
+
+a, a:visited {
+  font-weight: bold;
+  color: #6484b7;
+}
+
+a:hover {
+  cursor: pointer;
+  color: orange;
+}
+
+body {  
+  color: #666666;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  font-size: small;
+}
+
+p, form {
+  margin-bottom: 0;
+}
+
+p {
+  margin-top: 5px;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  color: #6484b7;
+}
+
+#errors {
+  color: red;
+  font-weight: bold;
+  margin-top: 25px;
+  text-align: center;
+}
+
+#loading {
+  text-align: center;
+  margin-top: 25px;
+  height: 332px;
+}
+
+#approval, #waiting {
+  margin-top: 25px;
+  color: #000;
+  text-align: center;
+  display: none;
+  height: 332px;
+}
+
+#main {
+ margin-top: 10px;
+ margin-bottom: 5px;
+ display:none;
+ clear:both;
+ height:332px;
+ overflow:auto;
+}
+
+#activity_listing li {
+  border-bottom:1px solid #eee;
+  padding:4px 0 4px 0;
+}
+
+#footer {
+  text-align:right;
+  padding-top:5px;
+  border-top:1px solid #ccc;
+}
+
+.content_preview {
+ border: 1px solid #ccc;
+ padding: 5px;
+}

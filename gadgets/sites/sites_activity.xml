@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Google Sites Activity Updates" author="Eric Bidelman" height="400" scrolling="true">
+    <Require feature="opensocial-0.8"/>
+    <Require feature="oauthpopup"/>
+    <Require feature="setprefs"/>
+  <OAuth>
+    <Service name="google">
+      <Access url="https://www.google.com/accounts/OAuthGetAccessToken" method="GET" />
+      <Request url="https://www.google.com/accounts/OAuthGetRequestToken?scope=http://sites.google.com/feeds/%20https://sites.google.com/feeds/" method="GET" />
+      <Authorization url="https://www.google.com/accounts/OAuthAuthorizeToken?oauth_callback=http://oauth.gmodules.com/gadgets/oauthcallback" />
+    </Service>
+  </OAuth>
+  </ModulePrefs>
+  <UserPref name="siteUrls" display_name="Enter the URL of each Site that you want updates for" datatype="list" required="true"/>
+  <Content type="html">
+  <![CDATA[
+<link href="http://gdata-samples.googlecode.com/svn/trunk/gadgets/sites/main.css" type="text/css" rel="stylesheet"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
+
+<div id="errors" style="display:none;height:332px;"></div>
+
+<div style="display:none;float:left;"><select id="site_listing"></select> <button onclick="fetchData();">go</button></div>
+<div id="unlink" style="display:none;text-align:right;font-size:small;"><a href="javascript:makeRequest(FEEDS.REVOKE_TOKEN, FEEDS.REVOKE_TOKEN.uri);void(0);">Revoke Access</a></div>
+
+<div id="main"></div>
+
+<div id="loading">
+  <h3>loading...</h3>
+  <p><img src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/sites/ajax-loader.gif"></p>
+</div>
+
+<div id="approval">
+  <a href="#" id="personalize">Grant access to your Google Sites data</a>
+</div>
+
+<div id="waiting" style="display: none">
+  <a href="#" id="approvalLink">I've already authorized access</a>
+</div>
+
+<div id="footer">
+  <img src="http://gdata-samples.googlecode.com/svn/trunk/gadgets/sites/sites_logo.png" align="absmiddle" style="margin-right:5px;">powered by
+  <a href="http://sites.google.com/" target="new">Google Sites</a>
+</div>
+
+<script type="text/javascript">
+  var prefs = new gadgets.Prefs();
+  var SITE_DOMAIN = null;
+  var SITE_NAMES = [];
+  var siteUrls = prefs.getArray('siteUrls');
+  for (var i = 0, url; url = siteUrls[i]; ++i) {
+    var siteObj = parseSiteUrl(url);
+    SITE_DOMAIN = siteObj.domain;
+    SITE_NAMES.push(siteObj.site);
+  }
+
+  var FEEDS = {
+    ACTIVITY: {
+      uri: 'http://sites.google.com/feeds/activity/' + SITE_DOMAIN + '/',
+      httpMethod: 'GET',
+      contentType: 'json',
+      containerID: 'main',
+      callback: displaySiteActivity
+    },
+    REVOKE_TOKEN: {
+      uri: 'https://www.google.com/accounts/AuthSubRevokeToken',
+      httpMethod: 'GET',
+      callback: function () {
+        fetchData();
+      }
+    }
+  };
+
+  $(document).ready(function() {
+    var html = []
+    for (var i = 0, site; site = SITE_NAMES[i]; ++i) {
+      html.push('<option value="', FEEDS.ACTIVITY.uri + site, '?alt=json"');
+      if (i == 0) {
+        html.push(' selected="selected"');
+      }
+      html.push('>', site, '</option>');
+    }
+    $('#site_listing').append(html.join(''));
+
+    $('#site_listing').change(function() {
+      fetchData();
+    });
+
+    $('#activity_listing a').live('click', function(){
+      if(this.href.indexOf('http://') == 0) {
+        $(this).attr('target', 'new');
+      }
+    });
+  });
+
+  function parseSiteUrl(siteUrl) {
+    var site = null;
+    var domain = null;
+
+    var parts = siteUrl.split('/');
+    if (parts[3] == 'a') {
+      domain = parts[4];
+      site =  parts[5];
+    } else {
+      domain = 'site';
+      site = parts[4];
+    }
+
+    return {'domain': domain, 'site': site};
+  }
+
+  function showOnly(id) {
+    var sections = ['main', 'approval', 'waiting', 'errors', 'loading'];
+    for (var i = 0, section; section = sections[i]; ++i) {
+      $('#' + section).get(0).style.display = section === id ? 'block' : 'none';
+    }
+  }
+
+  function getCategoryKind(categories, label) {
+    for (var i = 0, cat; cat = categories[i]; ++i) {
+      if (cat.scheme == 'http://schemas.google.com/g/2005#kind') {
+        return cat.label;
+      }
+    }
+    return null;
+  }
+
+  function getLink(links, rel) {
+    for (var i = 0, link; link = links[i]; ++i) {
+      if (link.rel == rel) {
+        return link.href;
+      }
+    }
+    return null;
+  }
+
+  function getSelectedSiteName() {
+    return $('#site_listing :selected').text();
+  }
+
+  function getHrefToSites() {
+    var domain = SITE_DOMAIN != 'site' ? 'a/' + SITE_DOMAIN : 'site';
+    return 'http://sites.google.com/' + domain + '/' + getSelectedSiteName();
+  }
+
+  function fetchContentFeed(url) {
+    var ContentFeed = {
+      uri: url,
+      httpMethod: 'GET',
+      contentType: 'json',
+      containerID: 'main',
+      callback: displayContentEntry
+    };
+    $('#unlink').hide();
+    $('#site_listing').parent().hide();
+    makeRequest(ContentFeed, ContentFeed.uri);
+  }
+
+  function createApprovalPopupHandler(url) {
+    var onOpen = function() {
+      showOnly('waiting');
+    };
+
+    var onClose = function() {
+      showOnly('loading');
+      fetchData();
+    };
+
+    var popup = new gadgets.oauth.Popup(
+        url, 'height=600,width=800', onOpen, onClose);
+
+    $('#personalize').get(0).onclick = popup.createOpenerOnClick();
+    $('#approvalLink').get(0).onclick = popup.createApprovedOnClick();
+  }
+
+  function displayContentEntry(data, id) {
+    showOnly('main');
+    $('#unlink').show();
+    $('#site_listing').parent().show();
+    var entry = data.entry;
+    var title = entry.title.$t;
+    var altLink = getLink(entry.link, 'alternate');
+    var content = entry.content.$t || 'No preview available';
+    var html = ['<h3 style="text-align:center;margin-top:15px;">',
+                entry.title.$t, '</h3>'];
+    html.push('<a href="', altLink, '" target="new">View in Google Sites</a><br>');
+    html.push('<b>revision:</b> ', entry.sites$revision.$t, '<br>');
+    html.push('<b>updated:</b> ', entry.updated.$t, '<br>');
+    html.push('<b>content preview:</b>');
+    html.push('<div class="content_preview">', content, '</div>');
+    $('#' + id).html(html.join(''));
+  }
+
+  function displaySiteActivity(data, id) {
+    showOnly('main');
+    $('#unlink').show();
+    $('#site_listing').parent().show();
+
+    var selectedSite = '<a href="' + getHrefToSites() + '" target="new">' +
+                       getSelectedSiteName() + '</a>';
+
+    var entries = data.feed.entry || [];
+    if (!entries.length) {
+      $('#' + id).html('<h3>No recent activity on: ' + selectedSite + '</h3>');
+      return;
+    }
+
+    var html = ['<ul id="activity_listing">'];
+    for (var i = 0, entry; entry = entries[i]; ++i) {
+      var title = entry.title.$t;
+      var kind = getCategoryKind(entry.category) || '';
+      var updated = entry.updated.$t;
+      var author = entry.author[0].email.$t;
+      var pageLink = getLink(entry.link, 'http://schemas.google.com/sites/2008#current');
+      var summary = entry.summary.$t;
+
+      html.push(['<li><strong><a href="javascript:fetchContentFeed(\'',
+                 pageLink, '?alt=json\');void(0);">', title,
+                 '</a></strong><br/>', updated, ' - ', kind,
+                 ' by ', author, summary, '</li>'].join(''));
+    }
+    html.push('</ul>');
+    $('#' + id).html('<h3 style="text-align:center;">Recent activity for site: ' +
+                     selectedSite + '</h3>' + html.join(''));
+  }
+
+  function fetchData() {
+    $('#unlink').hide();
+    $('#site_listing').parent().hide();
+
+    var url = $('#site_listing').val() || FEEDS.ACTIVITY.uri + SITE_NAMES[0] + '?alt=json';
+    makeRequest(FEEDS.ACTIVITY, url);
+  }
+
+  function makeRequest(Resource, url) {
+    var params = {};
+    params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+    params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = 'google';
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] =  Resource.contentType == 'json' ? gadgets.io.ContentType.JSON : gadgets.io.ContentType.DOM;
+    params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = 'always';
+
+    switch(Resource.httpMethod) {
+      case 'GET':
+        params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+        break;
+      case 'POST':
+        params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
+        break;
+      default:
+        params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+    };
+
+    if (Resource.data) {
+      params[gadgets.io.RequestParameters.POST_DATA] = gadgets.io.encodeValues(Resource.data);
+    }
+
+    showOnly('loading');
+
+    gadgets.io.makeRequest(url, function (response) {
+        if (response.oauthApprovalUrl) {
+          var popUrl = response.oauthApprovalUrl;
+          // Use hd parameter to make user login smoother
+          if (SITE_DOMAIN != 'site') {
+            popUrl += '&hd=' + SITE_DOMAIN;
+          } else {
+            popUrl += '&hd=default';
+          }
+          createApprovalPopupHandler(popUrl);
+          showOnly('approval');
+        } else if (Resource.uri === FEEDS.REVOKE_TOKEN.uri) {
+          Resource.callback();
+        } else if (response.data) {
+          if (response.data.statusDescription) {
+            //$('#errors').html(response.data.statusDescription);
+            $('#errors').html('Error: Something went wrong!');
+            showOnly('errors');
+          } else {
+            Resource.callback(response.data, Resource.containerID);
+          }
+        } else {
+          //$('#errors').html('Error: ' + response.oauthErrorText);
+          $('#errors').html('Error: Something went wrong!');
+          showOnly('errors');
+        }
+    }, params);
+  }
+
+  gadgets.util.registerOnLoadHandler(fetchData);
+</script>
+
+]]>
+  </Content>
+</Module>
