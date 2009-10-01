@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Eric Bidelman <e.bidelman>
+ * Author: Eric Bidelman <e.bidelman@google.com>
  */
 
-// RSA private key file for use with RSA-SHA1 signature method
-$PRIV_KEY_FILE = '/path/to/your/rsa_private_key.pem';
+$PRIV_KEY_FILE = '/path/to/your/rsa_private_key.pem'
 
 // OAuth library - http://oauth.googlecode.com/svn/code/php/
 require_once('OAuth.php');
@@ -55,7 +54,7 @@ function send_signed_request($http_method, $url, $extraHeaders=null,
   }
 
   $headers = array();
-  $headers[] = 'GData-Version: 2.0';  // user GData v2 by default
+  //$headers[] = 'GData-Version: 2.0';  // use GData v2 by default
   if (is_array($extraHeaders)) {
     $headers = array_merge($headers, $extraHeaders);
   }

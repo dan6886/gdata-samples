@@ -19,16 +19,16 @@
  * various components in the UI. Its dependencies include the JQuery library,
  * jquery.form.js plugin, and SyntaxHighligher.
  *
- * @author e.bidelman (Eric Bidelman)
+ * @author e.bidelman@google.com (Eric Bidelman)
  */
 
 // Protected namespace
 var playground = {};
 
 playground.TOKEN_ENDPOINTS = {
-  'request' : 'accounts/OAuthGetRequestToken',
-  'authorized' : 'accounts/OAuthAuthorizeToken',
-  'access' : 'accounts/OAuthGetAccessToken',
+  'request' : 'OAuthGetRequestToken',
+  'authorized' : 'OAuthAuthorizeToken',
+  'access' : 'OAuthGetAccessToken',
   'info' : 'accounts/AuthSubTokenInfo',
   'revoke' : 'accounts/AuthSubRevokeToken'
 };
@@ -75,9 +75,10 @@ playground.SCOPES = {
   },
   'Documents List' : {
       'scope' : 'http://docs.google.com/feeds/',
-      'feeds' : ['documents/private/full/',
-                'acl/private/full/&lt;resource_id&gt;',
-                'folder/private/full/&lt;folder_id&gt;']
+      'feeds' : ['default/private/full/',
+                'default/private/full/&lt;resource_id&gt;/acl',
+                'default/private/full/&lt;folder_resouce_id&gt;/contents',
+                'default/private/full/&lt;resouce_id&gt;/revisions']
   },
   'Finance' : {
       'scope' : 'http://finance.google.com/finance/feeds/',
@@ -91,7 +92,11 @@ playground.SCOPES = {
       'scope' : 'https://mail.google.com/mail/feed/atom',
       'feeds' : ['/[&lt;label&gt;]']
   },
-  'Health (/h9)' : {
+  'Health' : {
+      'scope' : 'https://www.google.com/health/feeds/',
+      'feeds' : ['profile/default', 'register/default']
+  },
+  'H9' : {
       'scope' : 'https://www.google.com/h9/feeds/',
       'feeds' : ['profile/default', 'register/default']
   },
@@ -101,8 +106,12 @@ playground.SCOPES = {
                   'features/default/[&lt;mapID&gt;]/full/[&lt;elementID&gt;]']
    },
   'OpenSocial' : {
-      'scope' : 'http://sandbox.gmodules.com/api/',
-      'feeds' : ['people/@me/@all']
+      'scope' : 'http://www-opensocial.googleusercontent.com/api/people/',
+      'feeds' : ['@me/@all']
+  },
+  'orkut' : {
+      'scope' : 'http://www.orkut.com/social/rest',
+      'feeds' : ['']
   },
   'Picasa Web' : {
       'scope' : 'http://picasaweb.google.com/data/',
@@ -114,14 +123,27 @@ playground.SCOPES = {
                 'media/api/user/default/albumid/&lt;albumID&gt;/photoid/' +
                 '&lt;photoID&gt;/&lt;versionNumber&gt;']
   },
+  'Sidewiki' : {
+      'scope' : 'http://www.google.com/sidewiki/feeds/',
+      'feeds' : ['entries/author/&lt;authorId&gt;/full',
+                 'entries/webpage/&lt;webpageUri&gt;/full']
+   },
+  'Sites' : {
+      'scope' : 'http://sites.google.com/feeds/',
+      'feeds' : ['content/&lt;site&gt;/&lt;site_name&gt;/&lt;entryID&gt;]',
+                 'revision/&lt;site&gt;/&lt;site_name&gt;',
+                 'activity/&lt;site&gt;/&lt;site_name&gt;/[&lt;entryID&gt;]']
+   },
   'Spreadsheets' : {
       'scope' : 'http://spreadsheets.google.com/feeds/',
       'feeds' : ['spreadsheets/private/full/[&lt;key&gt;]',
-                'worksheets/&lt;key&gt;/private/full/[&lt;worksheetID&gt;]',
-                'list/&lt;key&gt;/&lt;worksheetID&gt;/private/full/' +
-                '[&lt;rowID&gt;]',
-                'cells/&lt;key&gt;/&lt;worksheetID&gt;/private/full/' +
-                '[&lt;cellID&gt;]']
+                 'worksheets/&lt;key&gt;/private/full/[&lt;worksheetID&gt;]',
+                 'list/&lt;key&gt;/&lt;worksheetID&gt;/private/full/' +
+                 '[&lt;rowID&gt;]',
+                 'cells/&lt;key&gt;/&lt;worksheetID&gt;/private/full/' +
+                 '[&lt;cellID&gt;]',
+                 '&lt;key&gt;/tables/[&lt;tableID&gt;]',
+                 '&lt;key&gt;/records/&lt;tableID&gt;/[&lt;recordID&gt;]']
   },
   'Webmaster Tools' : {
       'scope' : 'http://www.google.com/webmasters/tools/feeds/',
@@ -150,7 +172,7 @@ playground.SCOPES = {
   }
 };
 
-playground.DATA_VIEW_WIDTH = null; // original width of right panel
+//playground.DATA_VIEW_WIDTH = null; // original width of right panel
 playground.currentScope = {};      // current selected scope(s)
 playground.COOKIE_EXPIRE = 10;     // num days for cookies to expire
 
@@ -161,8 +183,8 @@ jQuery(document).ready(function() {
   playground.buildScopeOptions();
 
   // Set initial width on output panels
-  playground.DATA_VIEW_WIDTH = jQuery('#http_response').width();
-  jQuery('.dataView').width(playground.DATA_VIEW_WIDTH);
+  DATA_VIEW_WIDTH = jQuery('#http_response').width();
+  jQuery('.dataView').width(DATA_VIEW_WIDTH);
 
   // CSS handler for pretty buttons
   jQuery('.button').hover(
@@ -190,16 +212,16 @@ jQuery(document).ready(function() {
   // 'get token info' link
   jQuery('#get_token_link').click(function() {
     jQuery('#http_method').val('GET');
-    var host = jQuery('#host').val();
-    jQuery('#feedUri').val(host + '/' + playground.TOKEN_ENDPOINTS['info']);
+    var hostPrefix = jQuery('#host').val();
+    jQuery('#feedUri').val(hostPrefix + '/' + playground.TOKEN_ENDPOINTS['info']);
     return false;
   });
 
   // 'revoke token' link
   jQuery('#revoke_token_link').click(function() {
     jQuery('#http_method').val('GET');
-    var host = jQuery('#host').val();
-    jQuery('#feedUri').val(host + '/' + playground.TOKEN_ENDPOINTS['revoke']);
+    var hostPrefix = jQuery('#host').val();
+    jQuery('#feedUri').val(hostPrefix + '/' + playground.TOKEN_ENDPOINTS['revoke']);
     return false;
   });
 
@@ -218,10 +240,10 @@ jQuery(document).ready(function() {
   // -------------------- Fetch oauth token buttons ----------------------------
   jQuery('#request_token_button').click(function() {
     playground.setCookie('tokenType', 'request', playground.COOKIE_EXPIRE);
-    var host = jQuery('#host').val();
-    jQuery('#token_endpoint').val(host + '/' +
+    var hostPrefix = jQuery('#host').val();
+    jQuery('#token_endpoint').val(hostPrefix + '/' +
                                   playground.TOKEN_ENDPOINTS['request']);
-    playground.setCookie('host', host, playground.COOKIE_EXPIRE);
+    playground.setCookie('host', hostPrefix, playground.COOKIE_EXPIRE);
     jQuery(this).val('request_token');
   });
 
@@ -310,7 +332,7 @@ jQuery(document).ready(function() {
 
   // Restore user's advanced? settings checkbox pref
   if (playground.getCookie('customEndpoint') == 'yes') {
-    //jQuery('#endpoint_container').show();
+    jQuery('#endpoint_container').show();
     jQuery('#advanced_check').get(0).checked = true;
     jQuery('#xoauth_displayname_container').show();
   }
@@ -369,7 +391,7 @@ playground.showResponse = function(responseText) {
   var response = json.response || '';
   var baseString = json.base_string || '';
   var authorizationHeader = json.authorization_header || '';
-  var html_link = json.html_link || '';
+  var html_link = json.html_link + '&v=' + jQuery('#gdata-version').val() || '';
   var response_headers = json.headers || '';
 
   var callback = json.callback || '';
@@ -453,11 +475,11 @@ playground.showResponse = function(responseText) {
     jQuery('#http_response').html(response_headers + response);
     dp.SyntaxHighlighter.ClipboardSwf = 'js/flash/clipboard.swf';
     dp.SyntaxHighlighter.HighlightAll('code');
-    jQuery('.nogutter').css('width', playground.DATA_VIEW_WIDTH + 10);
+    jQuery('.nogutter').css('width', DATA_VIEW_WIDTH + 10);
   } else {
     response = response.replace(/(https?:\/\/[^schemas].*?)&quot;/g, '<a href="$1" onclick="javascript:jQuery(\'#feedUri\').val(\'$1\');return false;">$1</a>"');
     jQuery('#http_response').html(response_headers + response);
-    jQuery('#http_response').css('width', playground.DATA_VIEW_WIDTH);
+    jQuery('#http_response').css('width', DATA_VIEW_WIDTH);
   }
 };
 
