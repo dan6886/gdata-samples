@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Eric Bidelman <e.bidelman>
+ * Author: Eric Bidelman <e.bidelman@google.com>
  */
 
 session_start();
@@ -99,7 +99,7 @@ switch(@$_REQUEST['action']) {
       }
       $url = $token_endpoint . '?scope=' . urlencode($scope);
     } else {
-      $params = array();
+      $params = array('oauth_callback' => $callback_url);
       $url = $token_endpoint;
     }
 
@@ -194,7 +194,7 @@ switch(@$_REQUEST['action']) {
     // urlencode each url parameter key/value pair
     $tempStr = $pieces[0];
     foreach ($params as $key=>$value) {
-      $tempStr .= '&' . urlencode($key) . '=' . urlencode($value);
+      $tempStr .= '&' . urlencode($key) . '=' . urlencode($value); 
     }
     $feedUri = preg_replace('/&/', '?', $tempStr, 1);
 
@@ -211,9 +211,9 @@ switch(@$_REQUEST['action']) {
     }
 
     $content_type = $_POST['content-type'];
-
+    $gdataVersion = 'GData-Version: ' . @$_REQUEST['gdata-version'];
     $result = send_signed_request($http_method, $feedUri,
-                                  array($auth_header, $content_type), $postData);
+                                  array($auth_header, $content_type, $gdataVersion), $postData);
 
     if (!$result) {
       die("{'html_link' : '" . $req->to_url() . "', " .
@@ -234,7 +234,7 @@ switch(@$_REQUEST['action']) {
     // <pre> tags needed for IE
     $response_body = '<pre>' . $response_body . '</pre>';
 
-    echo json_encode(array('html_link' => $req->to_url(),
+    echo json_encode(array('html_link' => $req->to_url(), 
                            'base_string' =>  $req->get_signature_base_string(),
                            'headers' => isset($result[1]) ? $result[0] : '',
                            'response' => $response_body,

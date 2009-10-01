@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Eric Bidelman <e.bidelman>
+ * Author: Eric Bidelman <e.bidelman@google.com>
  */
 
 require_once('playground.php');
@@ -135,7 +135,7 @@ require_once('playground.php');
     <tr class="middle">
       <td class="leftside">&nbsp;</td>
       <td>
-        <span id="endpoint_container" style="display:none;">Server: <input type="text" id="host" name="host" value="https://www.google.com" style="width:275px;"/></span>
+        <span id="endpoint_container" style="display:none;">Server: <input type="text" id="host" name="host" value="https://www.google.com/accounts" style="width:275px;"/></span>
         <input type="text" id="token_endpoint" name="token_endpoint" value="/accounts/OAuthGetRequestToken" style="display:none;"/>
         <table>
         <tr>
@@ -145,8 +145,6 @@ require_once('playground.php');
             <button type="submit" name="action" value="request_token" id="request_token_button" disabled="disabled">Request token</button>
             </span>
           </span>
-          <br>
-          https://www.google.com/accounts/OAuthGetRequestToken
           <div id="xoauth_displayname_container" style="display:none;margin-top:10px;"><strong>xoauth_displayname</strong>: <input type="text" id="xoauth_displayname" name="xoauth_displayname" value=""/></div>
           </td>
         </tr>
@@ -157,8 +155,6 @@ require_once('playground.php');
             <button type="submit" name="action" value="authorize" id="authorize_token_button" disabled="disabled">Authorize</button>
             </span>
           </span>
-          <br>
-          https://www.google.com/accounts/OAuthAuthorizeToken</td>
         </tr>
         <tr>
           <td valign="top"><img src="images/5.gif"></td><td><strong>Upgrade to an Access Token:</strong> 
@@ -167,8 +163,6 @@ require_once('playground.php');
             <button type="submit" name="action" value="access_token" id="access_token_button" disabled="disabled">Access token</button>
             </span>
           </span>
-          <br>
-          https://www.google.com/accounts/OAuthGetAccessToken</td>
         </tr>
         </table>
 
@@ -214,9 +208,6 @@ require_once('playground.php');
           </span>
         </span>
         </h4>
-        <div style="margin-bottom:10px;">Syntax highlight response? <input type="checkbox" id="syntaxHighlight"/> &nbsp; <strong>|</strong> &nbsp;
-        Stick <strong>oauth_*</strong> params in: <input type="radio" name="oauth_params_loc" checked="checked" value="header">Authorization header
-         &nbsp; <input type="radio" name="oauth_params_loc" value="query">URL as params</div>
       </td>
       <td class="rightside">&nbsp;</td>
     </tr>
@@ -239,7 +230,10 @@ require_once('playground.php');
           <button type="submit" name="action" id="execute" value="execute" onclick="this.value='execute';" title="Query a feed">execute</button>
           </span>
         </span>
-        <div style="margin-top:10px;">
+        <div style="margin:10px 0 5px 0;clear:both;">Syntax highlight response? <input type="checkbox" id="syntaxHighlight"/> &nbsp; <strong>|</strong> &nbsp;
+        Stick <strong>oauth_*</strong> params in: <input type="radio" name="oauth_params_loc" checked="checked" value="header">Authorization header
+         &nbsp; <input type="radio" name="oauth_params_loc" value="query">URL as params</div>
+        <div>
           <strong>POST/PUT Content-Type</strong>: &nbsp;
           <input type="radio" name="content-type" checked="checked" value="Content-Type: application/atom+xml">application/atom+xml 
           &nbsp;
@@ -249,6 +243,14 @@ require_once('playground.php');
           &nbsp;
           <input type="radio" name="content-type" value="Content-Type: text/plain">text/plain
         </div>
+        <div>
+ 	  GData-Version:
+          <input id="gdata-version" name="gdata-version" value="2.0" style="width:40px;">
+	  <!--<select name="gdata-version">
+	    <option value="1.0">1.0</option>
+	    <option value="2.0" selected="selected">2.0</option>
+	  </select>-->
+	</div>
       </td>
       <td class="rightside">&nbsp;</td>
     </tr>
