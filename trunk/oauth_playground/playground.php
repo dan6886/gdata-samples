@@ -91,8 +91,6 @@ switch(@$_REQUEST['action']) {
       // Health still uses OAuth v1.0
       if (preg_match('/health/', $scope) || preg_match('/h9/', $scope)) {
         $params = array('scope' => $scope);
-      } elseif ($scope == 'http://gdata.youtube.com') {
-        $params = array('scope' => $scope);
       } else {
         // Use the OAuth v1.0a flow (callback in the request token step)
         $params = array('scope' => $scope, 'oauth_callback' => $callback_url);
@@ -138,9 +136,6 @@ switch(@$_REQUEST['action']) {
       // Google Health - append permission=1 parameter to read profiles
       // and callback URL for v1.0 flow.
       $auth_url .= '&permission=1&oauth_callback=' . urlencode($callback_url);
-    } elseif ($scope == 'http://gdata.youtube.com') {
-       // YT still uses v1.0 approval flow.  Provide oauth_callback.
-      $auth_url .= '&oauth_callback=' . urlencode($callback_url);
     }
 
     // Redirect to https://www.google.com/accounts/OAuthAuthorizeToken
@@ -194,7 +189,7 @@ switch(@$_REQUEST['action']) {
     // urlencode each url parameter key/value pair
     $tempStr = $pieces[0];
     foreach ($params as $key=>$value) {
-      $tempStr .= '&' . urlencode($key) . '=' . urlencode($value); 
+      $tempStr .= '&' . urlencode($key) . '=' . urlencode($value);
     }
     $feedUri = preg_replace('/&/', '?', $tempStr, 1);
 
@@ -234,7 +229,7 @@ switch(@$_REQUEST['action']) {
     // <pre> tags needed for IE
     $response_body = '<pre>' . $response_body . '</pre>';
 
-    echo json_encode(array('html_link' => $req->to_url(), 
+    echo json_encode(array('html_link' => $req->to_url(),
                            'base_string' =>  $req->get_signature_base_string(),
                            'headers' => isset($result[1]) ? $result[0] : '',
                            'response' => $response_body,

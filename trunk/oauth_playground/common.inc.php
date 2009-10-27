@@ -16,7 +16,7 @@
  * Author: Eric Bidelman <e.bidelman@google.com>
  */
 
-$PRIV_KEY_FILE = '/path/to/your/rsa_private_key.pem'
+$PRIV_KEY_FILE = '/path/to/your/rsa_private_key.pem';
 
 // OAuth library - http://oauth.googlecode.com/svn/code/php/
 require_once('OAuth.php');
