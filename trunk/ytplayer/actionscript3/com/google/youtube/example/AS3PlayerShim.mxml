@@ -1,0 +1,35 @@
+<!--
+Copyright 2009 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!--
+Build instructions (adjust UNIX-y paths to Windows as needed):
+* Download and uncompress the Flex 3 SDK -
+  http://opensource.adobe.com/wiki/display/flexsdk/Downloads
+  Make note of where you save it, as you'll need to use the mxmlc compiler in
+  its bin/ directory.
+* Ensure that this AS3PlayerShim.mxml file and AS3Player.as are in a
+  com/google/youtube/examples/ directory.
+* From the parent directory of 'com', run:
+   /path/to/mxmlc -compiler.source-path=. \
+   com/google/youtube/examples/AS3PlayerShim.mxml
+* This will produce a com/google/youtube/examples/AS3PlayerShim.swf file
+  which you can then reference from a web page.
+-->
+
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+ xmlns="com.google.youtube.examples.*" layout="absolute">
+  <AS3Player/>
+</mx:Application>
