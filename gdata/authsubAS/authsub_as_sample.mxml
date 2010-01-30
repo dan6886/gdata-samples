@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns="http://www.adobe.com/2006/mxml"
+  initialize="onInitialized()"
+  applicationComplete="onLoaded()">
+  <Script>
+    import flash.external.ExternalInterface;
+    import flash.net.navigateToURL;
+    import mx.controls.Alert;
+ 
+    private function onInitialized() : void {
+      // Load the cross domain policy file for each of the googleapis.com
+      // domains used. At the very least, we need the ones for the API (photos)
+      // and the one for AuthSub for ActionScript (accounts).
+      Security.loadPolicyFile('http://photos.googleapis.com/data/crossdomain.xml');
+      Security.loadPolicyFile('https://accounts.googleapis.com/crossdomain.xml');
+    }
+ 
+    private function onLoaded() : void {
+      // Once the application has loaded, check to see if an AuthSub token was
+      // placed into the current page's URL. If it was, the user has already
+      // authenticated, we can continue to connect to the the service itself.
+      // In a real application, the long-term cookie would also be stored and 
+      // checked here, to remove the need for the user to authenticate for this 
+      // application every time it is used.
+      var searchPortion : String = ExternalInterface.call('window.location.search.toString');
+ 
+      if (searchPortion.length > 0) {
+         // remove the ? from the token and extract the token.
+         searchPortion = searchPortion.substring(1);
+ 
+         // NOTE: Real applications should parse the URL properly.
+         if (searchPortion.indexOf('token=') == 0) {
+           getLongLivedToken(searchPortion.substring(6));
+           return;
+         }
+      }
+ 
+      // No token found; redirect the user to the AuthSub page. Note that this URL
+      // is on the google.com domain. We can contact the google.com domain because
+      // this isn't a request from within Flash, but rather a page redirect.
+      var getTokenPage : URLRequest = new URLRequest('https://www.google.com/accounts/AuthSubRequest');
+ 
+      // Construct the parameters of the AuthSub request. These are the same parameters
+      // as normal AuthSub, which can be found here: http://code.google.com/apis/accounts/docs/AuthSub.html#AuthSubRequest
+      var authSubParams : URLVariables = new URLVariables();
+      authSubParams['scope'] = 'http://photos.googleapis.com/data'; // photos API
+      authSubParams['session'] = 1; // single-use token
+      authSubParams['secure'] = 0; // non-secure apps
+      authSubParams['next'] = 'photos.swf'; // The URL of this app.
+ 
+      getTokenPage.data =  authSubParams;
+      navigateToURL(getTokenPage, '_top');
+    }
+ 
+    private function getLongLivedToken(singleUseToken : String) : void {
+      // Construct a call to the AuthSub for ActionScript endpoint on accounts.googleapis.com.
+      // This call will exchange the single use token given to use by AuthSub for a long-term
+      // token that we can use to make requests to endpoints such as Photos.
+      var getTokenRequest : URLRequest = new URLRequest('https://accounts.googleapis.com/accounts/AuthSubSessionToken');
+ 
+      // Due to a bug in Flash, a URLRequest with a GET request will
+      // not properly send headers. We therefore use POST for this and *ALL*
+      // requests.
+      getTokenRequest.method = URLRequestMethod.POST;
+ 
+      // Due to a bug in Flash, a URLRequest without a valid parameter will
+      // not properly send headers. We therefore add a useless parameter to
+      // make this code work.
+      getTokenRequest.data = new URLVariables('pleaseignore=ignore');
+ 
+      // Add the AuthSub for ActionScript headers.
+      getTokenRequest.requestHeaders.push(new URLRequestHeader('Authorization', 'AuthSub token="' + singleUseToken + '"'));
+ 
+      // Create the loader to get the token itself. The loader will callback
+      // to the following event handlers if and when the server responds.
+      var getToken : URLLoader = new URLLoader();
+      getToken.addEventListener(Event.COMPLETE, onGetTokenResult);
+      getToken.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onGetTokenFailed);
+      getToken.addEventListener(IOErrorEvent.IO_ERROR, onGetTokenFailed);
+  
+      try {
+        getToken.load(getTokenRequest);
+      } catch (e : Error) {
+        Alert.show('Some error occurred: ' + e);  
+      }
+    }
+ 
+    private function onGetTokenResult(e : Event) : void {
+      // Load the parameters from the response.
+      var getToken : URLLoader = URLLoader(e.target);
+      var params : URLVariables = new URLVariables(getToken.data);
+ 
+      // Parse the session token from the result. Real applications
+      // might at this point store the token in a long-term cookie so
+      // that repeated usages of the application do not require this entire
+      // authentication process.
+      var sessionToken : String = params.Token;
+ 
+      // Trim the newline from the end of the session token.
+      sessionToken = sessionToken.substring(0, sessionToken.length - 1);
+	  
+      Alert.show('session token: [' + sessionToken + ']');
+
+      // Prepare a request to the photos API for the private album
+      // of the user.
+      var albumRequest : URLRequest = new URLRequest('http://photos.googleapis.com/data/feed/api/user/default');
+      albumRequest.data = new URLVariables('access=private&amp;v=2&amp;err=xml');
+ 
+      // Due to a bug in Flash, a URLRequest with a GET request will
+      // not properly send headers. We therefore use POST for this and *ALL*
+      // requests.
+      albumRequest.method = URLRequestMethod.POST;
+ 
+      var authsubHeader : String = 'AuthSub token="' + sessionToken + '"';
+ 
+      // Add the Authorization header which uses the session token.
+      albumRequest.requestHeaders.push(new URLRequestHeader('Authorization', authsubHeader));
+ 
+      // The X-HTTP-Method-Override header tells the Photos API to treat this request
+      // as a GET request, even though it is being conducted as a POST (due to the bug
+      // mentioned above). This is very important, as GData APIs will react differently
+      // to different HTTP request types.
+      albumRequest.requestHeaders.push(new URLRequestHeader('X-HTTP-Method-Override', 'GET'));
+ 
+      // We expect ATOM XML to be returned.
+      albumRequest.requestHeaders.push(new URLRequestHeader('Content-Type', 'application/atom+xml'));
+ 
+      var getAlbum : URLLoader = new URLLoader();
+      getAlbum.addEventListener(Event.COMPLETE, onGetAlbumResult);
+      getAlbum.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onGetAlbumFailed);
+      getAlbum.addEventListener(IOErrorEvent.IO_ERROR, onGetAlbumFailed);
+ 
+      try {
+        getAlbum.load(albumRequest);
+      } catch (e : Error) {
+        Alert.show('Some error occurred: ' + e);  
+      }
+    }
+ 
+    private function onGetAlbumResult(e : Event) : void {
+      // Load the XML from the response.
+      var getAlbum : URLLoader = URLLoader(e.target);
+      Alert.show('Returned XML: ' + getAlbum.data);
+    }
+ 
+    private function onGetTokenFailed(e : ErrorEvent) : void {
+      Alert.show('Some error occurred: ' + e);
+    }
+ 
+    private function onGetAlbumFailed(e : ErrorEvent) : void {
+      Alert.show('Some error occurred: ' + e);
+    }
+ 
+  </Script>
+</Application> 
