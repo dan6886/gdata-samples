@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns="http://www.adobe.com/2006/mxml" layout="absolute" initialize="onInitialized()" applicationComplete="onLoaded()">
+  <Script>
+<![CDATA[
+import flash.events.*;
+import flash.external.ExternalInterface;
+import flash.net.FileReference;
+import mx.controls.Alert;
+import mx.controls.Button;
+import mx.controls.Label;
+import mx.controls.Text;
+
+// Global variables.
+private var developerTag:String;
+private var fileReference:FileReference;
+private var loginButton:Button;
+private var logoutButton:Button;
+private var messageLabel:Label;
+private var sharedObject:SharedObject;
+private var uploadButton:Button;
+private var uploadComplete:Boolean;
+
+// CONSTANTS.
+// Replace with a string of your choosing to identify your application.
+private static const CLIENT_ID:String = 'REPLACE_ME';
+// Register for a developer key at http://code.google.com/apis/youtube/dashboard/gwt/index.html
+private static const DEVELOPER_KEY:String = 'REPLACE_ME';
+
+private function onInitialized():void {
+  Security.loadPolicyFile('http://gdata.youtube.com/crossdomain.xml');
+  Security.loadPolicyFile('https://accounts.googleapis.com/crossdomain.xml');
+}
+
+private function onLoaded():void {
+  setupUI();
+
+  // Flash local storage is used for persisting the AuthSub session token and username.
+  sharedObject = SharedObject.getLocal(CLIENT_ID);
+
+  if (sharedObject.data.authSubToken == null || sharedObject.data.account == null) {
+    logoutButton.enabled = false;
+    uploadButton.enabled = false;
+
+    var hostUrl:String = ExternalInterface.call('window.location.toString');
+    var tokenRegex:RegExp = /token=([^&]+)/g;
+    var result:Array = tokenRegex.exec(hostUrl);
+
+    if (result != null) {
+      displayMessage('Exchanging single-use token for session token...');
+      getSessionToken(result[1]);
+    } else {
+      displayMessage('Please login to continue.');
+    }
+  } else {
+    loginButton.enabled = false;
+
+    displayMessage('Logged in as ' + sharedObject.data.account);
+  }
+}
+
+private function setupUI():void {
+  messageLabel = new Label();
+  messageLabel.x = 10;
+  messageLabel.y = 10;
+  addChild(messageLabel);
+
+  loginButton = new Button();
+  loginButton.width = 100;
+  loginButton.x = 10;
+  loginButton.y = 40;
+  loginButton.label = 'Login';
+  loginButton.addEventListener(MouseEvent.CLICK, loginButtonClickHandler);
+  addChild(loginButton);
+  
+  logoutButton = new Button();
+  logoutButton.width = 100;
+  logoutButton.x = 120;
+  logoutButton.y = 40;
+  logoutButton.label = 'Logout';
+  logoutButton.addEventListener(MouseEvent.CLICK, logoutButtonClickHandler);
+  addChild(logoutButton);
+
+  uploadButton = new Button();
+  uploadButton.width = 100;
+  uploadButton.x = 230;
+  uploadButton.y = 40;
+  uploadButton.label = 'Upload';
+  uploadButton.addEventListener(MouseEvent.CLICK, uploadButtonClickHandler);
+  addChild(uploadButton);
+
+  var disclaimerText:Text = new Text();
+  disclaimerText.width = 400;
+  disclaimerText.x = 10;
+  disclaimerText.y = 80;
+  disclaimerText.htmlText = "By clicking 'upload,' you certify that you own all rights to the content or that you are authorized by the owner to make the content publicly available on YouTube, and that it otherwise complies with the YouTube Terms of Service located at <b><a href='http://www.youtube.com/t/terms'>http://www.youtube.com/t/terms</a></b>."
+  addChild(disclaimerText);
+}
+
+private function getSessionToken(singleUseToken:String):void {
+  var sessionTokenRequestUrl:URLRequest = new URLRequest('https://accounts.googleapis.com/accounts/AuthSubSessionToken');
+  sessionTokenRequestUrl.method = URLRequestMethod.POST;
+  // Include a dummy request parameter to work around an ActionScript bug.
+  sessionTokenRequestUrl.data = new URLVariables('pleaseignore=ignore');
+  sessionTokenRequestUrl.requestHeaders.push(new URLRequestHeader('Authorization', 'AuthSub token="' + singleUseToken + '"'));
+
+  var sessionTokenLoader:URLLoader = new URLLoader();
+  sessionTokenLoader.addEventListener(Event.COMPLETE, getSessionTokenCompleteHandler);
+  sessionTokenLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailedHandler);
+  sessionTokenLoader.addEventListener(IOErrorEvent.IO_ERROR, loadFailedHandler);
+  
+  try {
+    sessionTokenLoader.load(sessionTokenRequestUrl);
+  } catch (e:Error) {
+    Alert.show('An error occurred: ' + e);  
+  }
+}
+
+private function getSessionTokenCompleteHandler(e:Event):void {
+  var sessionTokenLoader:URLLoader = URLLoader(e.target);
+  var params:URLVariables = new URLVariables(sessionTokenLoader.data);
+  var sessionToken:String = params.Token;
+  // Trim the trailing whitespace.
+  sessionToken = sessionToken.substring(0, sessionToken.length - 1);
+
+  // Save the token to Flash local storage.
+  sharedObject.data.authSubToken = sessionToken;
+  sharedObject.flush();
+
+  loginButton.enabled = false;
+  logoutButton.enabled = true;
+  uploadButton.enabled = true;
+
+  displayMessage('Retrieving user name...');
+  getUserName();
+}
+ 
+private function loadFailedHandler(e:ErrorEvent):void {
+  Alert.show('An error occurred: ' + e);
+}
+
+private function loginButtonClickHandler(event:MouseEvent):void {
+  var authSubRequestUrl:URLRequest = new URLRequest('https://www.google.com/accounts/AuthSubRequest');
+  
+  var hostUrl:String = ExternalInterface.call('window.location.toString');
+
+  var authSubParams:URLVariables = new URLVariables();
+  authSubParams['scope'] = 'http://gdata.youtube.com';
+  authSubParams['session'] = 1;
+  authSubParams['secure'] = 0;
+  authSubParams['next'] = hostUrl.replace(/\??&?token=[^&]+/g, '');
+    
+  authSubRequestUrl.data = authSubParams;
+  navigateToURL(authSubRequestUrl, '_top');
+}
+
+private function logoutButtonClickHandler(event:MouseEvent):void {
+  sharedObject.clear();
+
+  displayMessage('Please login to continue.');
+
+  loginButton.enabled = true;
+  logoutButton.enabled = false;
+  uploadButton.enabled = false;
+}
+
+private function uploadButtonClickHandler(event:MouseEvent):void {
+  fileReference = new FileReference();
+  fileReference.addEventListener(Event.SELECT, fileSelectHandler);
+  fileReference.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+  fileReference.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+  fileReference.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+  fileReference.browse();
+}
+
+private function httpStatusHandler(event:HTTPStatusEvent):void {
+  // Browser-based uploads end with a HTTP 302 redirect to the 'nexturl' page.
+  // However, Flash doesn't properly handle this redirect. So we just use the presence of the 302
+  // redirect to assume success. It's not ideal. More info on browser-based uploads can be found at
+  // http://code.google.com/apis/youtube/2.0/developers_guide_protocol_browser_based_uploading.html
+  if (event.status == 302) {
+    uploadComplete = true;
+    displayMessage('File uploaded successfully.');
+  }
+}
+
+private function fileSelectHandler(event:Event):void {
+  var now:Date = new Date();
+  developerTag = now.getTime().toString();
+
+  // Obviously, this shouldn't be hardcoded in a real application!
+  var atom:String = '<?xml version="1.0"?>';
+  atom += '<entry xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://gdata.youtube.com/schemas/2007">';
+  atom += '<media:group><media:title type="plain">Test</media:title>';
+  atom += '<media:description type="plain">Just testing.</media:description>';
+  atom += '<media:category scheme="http://gdata.youtube.com/schemas/2007/categories.cat">People</media:category>';
+  // Developer tags are not user-visible and provide an easy way for you to find videos uploaded with your developer key.
+  atom += '<media:category scheme="http://gdata.youtube.com/schemas/2007/developertags.cat">' + developerTag + '</media:category>';
+  atom += '<media:keywords>test</media:keywords></media:group></entry>';
+
+  var uploadTokenUrl:URLRequest = getUrlRequest('http://gdata.youtube.com/action/GetUploadToken', 'POST', atom);
+
+  var urlLoader:URLLoader = new URLLoader();
+  urlLoader.addEventListener(Event.COMPLETE, uploadTokenLoadCompleteHandler);
+  urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailedHandler);
+  urlLoader.addEventListener(IOErrorEvent.IO_ERROR, loadFailedHandler);
+
+  try {
+    urlLoader.load(uploadTokenUrl);
+  } catch (e:Error) {
+    Alert.show('An error occurred: ' + e);  
+  }
+}
+
+private function progressHandler(event:ProgressEvent):void {
+  var percent:Number = Math.round(100 * event.bytesLoaded / event.bytesTotal);
+
+  displayMessage('Uploading file... ' + percent + '% complete.');
+}
+        
+private function ioErrorHandler(event:IOErrorEvent):void {
+  // uploadComplete is set in the httpStatusHandler when the HTTP 302 is returned by the YouTube API.
+  if (!uploadComplete) {
+    Alert.show('An error occurred: ' + event);
+  }
+}
+
+private function uploadTokenLoadCompleteHandler(e:Event):void {
+  var uploadUrl:String;
+  var uploadToken:String;
+
+  var urlLoader:URLLoader = URLLoader(e.target);
+
+  // Regexes are the lazy-man's XML parsing.
+  var urlRegex:RegExp = /<url>(.+)<\/url>/;
+  var result:Array = urlRegex.exec(urlLoader.data);
+  if (result == null) {
+    displayMessage("Couldn't determine upload URL.");
+  } else {
+    var hostUrl:String = ExternalInterface.call('window.location.toString');
+    uploadUrl = result[1] + '?nexturl=' + hostUrl;
+  }
+
+  var tokenRegex:RegExp = /<token>(.+)<\/token>/;
+  result = tokenRegex.exec(urlLoader.data);
+  if (result == null) {
+    displayMessage("Couldn't determine upload token.");
+  } else {
+    uploadToken = result[1];
+  }
+
+  if (uploadUrl != null && uploadToken != null) {
+    uploadFile(uploadUrl, uploadToken);
+  }
+}
+
+private function uploadFile(uploadUrl:String, uploadToken:String):void {
+  uploadComplete = false;
+
+  var parameters:URLVariables = new URLVariables();
+  parameters['token'] = uploadToken;
+
+  var fileUploadUrl:URLRequest = getUrlRequest(uploadUrl, 'POST', parameters);
+  fileReference.upload(fileUploadUrl, 'file');
+}
+
+private function displayMessage(message:String):void {
+  messageLabel.text = message;
+}
+
+private function getUserName():void {
+  var profileUrl:URLRequest = getUrlRequest('http://gdata.youtube.com/feeds/api/users/default');
+
+  var urlLoader:URLLoader = new URLLoader();
+  urlLoader.addEventListener(Event.COMPLETE, profileLoadCompleteHandler);
+  urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailedHandler);
+  urlLoader.addEventListener(IOErrorEvent.IO_ERROR, loadFailedHandler);
+ 
+  try {
+    urlLoader.load(profileUrl);
+  } catch (e:Error) {
+    Alert.show('An error occurred: ' + e);  
+  }
+}
+
+private function profileLoadCompleteHandler(e:Event):void {
+  var urlLoader:URLLoader = URLLoader(e.target);
+  
+  var nameRegex:RegExp = /<name>(.+)<\/name>/;
+  var result:Array = nameRegex.exec(urlLoader.data);
+  if (result == null) {
+    displayMessage("Couldn't determine name of logged in user.");
+  } else {
+    // Persist the username in Flash local storage.
+    sharedObject.data.account = result[1];
+    sharedObject.flush();
+
+    displayMessage('Logged in as ' + sharedObject.data.account);
+  }
+}
+
+// This is a helper method for generating URLRequest objects with all the needed headers set.
+private function getUrlRequest(url:String, method:String='GET', data:Object=null):URLRequest {
+  var urlRequest:URLRequest = new URLRequest(url);
+
+  urlRequest.method = URLRequestMethod.POST;
+  urlRequest.requestHeaders.push(new URLRequestHeader('GData-Version', '2'));
+  urlRequest.requestHeaders.push(new URLRequestHeader('Authorization', 'AuthSub token="' + sharedObject.data.authSubToken + '"'));
+  urlRequest.requestHeaders.push(new URLRequestHeader('X-GData-Client', CLIENT_ID));
+  urlRequest.requestHeaders.push(new URLRequestHeader('X-GData-Key', 'key=' + DEVELOPER_KEY)); 
+  urlRequest.requestHeaders.push(new URLRequestHeader('Content-Type', 'application/atom+xml'));
+
+  if (data == null) {
+    urlRequest.data = new URLVariables('pleaseignore=ignore');
+  } else {
+    urlRequest.data = data;
+  }
+
+  if (method != 'POST') {
+    urlRequest.requestHeaders.push(new URLRequestHeader('X-HTTP-Method-Override', method));
+  }
+
+  return urlRequest;
+}
+]]>
+  </Script>
+</Application> 
