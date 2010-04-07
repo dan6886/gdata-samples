@@ -104,8 +104,8 @@ playground.SCOPES = {
        'scope' : 'http://maps.google.com/maps/feeds/',
        'feeds' : ['maps/default/full', 'maps/userID/full/[&lt;elementID&gt;]',
                   'features/default/[&lt;mapID&gt;]/full/[&lt;elementID&gt;]']
-   },
-   'Moderator' : {
+  },
+  'Moderator' : {
       'scope' : 'tag:google.com,2010:auth/moderator',
       'feeds' : [''],
   },
