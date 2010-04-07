@@ -105,6 +105,10 @@ playground.SCOPES = {
        'feeds' : ['maps/default/full', 'maps/userID/full/[&lt;elementID&gt;]',
                   'features/default/[&lt;mapID&gt;]/full/[&lt;elementID&gt;]']
    },
+   'Moderator' : {
+      'scope' : 'tag:google.com,2010:auth/moderator',
+      'feeds' : [''],
+  },
   'OpenSocial' : {
       'scope' : 'http://www-opensocial.googleusercontent.com/api/people/',
       'feeds' : ['@me/@all']
