@@ -78,7 +78,8 @@ playground.SCOPES = {
       'feeds' : ['default/private/full/',
                 'default/private/full/&lt;resource_id&gt;/acl',
                 'default/private/full/&lt;folder_resouce_id&gt;/contents',
-                'default/private/full/&lt;resouce_id&gt;/revisions']
+                'default/private/full/&lt;resouce_id&gt;/revisions',
+                'metadata/default']
   },
   'Finance' : {
       'scope' : 'http://finance.google.com/finance/feeds/',
@@ -136,7 +137,9 @@ playground.SCOPES = {
       'scope' : 'http://sites.google.com/feeds/',
       'feeds' : ['content/&lt;site&gt;/&lt;site_name&gt;/&lt;entryID&gt;]',
                  'revision/&lt;site&gt;/&lt;site_name&gt;',
-                 'activity/&lt;site&gt;/&lt;site_name&gt;/[&lt;entryID&gt;]']
+                 'activity/&lt;site&gt;/&lt;site_name&gt;/[&lt;entryID&gt;]',
+                 'site/&lt;site&gt;/[&lt;entryID&gt;]',
+                 'acl/site/&lt;site&gt;/&lt;site_name&gt;/[&lt;entryID&gt;]']
    },
   'Spreadsheets' : {
       'scope' : 'http://spreadsheets.google.com/feeds/',
