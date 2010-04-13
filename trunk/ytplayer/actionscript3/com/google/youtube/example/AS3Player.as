@@ -39,7 +39,6 @@ package com.google.youtube.examples {
     private var player:Object;
     private var playerLoader:SWFLoader;
     private var qualityComboBox:ComboBox;
-    private var stopButton:Button;
     private var videoIdTextInput:TextInput;
     private var youtubeApiLoader:URLLoader;
 
@@ -125,18 +124,6 @@ package com.google.youtube.examples {
       pauseButton.y = 10;
       pauseButton.addEventListener(MouseEvent.CLICK, pauseButtonClickHandler);
       addChild(pauseButton);
-
-      // Create a button for stopping the cued video.
-      // Note that this will really pause the video and blank the video display,
-      // as opposed to actually stopping the video playback.
-      stopButton = new Button();
-      stopButton.enabled = false;
-      stopButton.label = "Stop";
-      stopButton.width = 100;
-      stopButton.x = 560;
-      stopButton.y = 10;
-      stopButton.addEventListener(MouseEvent.CLICK, stopButtonClickHandler);
-      addChild(stopButton);
     }
 
     private function setupPlayerLoader():void {
@@ -209,16 +196,13 @@ package com.google.youtube.examples {
       player.pauseVideo();
     }
 
-    private function stopButtonClickHandler(event:MouseEvent):void {
-      player.stopVideo();
-    }
-
     private function youtubeApiLoaderErrorHandler(event:IOErrorEvent):void {
       trace("Error making YouTube API request:", event);
     }
 
     private function onPlayerReady(event:Event):void {
       player = playerLoader.content;
+      player.visible = false;
 
       cueButton.enabled = true;
     }
@@ -234,13 +218,11 @@ package com.google.youtube.examples {
         case STATE_ENDED:
           playButton.enabled = true;
           pauseButton.enabled = false;
-          stopButton.enabled = false;
           break;
 
         case STATE_PLAYING:
           playButton.enabled = false;
           pauseButton.enabled = true;
-          stopButton.enabled = true;
 
           if(!isQualityPopulated) {
             populateQualityComboBox();
@@ -250,13 +232,11 @@ package com.google.youtube.examples {
         case STATE_PAUSED:
           playButton.enabled = true;
           pauseButton.enabled = false;
-          stopButton.enabled = false;
           break;
 
         case STATE_CUED:
           playButton.enabled = true;
           pauseButton.enabled = false;
-          stopButton.enabled = false;
 
           resizePlayer("medium");
           break;
@@ -286,6 +266,8 @@ package com.google.youtube.examples {
       // Center the resized player on the stage.
       player.x = (stage.stageWidth - newWidth) / 2;
       player.y = (stage.stageHeight - newHeight) / 2;
+
+      player.visible = true;
     }
 
     private function populateQualityComboBox():void {
