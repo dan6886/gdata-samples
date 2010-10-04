@@ -320,19 +320,24 @@ if(isset($params['title']) && isset($params['title-exact'])) {
     return strtoupper($this->http_method);
   }/*}}}*/
 
-  /**
+/**
    * parses the url and rebuilds it to be
    * scheme://host/path
    */
-  public function get_normalized_http_url() {/*{{{*/
+  public function get_normalized_http_url() {
     $parts = parse_url($this->http_url);
 
-    // FIXME: port should handle according to http://groups.google.com/group/oauth/browse_thread/thread/1b203a51d9590226
-    $port = (isset($parts['port']) && $parts['port'] != '80') ? ':' . $parts['port'] : '';
+    $scheme = (isset($parts['scheme'])) ? $parts['scheme'] : 'http';
+    $port = (isset($parts['port'])) ? $parts['port'] : (($scheme == 'https') ? '443' : '80');
+    $host = (isset($parts['host'])) ? strtolower($parts['host']) : '';
     $path = (isset($parts['path'])) ? $parts['path'] : '';
 
-    return $parts['scheme'] . '://' . $parts['host'] . $port . $path;
-  }/*}}}*/
+    if (($scheme == 'https' && $port != '443')
+        || ($scheme == 'http' && $port != '80')) {
+      $host = "$host:$port";
+    }
+    return "$scheme://$host$path";
+  }
 
   /**
    * builds a url usable for a GET request
