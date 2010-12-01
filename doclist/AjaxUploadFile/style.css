@@ -1,0 +1,67 @@
+/**
+ * style.css
+ *
+ * Really simple styling for the upload examples.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ * @copyright  Copyright (c) 2010 Google Inc.
+ * @license    Apache 2.0
+ * @author     Jeff Pickhardt <jeffpickhardt@google.com>
+ */
+.progress-bar {
+    height: 15px;
+    width: 16px;
+    margin: 4px 12px;
+    background-image: url(apps_upload_icons.gif);
+    background-repeat: no-repeat;
+    float: left;
+}
+.progress-none .progress-bar {
+    background-position: 20px 20px;
+}
+.progress-loading .progress-bar {
+    background-position: center 0px;
+}
+.progress-success .progress-bar {
+    background-position: center -16px;
+}
+.progress-error .progress-bar {
+    background-position: center -30px;
+}
+
+
+.upload-selector, .success-dialog, .error-dialog {
+    float: left;
+}
+.progress-loading .upload-selector {
+    display: none;
+}
+.progress-error .upload-selector, .progress-success .upload-selector {
+    display: none;
+}
+.success-dialog, .error-dialog, .loading-dialog {
+    display: none;
+    line-height: 24px;
+    width: 600px;
+}
+.progress-error .error-dialog {
+    display: block !important;
+}
+.progress-success .success-dialog {
+    display: block !important;
+}
+.progress-loading .loading-dialog {
+    display: block !important;
+}
+
