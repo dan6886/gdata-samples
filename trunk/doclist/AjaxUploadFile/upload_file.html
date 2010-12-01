@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="UTF-8"/>
+      <title>AJAX File Uploader for Google Docs</title>
+      <link rel="stylesheet" href="style.css" type="text/css" />
+    </head>
+    <body>
+        <h2>AJAX File Uploader for Google Docs</h2>
+        <h4>This uploader uses <a href="http://code.google.com/apis/accounts/docs/OAuth.html#GoogleAppsOAuth">OAuth for Google Apps domains</a>
+        and doesn't need to log in to any Google Apps account. Files are uploaded on behalf of users.</h4>
+        <div>
+            U: username@example.com<br />
+            Link to Google Docs: <a href="https://docs.google.com/a/example.com" target="_blank">https://docs.google.com/a/example.com</a><br />
+            <br />
+            <br />
+        </div>
+        <div id="loader">
+            <form id="upload-to-google-form" class="progress-none" action="upload.php" method="POST" enctype="multipart/form-data" target="upload-to-google-frame" onsubmit="startUpload();" >
+                <div class="progress-bar"></div>
+                <div class="upload-selector">
+                    <input class="file-picker" name="uploadedFile" type="file" size="36" />
+                    <input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
+                    <input class="upload-button" name="submitBtn" type="submit" value="Upload" />
+                </div>
+                <div class="loading-dialog" style="display: none;">
+                    Uploading file...
+                </div>
+                <div class="success-dialog" style="display: none;">
+                    Success! Your file is located at <a href="#" target="_blank">(url goes here)</a>
+                </div>
+                <div id="upload-to-google-error" class="error-dialog" style="display: none;">
+                    An unknown error occurred.
+                </div>
+                <iframe id="upload-to-google-frame" name="upload-to-google-frame" src="#" style="width:0px;height:0px;border:0px solid #FFF;"></iframe>
+            </form>
+        </div>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script type="text/javascript">
+      /**
+       * This javascript is used to display the upload state to the user.
+       * 
+       * startUpload get called when the user clicks the submit button.
+       *
+       * stopUpload gets called from the target iFrame, via the
+       *   javascript output from upload.php
+       *
+       * stopUploadIfTakingTooLong gets called after a delay from the
+       *   time upload starts.  If the client hasn't received a response,
+       *   then stopUploadIfTakingTooLong will abort the upload.
+       */
+      var GOOGLE_UPLOAD_RESPONSE_RECEIVED = false;
+      function startUpload() {
+          $('#upload-to-google-form').removeClass("progress-none");
+          $('#upload-to-google-form').addClass("progress-loading");
+        setTimeout(stopUploadIfTakingTooLong, 60000); // set to wait 60 seconds before aborting
+      }
+      function stopUpload(jsonResponse) {
+        GOOGLE_UPLOAD_RESPONSE_RECEIVED = true;
+          response = jQuery.parseJSON(jsonResponse);
+          if (response.statusCode=='0') {
+              // Success!
+              
+              // Add link
+              var link = $('#upload-to-google-form .success-dialog a')[0];
+              link.href = response.url;
+              link.innerHTML = response.url;
+              
+              // Show success
+              $('#upload-to-google-form').removeClass("progress-loading");
+              $('#upload-to-google-form').removeClass("progress-error");
+              $('#upload-to-google-form').addClass("progress-success");
+          } else {
+              // Error!
+          if(response.errorMessage) {
+            $('#upload-to-google-error').html('An error occurred: ' + response.errorMessage);
+          }        
+          $('#upload-to-google-form').removeClass("progress-loading");
+              $('#upload-to-google-form').addClass("progress-error");
+          }
+      }
+      function stopUploadIfTakingTooLong() {
+        if(!GOOGLE_UPLOAD_RESPONSE_RECEIVED) {
+          stopUpload('{"statusCode": "3", "errorMessage": "Aborted on the client side."}');
+        }
+      }
+        </script>
+    </body>
+</html>
