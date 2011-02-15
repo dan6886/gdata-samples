@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>YouTube Favorites Player</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+    <script type="text/javascript"> 
+      $(function() {
+        $('#load').click(function() {
+          var username = $('#username').val();
+          if (username) {
+            $.getJSON('http://gdata.youtube.com/feeds/api/users/' + username + '/favorites?v=2&alt=jsonc', function(response) { 
+              if (response.data && response.data.items) {
+                var videoIds = [];
+                $.each(response.data.items, function(index, item) {
+                  videoIds.push(item.video.id);
+                });
+
+                var width = 640;
+                var height = 390;
+                var swfUrl = 'http://www.youtube.com/e/' + videoIds.shift() + '?version=3&wmode=direct&fs=1&rel=0&playlist=' + videoIds.join(',');
+                swfobject.embedSWF(swfUrl, 'player', width, height, '9', null, null, null, {allowFullScreen: "true"});
+              }
+            });
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div>
+      <input type="text" length="20" id="username"></input>
+      <input type="button" value="Load Favorites" id="load"></input>
+    </div>
+    <div id="player"></div>
+  </body>
+</html>
