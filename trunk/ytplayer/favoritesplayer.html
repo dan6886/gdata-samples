@@ -8,7 +8,7 @@
         $('#load').click(function() {
           var username = $('#username').val();
           if (username) {
-            $.getJSON('http://gdata.youtube.com/feeds/api/users/' + username + '/favorites?v=2&alt=jsonc', function(response) { 
+            $.getJSON('http://gdata.youtube.com/feeds/api/users/' + username + '/favorites?v=2&max-results=50&alt=jsonc', function(response) { 
               if (response.data && response.data.items) {
                 var videoIds = [];
                 $.each(response.data.items, function(index, item) {
