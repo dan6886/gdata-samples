@@ -1,37 +1,85 @@
 <html>
   <head>
     <title>YouTube Favorites Player</title>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <style type="text/css">
+      body {
+        font-family: sans-serif;
+      }
+      
+      div {
+        margin-bottom: 10px;
+      }
+    </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
-    <script type="text/javascript"> 
+    <script type="text/javascript">
       $(function() {
         $('#load').click(function() {
           var username = $('#username').val();
           if (username) {
-            $.getJSON('http://gdata.youtube.com/feeds/api/users/' + username + '/favorites?v=2&max-results=50&alt=jsonc', function(response) { 
-              if (response.data && response.data.items) {
-                var videoIds = [];
-                $.each(response.data.items, function(index, item) {
-                  videoIds.push(item.video.id);
-                });
-
-                var width = 640;
-                var height = 390;
-                var swfUrl = 'http://www.youtube.com/e/' + videoIds.shift() + '?version=3&wmode=direct&fs=1&rel=0&playlist=' + videoIds.join(',');
-                swfobject.embedSWF(swfUrl, 'player', width, height, '9', null, null, null, {allowFullScreen: "true"});
-              }
-            });
+            $('#message').html('Loading...');
+            $(this).val('Loading...');
+            $(this).attr('disabled', 'disabled');
+            
+            getFavorites([], username, 1);
+          } else {
+            $('#message').html('Please enter a YouTube username.');
           }
         });
       });
+      
+      function getFavorites(videoIds, username, startIndex) {
+        $.ajax({
+          dataType: 'jsonp',
+          url: 'http://gdata.youtube.com/feeds/api/users/' + username + '/favorites?v=2&max-results=50&alt=jsonc&fields=items/video/id&start-index=' + startIndex,
+          success: function(response) {
+            if (response.data && response.data.items) {
+              $.each(response.data.items, function(index, item) {
+                videoIds.push(item.video.id);
+              });
+              $('#message').html(videoIds.length + ' public favorites found so far...');
+              getFavorites(videoIds, username, startIndex + 50);
+            } else {
+              displayPlayer(videoIds);
+            }
+          }
+        });
+      }
+      
+      function displayPlayer(videoIds) {
+        if (videoIds.length > 0) {
+          $('#message').html(videoIds.length + ' public favorites found.');
+                  
+          var height = parseInt($("input[@name=resolution]:checked").val());
+          var width = Math.round(height * 16 / 9);
+          height += 30;
+          
+          var swfUrl = 'http://www.youtube.com/e/' + videoIds.shift() + '?version=3&wmode=direct&fs=1&rel=0&playlist=' + videoIds.join(',');
+          swfobject.embedSWF(swfUrl.substring(0, 2047), 'player', width, height, '9', null, null, null, {allowFullScreen: "true"});
+        } else {
+          $('#message').html('No public favorites found.');
+        }
+        
+        $('#load').val('Load Favorites');
+        $('#load').removeAttr('disabled');
+      }
     </script>
   </head>
   <body>
     <div>
-      <label for="username">Username:</label>
-      <input type="text" length="20" id="username"></input>
-      <input type="button" value="Load Favorites" id="load"></input>
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" length="20" id="username" value="tensafefrogs"></input>
+        <input type="button" value="Load Favorites" id="load"></input>
+      </div>
+      <div>
+        <label for="resolution">Player Size/Resolution:</label>
+        <input type="radio" name="resolution" value="360">360p</input>
+        <input type="radio" name="resolution" value="480" checked>480p</input>
+        <input type="radio" name="resolution" value="720">720p</input>
+      </div>
     </div>
+    <div id="message"></div>
     <div id="player"></div>
   </body>
 </html>
