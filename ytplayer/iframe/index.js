@@ -18,7 +18,7 @@ $(document).ready(function() {
   
   $('#playerDiv').hide();
   
-  disable('loadFeed', 'previous', 'pause', 'play', 'next', 'volume', 'seek', 'quality');
+  disable('loadFeed', 'previous', 'pause', 'play', 'next', 'volume', 'seek');
   
   var tag = document.createElement('script');
   tag.src = 'http://www.youtube.com/player_api';
@@ -199,7 +199,7 @@ function onStateChange(event) {
       $('#seek').val(duration);
 
       enable('play');
-      disable('pause', 'volume', 'seek', 'quality');
+      disable('pause', 'volume', 'seek');
       
       playNextVideo(player);
     break;
@@ -211,7 +211,7 @@ function onStateChange(event) {
       
       setSeekBarInterval();
       
-      enable('pause', 'volume', 'seek', 'quality');
+      enable('pause', 'volume', 'seek');
       disable('play');
       
       $('#volume').val(player.getVolume());
@@ -222,7 +222,7 @@ function onStateChange(event) {
     break;
       
     case YT.PlayerState.PAUSED:
-      enable('play', 'volume', 'seek', 'quality');
+      enable('play', 'volume', 'seek');
       disable('pause');
       
       if (seekBarInterval != null) {
@@ -232,7 +232,7 @@ function onStateChange(event) {
     break;
       
     case YT.PlayerState.BUFFERING:
-      enable('pause', 'volume', 'seek', 'quality');
+      enable('pause', 'volume', 'seek');
       disable('play');
       
       if (seekBarInterval != null) {
@@ -243,7 +243,7 @@ function onStateChange(event) {
       
     case YT.PlayerState.CUED:
       enable('play');
-      disable('pause', 'volume', 'seek', 'quality');
+      disable('pause', 'volume', 'seek');
     break;
   }
 }
