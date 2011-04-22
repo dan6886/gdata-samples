@@ -42,9 +42,8 @@ body {
 }
 
 #playPauseDiv {
-  float: left;
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  left: 450px;
 }
 
 #volumeDiv {
