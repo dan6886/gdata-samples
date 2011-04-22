@@ -50,11 +50,13 @@ class CaptionsDemo(object):
   
   # Register for a YouTube API developer key at
   # <http://code.google.com/apis/youtube/dashboard/>
-  YOUTUBE_DEVELOPER_KEY = "AI39si5GEgLYKzZxKfv9cue2iKk82oD7SvAIaCxVkgyT9lqKCgd4DIFnGWKWIa3aFj05IhBT2hZ7pHkxGqJXM48ptOmS8ngsLg"
+  YOUTUBE_DEVELOPER_KEY = ("AI39si5GEgLYKzZxKfv9cue2iKk82oD7SvAIaCxVkgyT9lqKCg"
+                           "d4DIFnGWKWIa3aFj05IhBT2hZ7pHkxGqJXM48ptOmS8ngsLg")
 
   # Hardcoded YouTube API constants.
   OAUTH_SCOPE = "https://gdata.youtube.com"
-  CAPTIONS_URL_FORMAT = "http://gdata.youtube.com/feeds/api/videos/%s/captions?alt=json"
+  CAPTIONS_URL_FORMAT = ("http://gdata.youtube.com/feeds/api/videos/%s/"
+                         "captions?alt=json")
   CAPTIONS_CONTENT_TYPE = "application/vnd.youtube.timedtext; charset=UTF-8"
   CAPTIONS_TITLE = "Pig Latin"
   CAPTIONS_LANGUAGE_CODE = "en"
@@ -115,14 +117,17 @@ class CaptionsDemo(object):
     if response_headers["status"] == "200":
       json_response = json.loads(body)
       for entry in json_response["feed"]["entry"]:
-        if "yt$derived" in entry and entry["yt$derived"]["$t"] == "speechRecognition" and entry["content"]["xml$lang"] == self.CAPTIONS_LANGUAGE_CODE:
+        if ("yt$derived" in entry and
+            entry["yt$derived"]["$t"] == "speechRecognition" and
+            entry["content"]["xml$lang"] == self.CAPTIONS_LANGUAGE_CODE):
           # This will only be set for the ASR track.
           self.track_url = entry["content"]["src"]
     else:
-      raise Error("Received HTTP response %s when requesting %s." % (response_headers["status"], url))
+      raise Error("Received HTTP response %s when requesting %s." %
+                  (response_headers["status"], url))
 
     if self.track_url is None:
-      raise Error("Could not find an appropriate ASR captions track for this video.")
+      raise Error("Could not find the ASR captions track for this video.")
 
   def GetSrtCaptions(self):
     """Retrieves and parses the actual ASR captions track's data.
@@ -133,12 +138,14 @@ class CaptionsDemo(object):
     Raises:
       Error: The ASR caption track could not be retrieved.
     """
-    response_headers, body = self.http.request("%s?fmt=srt" % self.track_url, "GET", headers=self.headers)
+    response_headers, body = self.http.request("%s?fmt=srt" % self.track_url,
+                                               "GET", headers=self.headers)
 
     if response_headers["status"] == "200":
       self.srt_captions = SubRipFile.from_string(body)
     else:
-      raise Error("Received HTTP response %s when requesting %s?fmt=srt." % (response_headers["status"], self.track_url))
+      raise Error("Received HTTP response %s when requesting %s?fmt=srt." %
+                  (response_headers["status"], self.track_url))
 
   def TranslateWord(self, word):
     """Translates a given word into its Pig Latin equivalent.
@@ -203,10 +210,14 @@ class CaptionsDemo(object):
     self.headers["Content-Language"] = self.CAPTIONS_LANGUAGE_CODE
     self.headers["Slug"] = self.CAPTIONS_TITLE
     url = self.CAPTIONS_URL_FORMAT % self.video_id
-    response_headers, body = self.http.request(url, "POST", body=self.translated_captions_body, headers=self.headers)
+    response_headers, body = self.http.request(url,
+                                               "POST",
+                                               body=self.translated_captions_body,
+                                               headers=self.headers)
 
     if response_headers["status"] != "201":
-      raise Error("Received HTTP response %s when uploading captions to %s." % (response_headers["status"], url))
+      raise Error("Received HTTP response %s when uploading captions to %s." %
+                  (response_headers["status"], url))
 
   def main(self):
     """Handles the entire program execution."""
