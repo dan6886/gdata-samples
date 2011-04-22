@@ -6,7 +6,8 @@ var DEFAULT_VIDEO_ID = 'Oi1BcouEmio';
 var URL_PREFIX = 'http://gdata.youtube.com/feeds/api/';
 var MAX_RESULTS = 50;
 var MAX_VIDEOS = 200;
-var QUERY_PARAMS = 'v=2&format=5&alt=json&fields=entry(title,media:group(media:thumbnail[@yt:name="default"](@url),yt:videoid))&max-results=' + MAX_RESULTS;
+var QUERY_PARAMS = 'v=2&format=5&alt=json&fields=entry(title,media:group(media:thumbnail' +
+  '[@yt:name="default"](@url),yt:videoid))&max-results=' + MAX_RESULTS;
 
 $(document).ready(function() {
   if (window.location.hash) {
