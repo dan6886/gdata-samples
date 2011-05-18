@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <title>onYouTubePlayerReady() Example</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script type="text/javascript">
+      var count = 0;
+      var playerObjects = {};
+      
+      function onYouTubePlayerReady(playerId) {
+        playerObjects[playerId] = document.getElementById(playerId);
+      }
+      
+      function playAllVideos() {
+        for (var key in playerObjects) {
+          if (playerObjects.hasOwnProperty(key)) {
+            var playerObject = playerObjects[key];
+            playerObject.playVideo();
+          }
+        }
+      }
+      
+      function embedAdditionalPlayer() {
+        count++;
+        var playerId = "player" + count;
+        var divId = "div" + count;
+        
+        var containerDiv = document.createElement("div");
+        containerDiv.setAttribute("id", divId);
+        document.body.appendChild(containerDiv);
+        
+        swfobject.embedSWF(
+          "http://www.youtube.com/v/f15zA0PhSek?enablejsapi=1&version=3&playerapiid=" + playerId,
+          divId,
+          "400",
+          "240",
+          "9.0.0",
+          null,
+          null,
+          { "wmode": "opaque", "allowscriptaccess": "always" }, 
+          { id: playerId }
+        );
+      }
+    </script>
+  </head>
+  <body>
+    <div>
+      <input type="button" onClick="embedAdditionalPlayer()" value="Embed Additional Player"></input>
+      <input type="button" onClick="playAllVideos()" value="Play All Videos"></input>
+    </div>
+  </body>
+</html>
