@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+    <title>YouTube API App Engine OAuth Demo</title>
+    <link href="/static/index.css" type="text/css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+    <script src="/static/index.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <a id="logout" href="{{ logout_url }}">Logout</a>
+    <h1>Recent YouTube Uploads in Your Account</h1>
+    <div id="player"></div>
+    {% for video in videos %}
+      <div class="video-container" data-video-id="{{ video.id|escape }}">
+        <img class="thumbnail" src="{{ video.thumbnail_url|escape }}">
+        <p class="title">{{ video.title|escape }}</p>
+        <p class="description">{{ video.description|escape }}</p>
+      </div>
+    {% endfor %}
+  </body>
+</html>

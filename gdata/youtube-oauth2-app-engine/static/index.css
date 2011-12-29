@@ -1,0 +1,25 @@
+body {
+  font-family: 'Droid Sans', sans-serif;
+}
+
+#logout {
+  float: right;
+}
+
+#player {
+  float: right;
+}
+
+.video-container {
+  background-color: #eee;
+  border: 1px solid;
+  width: 300px;
+  padding: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.title {
+  float: right;
+  font-weight: bold;
+}
