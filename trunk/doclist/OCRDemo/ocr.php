@@ -29,11 +29,11 @@ try {
         foreach ($newDocumentEntry->link as $link) {
           if ($link->getRel() === 'alternate') {
             $alternateLink = $link->getHref();
-    	    }
-    	  }
+          }
+        }
 
-    	  header("Location: $alternateLink");
-    	  exit();
+        header("Location: $alternateLink");
+        exit();
       }
     } catch (Zend_Gdata_App_HttpException $e) {
       echo '<div class="error">' .
@@ -68,7 +68,7 @@ function setupDocsClient($token = null) {
   // Fetch a new AuthSub token?
   if (!$token && !isset($_SESSION['sessionToken'])) {
     $next = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-    $scope = 'http://docs.google.com/feeds/ https://docs.google.com/feeds/';
+    $scope = 'https://docs.google.com/feeds/';
     $secure = 0;
     $session = 1;
     $permission = 1;  // 1 - allows posting notices && allows reading profile data
@@ -76,7 +76,7 @@ function setupDocsClient($token = null) {
 
   } else if (isset($_SESSION['sessionToken'])) {
     $httpClient = new Zend_Gdata_HttpClient();
-	  $httpClient->setAuthSubToken($_SESSION['sessionToken']);
+    $httpClient->setAuthSubToken($_SESSION['sessionToken']);
     $docsClient = new Zend_Gdata_Docs($httpClient, 'google-OCRPHPDemo-v0.1');
 
   } else {
@@ -94,7 +94,7 @@ function uploadDocument($client, $fileLocation, $fileName, $mimeType) {
   if (($mimeType == "image/gif") || ($mimeType == "image/jpeg") ||
       ($mimeType == "image/jpg") || ($mimeType == "image/png")) {
     $newDocumentEntry = $client->uploadFile($fileLocation, $fileName, $mimeType,
-	      'http://docs.google.com/feeds/default/private/full?ocr=true');
+        'https://docs.google.com/feeds/default/private/full?ocr=true');
   } else {
     echo "<div class='error'>";
     echo "<h1>Invalid file</h1>";
