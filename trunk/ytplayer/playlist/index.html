@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Playlist Player API Example</title>
+    <link type="text/css" rel="stylesheet" href="index.css">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+  </head>
+  <body>
+    <div>
+      <label for="list-type">Load a</label>
+      <select id="list-type">
+        <option value="playlist" data-list-id="PL02292AD8CFFE1349">playlist</option>
+        <option value="user_favorites" data-list-id="GoogleDevelopers">favorites list</option>
+        <option value="user_uploads" data-list-id="GoogleDevelopers">uploads list</option>
+        <option value="search" data-list-id="YouTube API Google I/O">search list</option>
+      </select>
+      <label for="list-id">with list id</label>
+      <input id="list-id" type="text" size="30"></input>
+      <input id="load" type="button" class="needs-api" value="Load"></input>
+    </div>
+    <div>
+      Playlist Properties:
+      <input id="loop" type="checkbox" class="needs-api"><label for="loop">Loop</label></input>
+      <input id="shuffle-order" type="button" value="Shuffle Order" class="needs-player"></input>
+      <input id="restore-order" type="button" value="Restore Order" class="needs-player"></input>
+    </div>
+    <div>
+      Video Controls:
+      <input id="previous" type="button" class="needs-player" value="Previous Video"></input>
+      <input id="next" type="button" class="needs-player" value="Next Video"></input>
+      <label for="playlist-index">Jump to Video</label>
+      <select id="playlist-index" class="needs-player"></select>
+    </div>
+    <div id="playlist-player"></div>
+    <ol id="log"></ol>
+  </body>
+</html>
