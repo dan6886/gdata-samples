@@ -80,7 +80,7 @@
     $('.needs-player').attr('disabled', true);
     
     // Load the Player API. window.onYouTubePlayerAPIReady will be invoked when it's loaded.
-    $.getScript('http://www.youtube.com/player_api');
+    $.getScript('//www.youtube.com/player_api');
     
     // Populate the list-id input element with the corresponding id from the selected option.
     // HTML5 data attributes are used to maintain the mapping.
