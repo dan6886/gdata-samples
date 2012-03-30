@@ -1,0 +1,73 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  margin: 0;
+  background-color: black;
+  overflow: hidden;
+}
+
+#login-dialog {
+  display: none;
+  font-size: 2em;
+  overflow: hidden;
+}
+
+#video-title {
+  position: fixed;
+  top: 0;
+  bottom: 10%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 2em;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+.video-container-fullscreen {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.video-container-minimized {
+  position: fixed;
+  top: 10%;
+  left: 0;
+  right: 0;
+  height: 63%;
+}
+
+#feed-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25%;
+}
+
+#player {
+  width: 100%;
+  height: 99%;
+}
+
+#progress-bar {
+  height: 1%;
+}
+
+#thumbnails {
+  height: 70%;
+  overflow: hidden;
+}
+
+.thumbnail-container {
+  float: left;
+  margin: 10px;
+}
+
+.thumbnail-image {
+  width: auto;
+  height: 100%;
+}

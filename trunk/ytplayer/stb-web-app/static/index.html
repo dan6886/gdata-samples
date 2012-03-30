@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Set Top Box Demo</title>
+    <link rel="stylesheet" type="text/css"
+          href="//fonts.googleapis.com/css?family=Open+Sans:400,700">
+    <link rel="stylesheet" type="text/css"
+          href="styles/jquery-ui/ui-darkness/jquery-ui-1.8.17.custom.css">
+    <link rel="stylesheet" type="text/css" href="styles/index.css">
+    <script type="text/javascript"
+            src="javascript/third-party/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript"
+            src="javascript/third-party/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript"
+            src="javascript/third-party/jquery.idle-timer.js"></script>
+    <script type="text/javascript"
+            src="javascript/third-party/jquery.sprintf.js"></script>
+    <script type="text/javascript" src="javascript/index.js"></script>
+  </head>
+  <body>
+    <div id="login-dialog"></div>
+    <div id="video-title" class="fades-when-idle">Loading Player...</div>
+    <div id="video-container" class="video-container-minimized">
+      <div id="player"></div>
+      <div id="progress-bar"></div>
+    </div>
+    <button id="log-in-or-out" class="fades-when-idle">Log In</button>
+    <div id="feed-tabs" class="fades-when-idle needs-player">
+      <ul>
+        <li><a href="#loading-stub" data-feed="standardfeeds/top_rated">Top Rated</a></li>
+        <li><a href="#loading-stub" data-feed="standardfeeds/top_favorites">Top Favorites</a></li>
+        <li><a href="#loading-stub" data-feed="standardfeeds/most_viewed">Most Viewed</a></li>
+        <li class="needs-auth"><a href="#loading-stub" data-feed="users/default/uploads">My Uploads</a></li>
+        <li class="needs-auth"><a href="#loading-stub" data-feed="users/default/favorites">My Favorites</a></li>
+        <li class="needs-auth"><a href="#loading-stub" data-feed="users/default/watch_later">My Watch Later Queue</a></li>
+      </ul>
+      <div id="thumbnails"></div>
+    </div>
+  </body>
+</html>
