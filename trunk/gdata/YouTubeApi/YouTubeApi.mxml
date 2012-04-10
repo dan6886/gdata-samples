@@ -47,7 +47,7 @@ private function onLoaded():void {
 
     if (result != null) {
       displayMessage('Exchanging single-use token for session token...');
-      getSessionToken(result[1]);
+      getSessionToken(unescape(result[1]));
     } else {
       displayMessage('Please login to continue.');
     }
