@@ -126,7 +126,7 @@
 
           // It's not currently possible to use JSON data for the request body.
           // You can use something more official than string concatenation to create your XML if you'd prefer.
-          var xmlBody = '<?xml version="1.0"?> <entry xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://gdata.youtube.com/schemas/2007"> <media:group> <media:title type="plain">' + title + '</media:title> <media:description type="plain">' + description + '</media:description> </media:group> </entry>';
+          var xmlBody = '<?xml version="1.0"?> <entry xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://gdata.youtube.com/schemas/2007"> <media:group> <media:title type="plain">' + title + '</media:title> <media:description type="plain">' + description + '</media:description> <media:category scheme="http://gdata.youtube.com/schemas/2007/categories.cat">' + category + '</media:category> </media:group> </entry>';
 
           $.ajax({
             dataType: 'xml',
