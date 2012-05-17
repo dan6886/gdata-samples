@@ -42,7 +42,7 @@
               // The status will be 200 for a successful upload. We can grab the new video's id from the id= URL parameter.
               var videoId = (window.location.href.match(/id=(.{11})/))[1];
               var videoUrl = 'http://youtu.be/' + videoId;
-              $('#upload-container').html('Sucess! You can find your new video at <a href="' + videoUrl + '">' + videoUrl + '</a>.');
+              $('#upload-container').html('Sucess! You can find your new video at <a href="' + videoUrl + '">' + videoUrl + '</a>');
             } else {
               // The upload could have failed for a number of reasons.
               // See https://developers.google.com/youtube/2.0/reference#Response_codes_uploading_videos
