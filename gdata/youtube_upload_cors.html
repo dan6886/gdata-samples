@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+  <head>
+    <title>YouTube Uploads Using CORS</title>
+    <style type="text/css">
+      body {
+        font-family: Helvetica, sans;
+      }
+
+      #upload-form {
+        display: none;
+      }
+
+      #login-button {
+        display: none;
+      }
+
+      label {
+        display: block;
+      }
+
+      form > div {
+        margin-bottom: 10px;
+      }
+    </style>
+    <script type="text/javascript">
+      // See https://developers.google.com/youtube/2.0/developers_guide_protocol#Developer_Key
+      var YT_DEVELOPER_KEY = 'AI39si5mwSg8AxZSqXrBkdesNkAjL355kMTZ3FSUgZou6BbPJB5FwA_pr8NbgLvrKX6Tc-Fb207TpOZfgcFKWADS3fDBF8NcUg';
+
+      // See http://code.google.com/p/google-api-javascript-client/wiki/Authentication
+      var YT_OAUTH2_SCOPE = 'https://gdata.youtube.com';
+      var OAUTH2_CLIENT_ID = '458967539764.apps.googleusercontent.com';
+      var OAUTH2_TOKEN_TYPE = 'Bearer';
+
+      // This is called when the JavaScript OAuth 2 library is ready.
+      function onAuthReady() {
+        if ('withCredentials' in new XMLHttpRequest()) {
+          attemptAuth();
+        } else {
+          // If the browser doesn't support CORS then bail.
+          $('#upload-container').html('Your browser does not <a href="http://caniuse.com/cors">support CORS</a>.');
+        }
+      }
+
+      // First, try to use "immediate" mode OAuth 2.
+      // If the user has previously authorized this OAuth 2 client id for this scope,
+      // this "immediate" attempt will be silently approved without user interaction.
+      function attemptAuth() {
+        gapi.auth.init(function() {
+          setTimeout(function() {
+            gapi.auth.authorize({
+              client_id: OAUTH2_CLIENT_ID,
+              scope: [ YT_OAUTH2_SCOPE ],
+              immediate: true
+            }, handleAuthResult);
+          }, 1);
+        });
+      }
+
+      // Deal with either a successful auth or a failed attempt.
+      function handleAuthResult(authResult) {
+        if (authResult) {
+          // If we have a valid auth token, then proceed.
+          $('#login-button').hide();
+          prepareUploadForm();
+        } else {
+          // Otherwise, set things up so that the OAuth 2 flow is started when the user clicks the Auth button.
+          $('#login-button').unbind('click').click(function() {
+            gapi.auth.authorize({
+              client_id: OAUTH2_CLIENT_ID,
+              scope: [ YT_OAUTH2_SCOPE ],
+              immediate: false
+            }, handleAuthResult);
+          });
+          $('#login-button').show();
+        }
+      }
+
+      // Helper method to set up all the required headers for making authorized calls to the YouTube API.
+      function generateYouTubeApiHeaders() {
+        return {
+          Authorization: OAUTH2_TOKEN_TYPE + ' ' + gapi.auth.getToken().access_token,
+          'GData-Version': 2,
+          'X-GData-Key': 'key=' + YT_DEVELOPER_KEY,
+          'X-GData-Client': 'CORS Upload Demo'
+        };
+      }
+
+      // Some basic XML entity escaping. Not meant to be comprehensive.
+      function escapeXmlEntities(input) {
+        if (input) {
+          return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        } else {
+          return '';
+        }
+      }
+
+      // Wire up all the necessary logic to get the upload form working.
+      function prepareUploadForm() {
+        // Retrieve the list of valid YouTube categories at runtime.
+        // This also was not possible before CORS support, since there is no JSONP for this XML resource.
+        $.ajax({
+          dataType: 'xml',
+          type: 'GET',
+          url: 'https://gdata.youtube.com/schemas/2007/categories.cat',
+          headers: generateYouTubeApiHeaders(),
+          success: function(responseXml) {
+            var xmlString = new XMLSerializer().serializeToString(responseXml);
+            populateCategoriesSelect($(responseXml));
+          },
+          error: function(jqXHR) {
+            alert('The list of YouTube categories could not be loaded: ' + jqXHR.responseText);
+          }
+        });
+
+        $('#upload').click(function() {
+          // We're using the Browser-based Upload flow.
+          // https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading
+          $('#upload').attr('disabled', true);
+          $('#upload').val('Uploading...');
+
+          // We're not validating metadata client-side, but bad metadata will lead to an upload failure.
+          var title = escapeXmlEntities($('#title').val());
+          var description = escapeXmlEntities($('#description').val());
+          var category = escapeXmlEntities($('#category option:selected').val());
+
+          // It's not currently possible to use JSON data for the request body.
+          // You can use something more official than string concatenation to create your XML if you'd prefer.
+          var xmlBody = '<?xml version="1.0"?> <entry xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://gdata.youtube.com/schemas/2007"> <media:group> <media:title type="plain">' + title + '</media:title> <media:description type="plain">' + description + '</media:description> </media:group> </entry>';
+
+          $.ajax({
+            dataType: 'xml',
+            type: 'POST',
+            url: 'https://gdata.youtube.com/action/GetUploadToken',
+            contentType: 'application/atom+xml; charset=UTF-8',
+            headers: generateYouTubeApiHeaders(),
+            processData: false,
+            data: xmlBody,
+            success: function(responseXml) {
+              var xml = $(responseXml);
+              // After the upload, we'll redirect back to the same page.
+              var nextUrl = window.location.href;
+              // The response to this API call will contain a unique URL that we will POST the form to.
+              var submissionUrl = xml.find('url').text() + '?nexturl=' + encodeURIComponent(nextUrl);
+              // The response also contains a unique token value that needs to be included in the form POST request.
+              var token = xml.find('token').text();
+
+              // Set the target of the form to the submission URL we constructed.
+              $('#upload-form').attr('action', submissionUrl);
+              // Add the token as a hidden form element as required by the API.
+              $('<input>').attr({
+                type: 'hidden',
+                name: 'token',
+                value: token
+              }).appendTo('#upload-form');
+
+              // Submit the form to upload the file.
+              // This doesn't actually rely on CORS, but the previous step's metadata submission did.
+              $('#upload-form').submit();
+            },
+            error: function(jqXHR) {
+              alert('Metadata submission failed: ' + jqXHR.responseText);
+              $('#upload').removeAttr('disabled');
+              $('#upload').val('Upload');
+            }
+          });
+        });
+
+        // We only want the Upload button to be clickable if there's a file selected.
+        $('#file').change(function() {
+          if ($(this).val()) {
+            $('#upload').removeAttr('disabled');
+          } else {
+            $('#upload').attr('disabled', true);
+          }
+        });
+
+        $('#upload-form').show();
+      }
+
+      // Add options to the select element listing valid YouTube categories.
+      function populateCategoriesSelect(xml) {
+        // This is about 1000 times easier using jQuery's selectors than any other way of dealing with XML.
+        var assignableCategories = xml.find('category:has(assignable)');
+        $.each(assignableCategories, function() {
+          var term = $(this).attr('term');
+          var label = $(this).attr('label');
+          $('<option value="' + term + '">' + label + '</option>').appendTo('#category');
+        });
+      }
+    </script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=onAuthReady"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>YouTube Uploads Using CORS</h1>
+    <h3>What's CORS?</h3>
+    <p>Normally, when you use XMLHttpRequest to make HTTP requests from JavaScript, you can only contact the same server that your HTML page is served off of.</p>
+    <p>This is very limiting as it prevents you from talking directly to a third-party API without having to use a local proxy service or a technique like <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a> that only works for GETs.</p>
+    <p>If an API's server has been enabled for <a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>, and you're using a <a href="http://caniuse.com/cors">supported web browser</a>, then your JavaScript code can make XMLHttpRequests to that API regardless of the domain your web page is served from.</p>
+    <p>This is usually cleaner than JSONP, and it means that you can do things like set custom request headers and use methods other than GET.</p>
+    <h3>Great! Let's see an example.</h3>
+    <p>The following form will allow you to use OAuth 2 to grant access to your YouTube account, and then upload a new video to YouTube.</p>
+    <p>One of the steps involved in uploading the video is sending a HTTP POST to the YouTube API, and before CORS support, this needed to be done server-side.</p>
+    <p>It's now possible to do all this client-side!</p>
+    <h3>Upload A New Video File</h3>
+    <div id="upload-container">
+      <input id="login-button" type="button" value="Authorize Access"/>
+      <form id="upload-form" enctype="multipart/form-data" method="POST">
+        <div>
+          <label for="title">Title</label>
+          <input id="title" type="text" maxlength="90" value="Title"/>
+        </div>
+        <div>
+          <label for="description">Description</label>
+          <textarea id="description" type="text" maxlength="1000">Description</textarea>
+        </div>
+        <div>
+          <label for="category">Category</label>
+          <select id="category"></select>
+        </div>
+        <div>
+          <label for="file">Video File</label>
+          <input id="file" name="file" type="file"/>
+        </div>
+        <div>
+          <input id="upload" type="button" value="Upload" disabled/>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
