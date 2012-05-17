@@ -35,7 +35,24 @@
       // This is called when the JavaScript OAuth 2 library is ready.
       function onAuthReady() {
         if ('withCredentials' in new XMLHttpRequest()) {
-          attemptAuth();
+          var matches = window.location.href.match(/status=(\d{3})/);
+          if (matches) {
+            // If the URL has a status= URL parameter, then the upload is complete and we've been redirected back to this page.
+            if (matches[1] == 200) {
+              // The status will be 200 for a successful upload. We can grab the new video's id from the id= URL parameter.
+              var videoId = (window.location.href.match(/id=(.{11})/))[1];
+              var videoUrl = 'http://youtu.be/' + videoId;
+              $('#upload-container').html('Sucess! You can find your new video at <a href="' + videoUrl + '">' + videoUrl + '</a>.');
+            } else {
+              // The upload could have failed for a number of reasons.
+              // See https://developers.google.com/youtube/2.0/reference#Response_codes_uploading_videos
+              var code = (window.location.href.match(/code=(\w+)/))[1];
+              alert('Your upload failed: ' + code);
+            }
+          } else {
+            // Otherwise, this is a new upload attempt and we should attempt auth and display the upload form.
+            attemptAuth();
+          }
         } else {
           // If the browser doesn't support CORS then bail.
           $('#upload-container').html('Your browser does not <a href="http://caniuse.com/cors">support CORS</a>.');
