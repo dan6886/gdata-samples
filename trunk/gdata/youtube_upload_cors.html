@@ -166,11 +166,14 @@
             // This is about 1000 times easier using jQuery's selectors than any other way of dealing with XML.
             // Some browsers require the namespace, and some don't.
             var assignableCategories = $(responseXml).find('atom\\:category:has(yt\\:assignable), category:has(assignable)');
+            var options = [];
             $.each(assignableCategories, function() {
               var term = $(this).attr('term');
               var label = $(this).attr('label');
-              $('<option value="' + term + '">' + label + '</option>').appendTo('#category');
+              // data-label in there is to ensure that the sorting happens alphabetically based on the label value.
+              options.push('<option data-label="' + label + '" value="' + term + '">' + label + '</option>');
             });
+            $('#category').html(options.sort().join(''));
           },
           error: function(jqXHR) {
             showMessage('The list of YouTube categories could not be loaded: ' + jqXHR.responseText);
