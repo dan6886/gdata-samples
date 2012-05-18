@@ -37,6 +37,10 @@
       form > div {
         margin-bottom: 10px;
       }
+
+      .wide {
+        width: 250px;
+      }
     </style>
     <script type="text/javascript">
       // See https://developers.google.com/youtube/2.0/developers_guide_protocol#Developer_Key
@@ -57,12 +61,12 @@
               // The status will be 200 for a successful upload. We can grab the new video's id from the id= URL parameter.
               var videoId = (window.location.href.match(/id=(.{11})/))[1];
               var videoUrl = 'http://youtu.be/' + videoId;
-              $('#upload-container').html('Sucess! You can find your new video at <a href="' + videoUrl + '">' + videoUrl + '</a>');
+              showMessage('Sucess! You can find your new video at <a href="' + videoUrl + '">' + videoUrl + '</a>');
             } else {
               // The upload could have failed for a number of reasons.
               // See https://developers.google.com/youtube/2.0/reference#Response_codes_uploading_videos
               var code = (window.location.href.match(/code=(\w+)/))[1];
-              alert('Your upload failed: ' + code);
+              showMessage('Your upload failed: ' + code);
             }
           } else {
             // Otherwise, this is a new upload attempt and we should attempt auth and display the upload form.
@@ -70,7 +74,7 @@
           }
         } else {
           // If the browser doesn't support CORS then bail.
-          $('#upload-container').html('Your browser does not <a href="http://caniuse.com/cors">support CORS</a>.');
+          showMessage('Your browser does not <a href="http://caniuse.com/cors">support CORS</a>.');
         }
       }
 
@@ -127,22 +131,57 @@
         }
       }
 
-      // Wire up all the necessary logic to get the upload form working.
-      function prepareUploadForm() {
-        // Retrieve the list of valid YouTube categories at runtime.
-        // This also was not possible before CORS support, since there is no JSONP for this XML resource.
+      // Set the message element's content to tell the user something.
+      function showMessage(message) {
+        $('#message').html(message);
+      }
+
+      // Fetches the YouTube profile of the currently auth'ed account, and populates the display name field in the form.
+      function getDisplayName() {
+        $.ajax({
+          // Other examples deal with XML data, but if you use alt=json|jsonc, you can get JSON data back too.
+          dataType: 'json',
+          type: 'GET',
+          url: 'https://gdata.youtube.com/feeds/api/users/default?alt=json',
+          headers: generateYouTubeApiHeaders(),
+          success: function(responseJson) {
+            var displayName = responseJson['entry']['yt$username']['display'];
+            $('#display-name').text(displayName);
+          },
+          error: function(jqXHR) {
+            showMessage('Unable to get display name: ' + jqXHR.responseText);
+          }
+        });
+      }
+
+      // Retrieve the list of valid YouTube categories at runtime.
+      // This also was not possible before CORS support, since there is no JSONP for this XML resource.
+      function getCategories() {
         $.ajax({
           dataType: 'xml',
           type: 'GET',
           url: 'https://gdata.youtube.com/schemas/2007/categories.cat',
           headers: generateYouTubeApiHeaders(),
           success: function(responseXml) {
-            populateCategoriesSelect($(responseXml));
+            // This is about 1000 times easier using jQuery's selectors than any other way of dealing with XML.
+            // Some browsers require the namespace, and some don't.
+            var assignableCategories = $(responseXml).find('atom\\:category:has(yt\\:assignable), category:has(assignable)');
+            $.each(assignableCategories, function() {
+              var term = $(this).attr('term');
+              var label = $(this).attr('label');
+              $('<option value="' + term + '">' + label + '</option>').appendTo('#category');
+            });
           },
           error: function(jqXHR) {
-            alert('The list of YouTube categories could not be loaded: ' + jqXHR.responseText);
+            showMessage('The list of YouTube categories could not be loaded: ' + jqXHR.responseText);
           }
         });
+      }
+
+      // Wire up all the necessary logic to get the upload form working.
+      function prepareUploadForm() {
+        getDisplayName();
+        getCategories();
 
         $('#upload').click(function() {
           // We're using the Browser-based Upload flow.
@@ -190,7 +229,7 @@
               $('#upload-form').submit();
             },
             error: function(jqXHR) {
-              alert('Metadata submission failed: ' + jqXHR.responseText);
+              showMessage('Metadata submission failed: ' + jqXHR.responseText);
               $('#upload').removeAttr('disabled');
               $('#upload').val('Upload');
             }
@@ -207,18 +246,6 @@
         });
 
         $('#upload-form').show();
-      }
-
-      // Add options to the select element listing valid YouTube categories.
-      function populateCategoriesSelect(xml) {
-        // This is about 1000 times easier using jQuery's selectors than any other way of dealing with XML.
-        // Some browsers require the namespace, and some don't.
-        var assignableCategories = xml.find('atom\\:category:has(yt\\:assignable), category:has(assignable)');
-        $.each(assignableCategories, function() {
-          var term = $(this).attr('term');
-          var label = $(this).attr('label');
-          $('<option value="' + term + '">' + label + '</option>').appendTo('#category');
-        });
       }
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=onAuthReady"></script>
@@ -237,19 +264,21 @@
     <p>It's now possible to do all this client-side!</p>
     <h3>Upload A New Video File</h3>
     <div id="upload-container">
+      <div id="message"></div>
       <input id="login-button" type="button" value="Authorize Access"/>
       <form id="upload-form" enctype="multipart/form-data" method="POST">
+        <div>You're logged in as <span id="display-name"></span></div>
         <div>
           <label for="title">Title</label>
-          <input id="title" type="text" maxlength="90" value="Title"/>
+          <input id="title" type="text" class="wide" maxlength="90" value="Title"/>
         </div>
         <div>
           <label for="description">Description</label>
-          <textarea id="description" type="text" maxlength="1000">Description</textarea>
+          <textarea id="description" type="text" class="wide" maxlength="1000">Description</textarea>
         </div>
         <div>
           <label for="category">Category</label>
-          <select id="category"></select>
+          <select id="category" class="wide"></select>
         </div>
         <div>
           <label for="file">Video File</label>
