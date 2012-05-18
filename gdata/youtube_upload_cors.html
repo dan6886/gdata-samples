@@ -122,7 +122,6 @@
           url: 'https://gdata.youtube.com/schemas/2007/categories.cat',
           headers: generateYouTubeApiHeaders(),
           success: function(responseXml) {
-            var xmlString = new XMLSerializer().serializeToString(responseXml);
             populateCategoriesSelect($(responseXml));
           },
           error: function(jqXHR) {
@@ -198,7 +197,8 @@
       // Add options to the select element listing valid YouTube categories.
       function populateCategoriesSelect(xml) {
         // This is about 1000 times easier using jQuery's selectors than any other way of dealing with XML.
-        var assignableCategories = xml.find('category:has(assignable)');
+        // Some browsers require the namespace, and some don't.
+        var assignableCategories = xml.find('atom\\:category:has(yt\\:assignable), category:has(assignable)');
         $.each(assignableCategories, function() {
           var term = $(this).attr('term');
           var label = $(this).attr('label');
@@ -207,7 +207,7 @@
       }
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=onAuthReady"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   </head>
   <body>
     <h1>YouTube Uploads Using CORS</h1>
