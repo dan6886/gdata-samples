@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <title>Chapter Marker Player Example</title>
+  <link rel="stylesheet" href="chapter_marker_player.css">
+  <script type="text/javascript" src="chapter_marker_player.js"></script>
+</head>
+<body>
+  <h1>Chapter Marker Player Example</h1>
+  <h3>Google I/O 2011: YouTube's iframe Player: The Future of Embedding</h3>
+  <div id="iframe-session-player"></div>
+
+  <h3>Google I/O 2011: The YouTube Caption API, Speech Recognition, and WebVTT captions for HTML5</h3>
+  <div id="captions-session-player"></div>
+
+  <script type="text/javascript">
+    ChapterMarkerPlayer.insert({
+      container: 'iframe-session-player',
+      videoId: 'bHQqvYy5KYo',
+      width: 600,
+// BEGIN_INCLUDE(define_chapters)
+      chapters: {
+        0: 'Start',
+        5: 'Introductions',
+        26: 'Agenda',
+        252: '<iframe> Tech Details',
+        1040: 'Comparing the Two APIs',
+        1670: 'Example Application',
+        2662: 'Questions & Answers'
+      }
+// END_INCLUDE(define_chapters)
+    });
+
+    ChapterMarkerPlayer.insert({
+      container: 'captions-session-player',
+      videoId: 'tua3DdacgOo',
+      width: 600,
+      chapters: {
+        0: 'Start',
+        6: 'Introductions',
+        50: 'Overview',
+        240: 'Real-Time Captions for I/O Live',
+        320: 'Caption Gadget for Live Events',
+        646: 'Timed Text for HTML5',
+        1624: 'YouTube Captions API',
+        2813: 'Questions & Answers'
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+/* BEGIN_INCLUDE(override_default) */
+ol.chapter-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+ol.chapter-list > li {
+  padding: 0.5em;
+  margin: 0;
+  cursor: pointer;
+}
+/* END_INCLUDE(override_default) */
+
+/* BEGIN_INCLUDE(alternate_background) */
+ol.chapter-list > li:nth-child(odd) {
+  background-color: #ececec;
+}
+
+ol.chapter-list > li:nth-child(even) {
+  background-color: #e4e4e4;
+}
+/* END_INCLUDE(alternate_background) */
+
+/* BEGIN_INCLUDE(hover_background) */
+ol.chapter-list > li:hover {
+  background-color: #c0c0c0;
+}
+/* END_INCLUDE(hover_background) */
