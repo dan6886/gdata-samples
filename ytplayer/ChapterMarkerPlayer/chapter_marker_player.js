@@ -44,11 +44,14 @@ window.ChapterMarkerPlayer = {
     var times = [];
     for (var time in params.chapters) {
       if (params.chapters.hasOwnProperty(time)) {
-        times.push(parseInt(time));
+        times.push(time);
       }
     }
     // Sort the times numerically for display purposes.
-    times.sort();
+    // See https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/sort#Examples
+    times.sort(function(a,b) {
+      return a - b;
+    });
 // END_INCLUDE(time_sort)
     var width = params.width || DEFAULT_PLAYER_WIDTH;
 
