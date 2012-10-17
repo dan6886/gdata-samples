@@ -1,0 +1,5 @@
+<div ng-controller="LoggedInCtrl">
+  <img id="profile-thumbnail" ng-show="thumbnailUrl" ng-src="{{thumbnailUrl}}">
+  <span ng-hide="title">Fetching your channel info...</span>
+  <span ng-show="title">Hey, {{title}}!</span>
+</div>

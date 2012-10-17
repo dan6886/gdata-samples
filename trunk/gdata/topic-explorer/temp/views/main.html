@@ -1,0 +1,52 @@
+<div class="box">
+  <form ng-submit="topicSearch(searchTerm)" class="flex-box-container-row">
+    <input id="search-term" type="text" ng-model="searchTerm" placeholder="Enter a Topic">
+  </form>
+  <ul ng-show="topicResults" id="topic-results">
+    <li ng-repeat="topicResult in topicResults" ng-click="topicClicked(topicResult.mid)" ng-style="topicResult.style">{{topicResult.name}}</li>
+  </ul>
+</div>
+
+<div ng-show="channelResults" class="box">
+  <div class="result-heading">Channels</div>
+  <div class="flex-box-container-row">
+    <div ng-repeat="channelResult in channelResults" class="result-container">
+      <div class="player-container">
+        <img ng-click="listPlayerClicked($event.target, channelResult.id)" ng-src="{{channelResult.thumbnailUrl}}" class="thumbnail-image">
+        <div class="title"><a ng-href="{{channelResult.href}}" target="_blank">{{channelResult.title}}</a></div>
+      </div>
+      <div ng-show="channelId" class="button-container">
+        <button ng-click="subscribeClicked($event.target, channelResult.id)">Subscribe</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-show="playlistResults" class="box">
+  <div class="result-heading">Playlists</div>
+  <div class="flex-box-container-row">
+    <div ng-repeat="playlistResult in playlistResults" class="result-container">
+      <div class="player-container">
+        <img ng-click="listPlayerClicked($event.target, playlistResult.id)" ng-src="{{playlistResult.thumbnailUrl}}" class="thumbnail-image">
+        <div class="title"><a ng-href="{{playlistResult.href}}" target="_blank">{{playlistResult.title}}</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-show="videoResults" class="box">
+  <div class="result-heading">Videos</div>
+  <div class="flex-box-container-row">
+    <div ng-repeat="videoResult in videoResults" class="result-container">
+      <div class="player-container">
+        <img ng-click="videoClicked($event.target, videoResult.id)" ng-src="{{videoResult.thumbnailUrl}}" class="thumbnail-image">
+        <div class="title"><a ng-href="{{videoResult.href}}" target="_blank">{{videoResult.title}}</a></div>
+      </div>
+      <div ng-show="channelId" class="button-container">
+        <button ng-click="addToList($event.target, 'LL', videoResult.id)">Like</button>
+        <button ng-click="addToList($event.target, 'FL', videoResult.id)">Favorite</button>
+        <button ng-click="addToList($event.target, 'WL', videoResult.id)">Watch Later</button>
+      </div>
+    </div>
+  </div>
+</div>
