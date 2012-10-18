@@ -28,9 +28,13 @@ topicExplorerApp.controller('LoggedInCtrl', ['$scope', '$rootScope', 'constants'
     },
     callback: function(response) {
       $scope.$apply(function() {
-        $scope.title = (response.channels[0].snippet.title.split(/\W/))[0];
-        $scope.thumbnailUrl = response.channels[0].snippet.thumbnails.default.url;
-        $rootScope.channelId = response.channels[0].id;
+        if ('items' in response) {
+          $scope.title = (response.items[0].snippet.title.split(/\W/))[0] || constants.DEFAULT_DISPLAY_NAME;
+          $scope.thumbnailUrl = response.items[0].snippet.thumbnails.default.url;
+          $rootScope.channelId = response.items[0].id;
+        } else {
+          $scope.title = constants.DEFAULT_DISPLAY_NAME;
+        }
       });
     }
   });

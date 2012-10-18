@@ -20,6 +20,10 @@ topicExplorerApp.controller('MainCtrl', ['$scope', '$rootScope', '$http', '$wind
   $scope.searchTerm = constants.DEFAULT_SEARCH_TERM;
 
   $scope.topicSearch = function(searchTerm) {
+    $scope.channelResults = [];
+    $scope.playlistResults = [];
+    $scope.videoResults = [];
+
     var data = lscache.get(searchTerm);
     if (data) {
       showTopics(data);
@@ -87,8 +91,8 @@ topicExplorerApp.controller('MainCtrl', ['$scope', '$rootScope', '$http', '$wind
           var channelResults = [];
           var playlistResults = [];
 
-          if ('searchResults' in response) {
-            angular.forEach(response.searchResults, function(result) {
+          if ('items' in response) {
+            angular.forEach(response.items, function(result) {
               switch (result.id.kind) {
                 case constants.VIDEO_KIND:
                   videoResults.push({

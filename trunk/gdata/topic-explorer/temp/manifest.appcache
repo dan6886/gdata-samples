@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# Time: Wed Oct 17 2012 17:40:57 GMT-0400 (EDT)
+# Time: Thu Oct 18 2012 10:37:22 GMT-0400 (EDT)
 # This manifest was created by confess.js, http://github.com/jamesgpearce/confess
 #
 # Retrieved URL: http://localhost:3501/#/
@@ -24,10 +24,10 @@ CACHE:
 components/html5-boilerplate/css/normalize.css
 components/lscache/lscache.js
 http://www.google-analytics.com/ga.js
-https://apis.google.com/_/apps-static/_/js/gapi/client/rt=j/ver=FR4Bxq03aOY.en_US./sv=1/am=!2H2H8ZqGj6aIqyfgIg/d=1/rs=AItRSTMIuC4qhrvc5n2HxJ_fAlIFdYG3DA/cb=gapi.loaded_0
+https://apis.google.com/js/client.js?onload=onClientLoad
 https://s.ytimg.com/yts/img/no_videos_140-vfl5AhOQY.png
-scripts/b7ae5470.scripts.js
-scripts/vendor/d10639ae.angular.js
+scripts/scripts.js
+scripts/vendor/angular.js
 styles/main.css
 
 NETWORK:
