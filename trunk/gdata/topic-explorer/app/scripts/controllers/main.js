@@ -17,8 +17,6 @@
 'use strict';
 
 topicExplorerApp.controller('MainCtrl', ['$scope', '$rootScope', '$http', '$window', 'constants', 'youtube', function($scope, $rootScope, $http, $window, constants, youtube) {
-  $scope.searchTerm = constants.DEFAULT_SEARCH_TERM;
-
   $scope.topicSearch = function(searchTerm) {
     $scope.channelResults = [];
     $scope.playlistResults = [];
@@ -71,7 +69,7 @@ topicExplorerApp.controller('MainCtrl', ['$scope', '$rootScope', '$http', '$wind
     });
   }
 
-  $scope.topicClicked = function(mid) {
+  $scope.topicClicked = function(mid, name) {
     $scope.channelResults = [];
     $scope.playlistResults = [];
     $scope.videoResults = [];
@@ -83,7 +81,7 @@ topicExplorerApp.controller('MainCtrl', ['$scope', '$rootScope', '$http', '$wind
         topicId: mid,
         part: 'snippet',
         maxResults: constants.YOUTUBE_API_MAX_RESULTS,
-        q: $scope.searchTerm
+        q: $scope.searchTerm || name
       },
       callback: function(response) {
         $scope.$apply(function() {

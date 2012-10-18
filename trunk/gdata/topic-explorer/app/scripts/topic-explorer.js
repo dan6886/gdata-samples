@@ -45,6 +45,7 @@ topicExplorerApp.factory('constants', function() {
     YOUTUBE_CACHE_MINUTES: 60 * 24,
     MIN_SCORE: 60,
     MAX_SCORE: 100,
+    SCORE_NORMALIZATION_FACTOR: 35,
     YOUTUBE_API_MAX_RESULTS: 50,
     DEFAULT_PROFILE_THUMBNAIL: 'https://s.ytimg.com/yts/img/no_videos_140-vfl5AhOQY.png',
     VIDEO_KIND: 'youtube#video',
