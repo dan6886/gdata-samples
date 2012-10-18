@@ -1,0 +1,6 @@
+This directory contains a project that was created with Yeoman:
+
+  http://yeoman.io/
+
+The raw source code is under app/. You can run a local web server with `yeoman server` and any
+changes you make under app/ will be available via your local server.
