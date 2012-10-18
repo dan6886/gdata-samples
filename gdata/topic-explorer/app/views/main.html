@@ -1,10 +1,13 @@
 <div class="box">
   <form ng-submit="topicSearch(searchTerm)" class="flex-box-container-row">
-    <input id="search-term" type="text" ng-model="searchTerm" placeholder="Enter a Topic">
+    <input id="search-term" type="text" ng-model="searchTerm" placeholder="I'm interested in...">
   </form>
-  <ul ng-show="topicResults" id="topic-results">
-    <li ng-repeat="topicResult in topicResults" ng-click="topicClicked(topicResult.mid)" ng-style="topicResult.style">{{topicResult.name}}</li>
-  </ul>
+  <div ng-show="topicResults">
+    <div class="result-heading">Suggested Topics</div>
+    <ul id="topic-results">
+      <li ng-repeat="topicResult in topicResults" ng-click="topicClicked(topicResult.mid, topicResult.name)" ng-style="topicResult.style">{{topicResult.name}}</li>
+    </ul>
+  </div>
 </div>
 
 <div ng-show="channelResults" class="box">
