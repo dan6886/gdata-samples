@@ -16,8 +16,11 @@
 
 'use strict';
 
-topicExplorerApp.controller('UserCtrl', ['$scope', '$http', '$window', 'constants', function($scope, $http, $window, constants) {
-  $scope.template = 'views/logged-out.html';
+topicExplorerApp.controller('UserCtrl', ['$scope', '$rootScope', '$http', '$window', 'constants', function($scope, $rootScope, $http, $window, constants) {
+  var loggedOutTemplate = 'views/logged-out.html';
+  var loggedInTemplate = 'views/logged-in.html';
+
+  $scope.template = loggedOutTemplate;
 
   $window[constants.GOOGLE_APIS_CLIENT_CALLBACK] = function() {
     gapi.client.setApiKey(constants.API_KEY);
@@ -33,20 +36,27 @@ topicExplorerApp.controller('UserCtrl', ['$scope', '$http', '$window', 'constant
   function handleAuthResult(authResult) {
     $scope.$apply(function() {
       if (authResult && !authResult.error) {
-        $scope.template = 'views/logged-in.html';
+        $scope.template = loggedInTemplate;
       } else {
-        $scope.template = 'views/logged-out.html';
+        $scope.template = loggedOutTemplate;
       }
     });
   }
 
-  $scope.$on('LoginEvent', function() {
+  $scope.login = function() {
     gapi.auth.authorize({
       client_id: constants.OAUTH2_CLIENT_ID,
       scope: constants.OAUTH2_SCOPES,
       immediate: false
     }, handleAuthResult);
-  });
+  };
+
+  $rootScope.logout = function() {
+    lscache.flush();
+    $rootScope.channelId = null;
+    $scope.template = loggedOutTemplate;
+    $http.jsonp(constants.OAUTH2_REVOKE_URL + gapi.auth.getToken().access_token);
+  };
 
   $http.jsonp(constants.GOOGLE_APIS_CLIENT_URL + constants.GOOGLE_APIS_CLIENT_CALLBACK);
 }]);

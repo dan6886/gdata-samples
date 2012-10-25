@@ -36,6 +36,7 @@ topicExplorerApp.factory('constants', function() {
     GOOGLE_APIS_CLIENT_CALLBACK: 'onClientLoad',
     OAUTH2_CLIENT_ID: '269758065116.apps.googleusercontent.com',
     OAUTH2_SCOPES: 'https://www.googleapis.com/auth/youtube',
+    OAUTH2_REVOKE_URL: 'https://accounts.google.com/o/oauth2/revoke?token=',
     API_KEY: 'AIzaSyAe112w0RobjC1XtoO3Os3YI6cvMZm9oKk',
     FREEBASE_API_URL: 'https://www.googleapis.com/freebase/v1/search',
     YOUTUBE_API_SERVICE: 'youtube',
