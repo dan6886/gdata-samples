@@ -20,6 +20,15 @@ a {
   color: $fontColor;
 }
 
+p > a {
+  text-decoration: underline;
+}
+
+#header {
+  font-size: $fontSize / 2;
+  text-align: right;
+}
+
 @mixin flex($flow) {
   display: -webkit-flex;
   display: -ms-flex;

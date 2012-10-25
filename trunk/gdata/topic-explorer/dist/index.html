@@ -30,7 +30,14 @@
     <![endif]-->
 
     <div class="flex-box-container-column">
-      <div class="box" id="user-box" ng-include src="'views/user.html'"></div>
+      <div id="header">
+        <ul>
+          <li><a href="about.html" target="_blank">About</a></li>
+          <li><a href="https://code.google.com/p/gdata-samples/source/browse/#svn%2Ftrunk%2Fgdata%2Ftopic-explorer%2Fapp" target="_blank">Source Code</a></li>
+          <li ng-show="channelId"><a ng-click="logout()">Log Out</a></li>
+        </ul>
+      </div>
+      <div class="box" id="user-box" ng-include="'views/user.html'"></div>
       <div class="container" ng-view></div>
     </div>
 
