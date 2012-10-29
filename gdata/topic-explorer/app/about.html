@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>About YouTube Topic Explorer</title>
+    <meta name="description" content="All about YouTube API Topic Explorer, a Freebase API + YouTube Data API v3 mashup."/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="icon" href="favicon.ico" type="image/png"/>
+
+    <link rel="stylesheet" href="components/html5-boilerplate/css/normalize.css"/>
+    <link rel="stylesheet" href="styles/main.css"/>
+  </head>
+  <body>
+    <h1>YouTube Topic Explorer</h1>
+    <p>
+      <a href="index.html" target="_blank">YouTube Topic Explorer</a> is a sample application
+      written to demonstrate support for Topics in the
+      <a href="https://developers.google.com/youtube/v3/">YouTube Data API v3</a>. It makes use of
+      the <a href="http://wiki.freebase.com/wiki/index.php?title=Freebase_API&oldid=9252">Freebase API</a>
+      to search for topics related to a specific term, and to translate in between topic ids and
+      descriptive phrases.
+    </p>
+    <p>
+      You can use the Topic Explorer without logging in, in which case you will be able to search for
+      YouTube videos, channels, and playlists related to a given topic, but you won't be able to
+      favorite, like, or subscribe to them. Additionally, if you log in, you will see a list of
+      recommended topics based on your account's likes, favorites, and watch later playlists.
+    </p>
+    <p>
+      This is an open source project, and feel free to look at the
+      <a href="https://code.google.com/p/gdata-samples/source/browse/#svn%2Ftrunk%2Fgdata%2Ftopic-explorer%2Fapp">source code</a>
+      for examples of calling the YouTube and Freebase APIs. It's built on the
+      <a href="http://angularjs.org/">AngularJS</a> framework, using the
+      <a href="http://yeoman.io/">Yeoman</a> toolkit for managing dependencies and the build
+      environment.
+    </p>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+      var _gaq = [
+        ['_setAccount', 'UA-35676129-1'],
+        ['_trackPageview']
+      ];
+      (function(d, t) {
+        var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+        g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s)
+      }(document, 'script'));
+    </script>
+  </body>
+</html>
