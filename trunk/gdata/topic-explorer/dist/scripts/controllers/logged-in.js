@@ -35,7 +35,7 @@ topicExplorerApp.controller('LoggedInCtrl', ['$scope', '$rootScope', '$http', 'c
           $scope.thumbnailUrl = channel.snippet.thumbnails.default.url;
           $rootScope.channelId = channel.id;
 
-          var uploadsListId = channel.contentDetails.uploads;
+          var uploadsListId = channel.contentDetails.relatedPlaylists.uploads;
           var favoritesListId = uploadsListId.replace(/^UU/, 'FL');
           var likesListId = uploadsListId.replace(/^UU/, 'LL');
           var watchLaterListId = uploadsListId.replace(/^UU/, 'WL');
