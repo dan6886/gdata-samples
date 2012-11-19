@@ -23,7 +23,7 @@ topicExplorerApp.controller('LoggedInCtrl', ['$scope', '$rootScope', '$http', 'c
     method: 'GET',
     service: 'channels',
     params: {
-      mine: '',
+      mine: true,
       part: 'id,snippet,contentDetails'
     },
     callback: function(response) {
@@ -33,17 +33,16 @@ topicExplorerApp.controller('LoggedInCtrl', ['$scope', '$rootScope', '$http', 'c
 
           $scope.title = (channel.snippet.title.split(/\W/))[0] || constants.DEFAULT_DISPLAY_NAME;
           $scope.thumbnailUrl = channel.snippet.thumbnails.default.url;
-          $rootScope.channelId = channel.id;
 
-          var uploadsListId = channel.contentDetails.relatedPlaylists.uploads;
-          var favoritesListId = uploadsListId.replace(/^UU/, 'FL');
-          var likesListId = uploadsListId.replace(/^UU/, 'LL');
-          var watchLaterListId = uploadsListId.replace(/^UU/, 'WL');
+          $rootScope.channelId = channel.id;
+          $rootScope.relatedPlaylists = channel.contentDetails.relatedPlaylists;
 
           $scope.videoIds = [];
           $scope.personalizedTopics = [];
 
-          getPersonalizedVideoIds([watchLaterListId, favoritesListId, likesListId]);
+          getPersonalizedVideoIds([$rootScope.relatedPlaylists.watchLater,
+            $rootScope.relatedPlaylists.favorites,
+            $rootScope.relatedPlaylists.likes]);
         } else {
           $scope.title = constants.DEFAULT_DISPLAY_NAME;
         }

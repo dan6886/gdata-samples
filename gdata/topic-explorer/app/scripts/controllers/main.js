@@ -128,8 +128,9 @@ topicExplorerApp.controller('MainCtrl', ['$scope', '$rootScope', '$http', '$wind
     });
   };
 
-  $scope.addToList = function(target, prefix, videoId) {
-    var likedListId = $rootScope.channelId.replace(/^UC/, prefix);
+  $scope.addToList = function(target, listName, videoId) {
+    var listId = $rootScope.relatedPlaylists[listName];
+
     target.textContent = 'Adding...';
     target.disabled = true;
 
@@ -141,7 +142,7 @@ topicExplorerApp.controller('MainCtrl', ['$scope', '$rootScope', '$http', '$wind
       },
       body: {
         snippet: {
-          playlistId: likedListId,
+          playlistId: listId,
           resourceId: {
             kind: constants.VIDEO_KIND,
             videoId: videoId

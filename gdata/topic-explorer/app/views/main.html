@@ -46,9 +46,9 @@
         <div class="title"><a ng-href="{{videoResult.href}}" target="_blank">{{videoResult.title}}</a></div>
       </div>
       <div ng-show="channelId" class="button-container">
-        <button ng-click="addToList($event.target, 'LL', videoResult.id)">Like</button>
-        <button ng-click="addToList($event.target, 'FL', videoResult.id)">Favorite</button>
-        <button ng-click="addToList($event.target, 'WL', videoResult.id)">Watch Later</button>
+        <button ng-click="addToList($event.target, 'likes', videoResult.id)">Like</button>
+        <button ng-click="addToList($event.target, 'favorites', videoResult.id)">Favorite</button>
+        <button ng-click="addToList($event.target, 'watchLater', videoResult.id)">Watch Later</button>
       </div>
     </div>
   </div>
