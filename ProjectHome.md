@@ -1,0 +1,1 @@
+Sample code Google Data API
